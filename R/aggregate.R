@@ -33,7 +33,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
 	stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
 	              Please provide them in one of those format."))
   }
-  
+  # To-do check if functions are indeed aggregation functions.
   ## Initialization
   if(! is.null(args[["functions"]])){
     functions <- args[["functions"]]

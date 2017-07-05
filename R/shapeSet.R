@@ -21,7 +21,7 @@
 #' your data.table to prepareSet if you do not want your
 #' original dataSet to be modified.
 #' @export
-#' @importFrom utils winProgressBar setWinProgressBar
+#' @importFrom tcltk tkProgressBar setTkProgressBar
 #' @importFrom stats quantile
 shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE){
   ## Working environement
@@ -52,14 +52,14 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   num_cols <- names(col_class)[col_class %in% c("numeric", "integer")]
   if (verbose) {
     cat("Going through", length(num_cols), "numerical variables to transform if necessary.\n")
-    pb <- winProgressBar(title=paste0(function_name, ": 0% done"), 
+    pb <- tkProgressBar(title=paste0(function_name, ": 0% done"), 
                          min = 1, max = ncol(dataSet), width = 300) # Construction d'une progress bar
   }
   for (col in num_cols) {
     nCat <- uniqueN(dataSet[[col]])
     if (nCat <= thresh) set(dataSet, NULL, col, as.factor(dataSet[[col]]))
     if (verbose){
-      setWinProgressBar(pb, which(colnames(dataSet) == col), 
+      setTkProgressBar(pb, which(colnames(dataSet) == col), 
                         title=paste0(function_name, ": ", round(which(colnames(dataSet) == col)/ncol(dataSet)*100, 0), "% done"))  
     }
   }
