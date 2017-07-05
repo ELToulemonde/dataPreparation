@@ -41,7 +41,7 @@ setColAsDate                |                          | fastRound           |  
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
 
-For more details on how it work go check [our tutorial](https://github.com/ELToulemonde/dataPreparation/blob/master/inst/doc/dataPreparation.html)
+For more details on how it work go check our tutorial vignette after installation.
 
 Getting started: 30 seconds to dataPreparation
 ==============================================
