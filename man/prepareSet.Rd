@@ -57,7 +57,7 @@ adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"))
 adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country")
 
 # With some new aggregation functions
-power <- function(x){x^2}
+power <- function(x){sum(x^2)}
 adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country", 
                         functions = c("min", "max", "mean", "power"))
 }

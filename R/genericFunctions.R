@@ -152,17 +152,17 @@ printl <- function(...){
 }
 
 ## Super progress bar
-# Using winProgressBar and storing some info
+# Using txtProgressBar and storing some info
 # Use when you build a progress bar for colnames
-#' @importFrom utils winProgressBar setWinProgressBar
+#' @importFrom utils txtProgressBar setTxtProgressBar
 initPB <- function(function_name, cols_names){
-	pb <- winProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = length(cols_names), width = 300) # Construction d'une progress bar
+	pb <- txtProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = length(cols_names), style = 3) # Construction d'une progress bar
 	pb$function_name = function_name
 	pb$cols_names = cols_names
 	return(pb)
 }
 setPB <- function(pb, col){
-	setWinProgressBar(pb, which(pb$cols_names == col), title=paste(pb$function_name, ": ", round(which(pb$cols_names == col) / length(pb$cols_names) * 100, 0), "% done")) 
+	setTxtProgressBar(pb, which(pb$cols_names == col), title=paste(pb$function_name, ": ", round(which(pb$cols_names == col) / length(pb$cols_names) * 100, 0), "% done")) 
 }
 
 ###################################################################################################
