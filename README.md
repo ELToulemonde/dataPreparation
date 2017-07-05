@@ -40,7 +40,7 @@ setColAsDate                |                          | fastRound           |  
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
 
-For more details on how it work go check [our tutorial](https://github.com/ELToulemonde/dataPreparation/inst/doc/dataPreparation.html)
+For more details on how it work go check [our tutorial](https://github.com/ELToulemonde/dataPreparation/blob/master/inst/doc/dataPreparation.html)
 
 Getting started: 30 seconds to dataPreparation
 ==============================================
@@ -78,11 +78,11 @@ How to Contribute
 
 dataPreparation has been developed and used by many active community members. Your help is very valuable to make it better for everyone.
 
-- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/CONTRIBUTING.md) to see what can be improved, or open an issue if you want something.
+- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/blob/master/CONTRIBUTING.md) to see what can be improved, or open an issue if you want something.
 - Contribute to add new usesfull features.
-- Contribute to the [tests](https://github.com/ELToulemonde/dataPreparation/tests/testthat/) to make it more reliable.
+- Contribute to the [tests](https://github.com/ELToulemonde/dataPreparation/tree/master/tests/testthat) to make it more reliable.
 - Contribute to the documents to make it clearer for everyone.
-- Contribute to the [examples](https://github.com/ELToulemonde/dataPreparation/vignettes/) to share your experience with other users.
+- Contribute to the [examples](https://github.com/ELToulemonde/dataPreparation/tree/master/vignettes) to share your experience with other users.
 - Open [issue](https://github.com/ELToulemonde/dataPreparation/issues/) if you met problems during development.
 
 For more details, please refer to CONTRIBUTING.
