@@ -1,0 +1,23 @@
+Package: dataPreparation
+Title: Usefull data preparation functions
+Version: 0.01
+Authors@R: person("Emmanuel-Lin", "Toulemonde", email = "el.toulemonde@protonmail.com", role = c("aut", "cre"))
+Description: dataPreparation is a package containing some helpfull functions to prepare a structure data set in a data science project. It takes advantages of data.table efficiency; packages some of its functionnalities to make it easier to use; and use some computationnal trick in order to perform data preparation in a time and RAM efficient way.
+Depends:
+    R (>= 3.3.0),
+    data.table,
+    lubridate,
+	stringr,
+	Matrix
+License: GPL-3 | file LICENSE
+LazyData: true
+Encoding: UTF-8
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown,
+	kableExtra,
+	pander
+VignetteBuilder: knitr
+Imports: data.table
+
+

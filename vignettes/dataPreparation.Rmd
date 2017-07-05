@@ -1,0 +1,291 @@
+---
+title: "dataPreparation"
+header-includes: \usepackage{booktabs}
+date: '`r Sys.Date()`'
+output:
+  rmarkdown::html_vignette:
+    number_sections: yes
+  
+vignette: >
+  %\VignetteIndexEntry{Tutorial} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r results='hide', message=FALSE, warning=FALSE, echo=FALSE}
+library(dataPreparation)
+library(knitr)
+library(kableExtra)
+library(pander)
+options(knitr.table.format = "html") 
+Sys.setlocale("LC_TIME", "C")
+```
+
+This vignette introduces *dataPreparation*, what it offers, how simple it is to use it.
+
+
+
+# Introduction
+## Package presentation
+Based on  [data.table](http://r-datatable.com) package, **dataPreparation** will allow you to do most of the painful data preparation for a data science project with a minimum amount of code.
+
+
+This package is
+
+  * fast (use `data.table` and exponential search)
+  * RAM efficient (perform operations by reference and column-wise to avoid copying data)
+  * stable (most exceptions are handled)
+  * verbose (log a lot)
+
+`data.table` and other dependencies are handled at installation.
+
+## Main preparation steps
+
+Before using any machine learning (ML) algorithm, one need to prepare its data. Preparing a data set for a data science project can be long and tricky. The main steps are the followings:
+
+  * **Read**: load the data set (this package don't treat this point: for csv we recommend `fread`)
+  * **Correct**: most of the times, there are some mistake after reading, wrong format... one have to correct them
+  * **Transform**: aggregating according to a key, computing differences between dates, ... in order to have information usable for a ML algorithm (aka: numeric or categorical)
+  * **Filter**: get read of useless information in order to speed up computation
+  * **Handle NA**: replace missing values
+  * **Shape**: put your data set in a nice shape usable by a ML algorithm
+  
+Here are the functions available in this package to tackle those issues:
+
+Correct                     | Transform                | Filter              | Handle NA    | Shape
+---------                   |-----------               |--------             |-----------   |------
+findAndTransformDates       | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
+findAndTransformNumerics    | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
+setColAsCharacter           | setColAsFactorOrLogical  | whichAreInDouble    |              |
+setColAsNumeric             |                          | whichAreBijection   |              |
+setColAsDate                |                          | fastRound           |              |
+
+All of those functions are integrated in the **full pipeline** function `prepareSet`.
+
+In this tutorial we will detail all those steps and how to treat them with this package using an exemple data set.
+
+## Tutorial data
+For this tutorial, we are going to use a *messy* version of [adult](https://archive.ics.uci.edu/ml/datasets/adult) data base. 
+
+```{r comment=""}
+data(messy_adult)
+print(head(messy_adult, n = 4))
+```
+
+We added 9 really ugly columns to the data set:
+
+  * 4 dates with various formats and NAs
+  * 1 constant column
+  * 3 numeric with different decimal separator
+  * 1 email adress
+
+The same info can be contained in two different columns.
+
+# *Correct* functions
+
+## Identifing and transforming date columns
+The first thing to do is to **identify** columns that are dates (the first 4 ones) and **transform** them.
+
+```{r echo = FALSE, results='hide'}
+setDT(messy_adult)
+store <- copy(messy_adult[,.(date1, date2, date3, date4)])
+```
+```{r}
+messy_adult <- findAndTransformDates(messy_adult)
+```
+Let's have a look to the transformation performed on those 4 columns:
+```{r echo = FALSE, results='asis'}
+setnames(store, paste0(names(store), "_prev"))
+toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
+
+kable(toPlot) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+```
+
+As one can see, even if formats where differents and some how ugly, they where all handled.
+
+## Identifing and transforming numeric columns
+And now the same thing with numeric
+```{r echo = FALSE, results='hide'}
+store <- copy(messy_adult[,.(num1, num2, num3)])
+```
+```{r}
+messy_adult <- findAndTransformNumerics(messy_adult)
+```
+```{r echo = FALSE, results='asis'}
+setnames(store, paste0(names(store), "_prev"))
+toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
+
+kable(toPlot) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+```
+
+So now our data set is a bit less ugly.
+
+# *Filter* functions
+## Identifing useless columns
+The idea now is to identify useless columns:
+
+  * *constant* columns: they take the same value for every line,
+  * *double* columns: they have an exact copy in the data set,
+  * *bijection* columns: there is another column containing the exact same information (but maybe coded differently) for example col1: Men/Women, col2 M/W.
+
+### Look for constant variables
+  
+```{r, results = 'hold'}
+constant_cols <- whichAreConstant(messy_adult)
+```
+### Look for columns in double
+```{r, results = 'hold'}
+double_cols <- whichAreInDouble(messy_adult)
+```
+
+### Look for columns that are bijections of one another
+```{r, results = 'hold'}
+bijections_cols <- whichAreBijection(messy_adult)
+```
+
+To control this, let's have a look to the concerned columns:
+```{r}
+kable(head(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+Indeed:
+
+
+
+  * *constant* was build constant, it contains only 1,
+  * *num1* and *num3* are equal,
+  * *date3* and *date4* are separated by 2 days: date4 doesn't contain any new information for a ML algorithm,
+  * *education* and *education_num* contains the same information one with a key index, the other one with the character corresponding. `whichAreBijection` keeps the character column.
+
+### Filter them all
+To directly filter all of them:
+```{r results = "hold"}
+ncols = ncol(messy_adult)
+messy_adult <- fastFilterVariables(messy_adult)
+print(paste0("messy_adult now have ", ncol(messy_adult), " columns; so ", ncols - ncol(messy_adult), " less than before."))
+```
+
+4 useless rows have been deleted. Without those useless columns, your machine learning algorithm will at least be faster and maybe give better results.
+
+## Rounding
+One might want to round numeric variables in order to save some RAM, or for algorithmic reasons:
+```{r}
+messy_adult <- fastRound(messy_adult, digits = 2)
+```
+
+```{r echo=FALSE}
+kable(cbind(head(messy_adult[, 1:6, with = FALSE], n = 6), data.frame("..." = rep("  ...", 6)))) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+# *Transform* functions
+Before sending this to a machine learning algorithm, a few transformations should be performed. 
+
+The idea with the functions presented here is to perform those transformation in a RAM efficient way.
+
+## Dates differences
+Since no machine learning algorithm handle Dates, one need to transform them or drop them. A way to transform dates is to perform differences between every dates. 
+
+We can also add an analysis date to compare dates with the date your data is from. For example, if you have a birth-date you may want to compute age by performing today - birth-date. 
+
+Once this is done, we drop *date* columns.
+```{r}
+messy_adult <- diffDates(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
+date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
+messy_adult[, c(date_cols) := NULL]
+```
+```{r echo=FALSE}
+kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 5):ncol(messy_adult), with = FALSE], n = 6))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+## Aggregate according to a key
+Say in fact you want to model something by country, you would want to compute an aggregation of this table in order to have one line per country.
+
+```{r}
+agg_adult <- aggregateByKey(messy_adult, key = "country")
+```
+```{r echo=FALSE}
+print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
+kable(cbind(head(agg_adult[,65:70]), data.frame("..." = rep("  ...", 6)))) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+Every time you have more than one line per individual this function would be pretty cool.
+
+# Handling NAs values
+Then, let's handle NAs
+```{r}
+messy_adult <- fastHandleNa(messy_adult)
+```
+```{r echo=FALSE}
+print(cbind(head(messy_adult[,1:4, with = FALSE], n = 4), data.frame("..." = rep("  ...", 4)), head(messy_adult[,15:ncol(messy_adult), with = FALSE], n = 4)))
+```
+
+
+It set default values in place of NA. If you want to put some specific values (constants, or even a function for example mean of values) you should go check `fastHandleNa` documentation.
+
+
+# Shape functions
+There are two types of machine learning algorithm in R. Those which accept data.table and factor, those which only accept numeric matrix. 
+
+Transforming a data set into something acceptable for a machine learning algorithm could be tricky. 
+
+The `shapeSet` function do it for you, you just have to choose if you want a *data.table* or a *numerical_matrix*.
+
+
+First with *data.table*:
+
+```{r}
+clean_adult = shapeSet(copy(messy_adult), finalForm = "data.table", verbose = FALSE)
+print(table(sapply(clean_adult, class)))
+```
+
+As one can see, there only are, numeric and factors.
+
+Now with *numerical_matrix*:
+
+```{r}
+clean_adult <- shapeSet(copy(messy_adult), finalForm = "numerical_matrix", verbose = FALSE)
+```
+
+```{r echo=FALSE}
+kable(cbind(head(clean_adult[,1:6]), data.frame("..." = rep("  ...", 6)))) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+As one can see, with `finalForm = "numerical_matrix"` every character and factor have been binarized.
+
+
+
+# Full pipeline
+Doing it all with one function is possible: 
+
+To do that we will reload the ugly data set and perform aggregation.
+
+```{r warning = FALSE}
+data("messy_adult")
+agg_adult <- prepareSet(messy_adult, finalForm = "data.table", key = "country", analysisDate = Sys.Date(), digits = 2)
+```
+
+As one can see, every previously steps have been done.
+
+Let's have a look to the result
+
+```{r echo=FALSE}
+print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
+kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+# Conclusion
+We hope that this package is helpful, that it helped you prepare your data in a faster way.
+
+If you would like to add some features to this package, please don't hesitate to tell us on git hub. Also if you want to contribute, please don't hesitate to contact us.
+
+
+
