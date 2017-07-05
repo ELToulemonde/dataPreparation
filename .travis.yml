@@ -1,0 +1,12 @@
+language: r
+dist: trusty
+cache: packages
+addons:
+  apt:
+    packages:
+    - tcl8.5-dev
+    - tk8.5-dev
+
+before_install:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start

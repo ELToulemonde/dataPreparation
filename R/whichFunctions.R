@@ -105,7 +105,7 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
 #' whichAreInDouble(M)
 #' # It only returns 2
 #' @export
-#' @importFrom utils winProgressBar setWinProgressBar
+#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreInDouble <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name = "whichAreInDouble"
@@ -122,7 +122,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
   I <- 1:max(ncol(dataSet) - 1, 1) 
   start_time <- proc.time()
   if (verbose){
-    pb <- winProgressBar(title = paste0(function_name, ": 0% done"), min = 1, 
+    pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, 
                          max = ncol(dataSet) - 1, width = 300) # Construction d"une progress bar
 	# Not using initPB, cause this one is weird
   }
@@ -145,7 +145,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfDoubles]
     I <- I[-1] # drop handled i
     if (verbose){
-      setWinProgressBar(pb,(ncol(dataSet) - 1 - length(I)), 
+      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), 
                         title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
     }
   }
@@ -193,7 +193,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
 #' whichAreBijection(adult)
 #' # Return education_num and education which contain the same info
 #' @export
-#' @importFrom utils winProgressBar setWinProgressBar
+#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreBijection <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name = "whichAreBijection"
@@ -210,7 +210,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   start_time <- proc.time()
   
   if (verbose){
-    pb <- winProgressBar(title = paste0(function_name,": 0% done"), 
+    pb <- tkProgressBar(title = paste0(function_name,": 0% done"), 
                          min = 1, max = ncol(dataSet) - 1, width = 300) # Construction d'une progress bar
   }
   ## Computation # to-do dé-gorifier
@@ -241,7 +241,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfBijection]
     I <- I[-1] # drop handled i
     if (verbose){
-      setWinProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
+      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
     }
   }
   if (verbose){
@@ -297,7 +297,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
 #' setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 #' whichAreIncluded(messy_adult)
 #' @export
-#' @importFrom utils winProgressBar setWinProgressBar
+#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreIncluded <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name <- "whichAreIncluded"
@@ -313,7 +313,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
   I <- 1:max(ncol(dataSet) - 1, 1) 
   
   if (verbose){
-    pb <- winProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = ncol(dataSet) - 1, width = 300) # Construction d'une progress bar
+    pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = ncol(dataSet) - 1, width = 300) # Construction d'une progress bar
   }
   nbr_various_val <- sapply(dataSet, uniqueN)
   ## Computation # to-do dé-gorifier
@@ -348,7 +348,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfIncluded]
     I <- I[-1] # drop handled i
     if (verbose){
-      setWinProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
+      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
     }
   }
   if (verbose){
