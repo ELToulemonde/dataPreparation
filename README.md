@@ -1,6 +1,7 @@
 dataPreparation
 ===============
 
+Data preparation accounts for about 80% of the work during a data science projet. Let's take that number down.
 __dataPreparation__ will allow you to do most of the painful data preparation for a data science project with a minimum amount of code.
 
 
@@ -54,7 +55,7 @@ install.package("dataPreparation")
 Install the package from github:
 ```R
 library(devtools)
-install_github("ELToulemonde/dataPreparation", build_vignettes=FALSE)
+install_github("ELToulemonde/dataPreparation")
 ```
 
 ### Test it
@@ -78,7 +79,7 @@ How to Contribute
 
 dataPreparation has been developed and used by many active community members. Your help is very valuable to make it better for everyone.
 
-- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/blob/master/CONTRIBUTING.rst) to see what can be improved, or open an issue if you want something.
+- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/blob/master/CONTRIBUTING.md) to see what can be improved, or open an issue if you want something.
 - Contribute to add new usesfull features.
 - Contribute to the [tests](https://github.com/ELToulemonde/dataPreparation/tree/master/tests/testthat) to make it more reliable.
 - Contribute to the documents to make it clearer for everyone.

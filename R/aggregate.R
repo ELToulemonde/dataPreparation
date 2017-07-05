@@ -35,13 +35,14 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   }
   # To-do check if functions are indeed aggregation functions.
   ## Initialization
-  if(! is.null(args[["functions"]])){
+  if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
+	functions <- true.aggFunction (functions)
   }
   else{
     functions <- c("mean", "min", "max", "sd")
   }
-  if(! is.null(args[["name_separator"]])){
+  if (! is.null(args[["name_separator"]])){
     name_separator <- args[["name_separator"]]
   }
   else{
@@ -55,7 +56,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   # If there are more lines than unique key: we aggregate
   if (nrow(dataSet) != uniqueN_byCol[key]){ 
     result <- dataSet[, .(nbrLines = .N), by = key]
-    if(verbose){
+    if (verbose){
 	  printl(function_name, ": I start to aggregate")
 	  pb <- initPB(function_name, names(dataSet))
 	  start_time = proc.time()
@@ -123,7 +124,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
         new_col <- paste(fct, col, sep = name_separator)
         set(result_tmp, NULL, new_col, dataSet[, get(fct)(get(col)), by = key][, - key, with = FALSE])
 
-        if(fct == "sd"){
+        if (fct == "sd"){
           # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0
           set(result_tmp, which(is.na(result_tmp[[new_col]])), new_col, 0) 
         }
@@ -133,7 +134,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
     }
     ## aggregation of character (categorical or non-categorical)
     if (any(class(dataSet[[col]]) %in% c("character", "factor"))){
-      if(uniqueN_byCol[col] < 53){ # 53 is finger in the nose...
+      if (uniqueN_byCol[col] < 53){ # 53 is finger in the nose...
         result_tmp <- dcast.data.table(dataSet[, c(key, col), with = FALSE], 
                                       formula = paste(key, col, sep = "~"), 
                                       fun.aggregate = length,

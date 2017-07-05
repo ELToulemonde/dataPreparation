@@ -7,7 +7,7 @@ dataSet <- data.table(ID = 1:5,
                   hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "1:22")
                   )
 
-data_transformed <- findAndTransformDates(dataSet, verbose =  TRUE, n_test = 5)
+data_transformed <- findAndTransformDates(dataSet, verbose =  FALSE, n_test = 5)
 
 test_that("findAndTransformDates:", 
           {
@@ -16,13 +16,44 @@ test_that("findAndTransformDates:",
 
 ## identifyDates
 #---------------
+dataSet <- data.table(ID = 1:5, 
+                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
+                      date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"), 
+                      hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "1:22")
+)
 
-## identifyFormats
-#-----------------
+
+
+
+
+test_that("private function identifyDates :",
+          {
+            expect_equal(length(identifyDates(dataSet, n_test = 5, verbose =FALSE)), 2)
+            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose =FALSE)[[1]] == c( "date1", "date2")), TRUE)
+            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose =FALSE)[[2]] == c("%Y-%m-%d", "%Y_%m_%d")), TRUE)
+          })
+
 
 
 ## dateDiffs
 #-----------
+dataSet <- data.table(ID = 1:100, 
+                      date1 = seq(from = as.Date("2010-01-01"), 
+                                  to = as.Date("2015-01-01"), 
+                                  length.out = 100), 
+                      date2 = seq(from = as.Date("1910-01-01"), 
+                                  to = as.Date("2000-01-01"), 
+                                  length.out = 100)
+)
+
+# Now let's compute
+dataSet <- diffDates(dataSet, analysisDate = as.Date("2016-11-14"))
+
+test_that("dateDiffs: ",
+          {
+            expect_equal(ncol(dataSet), 6)
+            expect_equal(sum(is.na(dataSet)), 0)
+          })
 
 ## diffTime
 #----------
@@ -66,3 +97,4 @@ test_that("getPossibleDatesFormats:",
 
 ## formatForparse_date_time
 #--------------------------
+formatForparse_date_time()

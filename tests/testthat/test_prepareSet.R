@@ -1,5 +1,5 @@
-
-require(dataPreparation)
+## prepareSet
+# -----------
 data(messy_adult)
 
 adult_agg <-  prepareSet(messy_adult, key = "country", verbose = FALSE)

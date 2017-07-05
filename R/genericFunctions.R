@@ -208,3 +208,39 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
   return(nb_rows)
 }
 
+
+###################################################################################################
+############################### Return true aggregation functions #################################
+###################################################################################################
+# power <- function(x){sum(x^2}
+# Ex: true.aggFunction("power", "sqrt")
+true.aggFunction <- function(functions, function_name = "is.aggFunction "){
+  for(funInString in functions){
+    ## Sanity check
+    if (class(funInString) != "character"){
+      stop("is.aggFunction: please provide function name in a string")
+    }
+    
+    ## Check it
+    # check type
+    if (class(get(funInString)) != "function"){
+      warning(paste0(function_name, ": ", funInString, " is not a function, it wont be used."))
+      functions <- functions[functions != funInString]
+    }
+    
+    # check aggregation
+    if (length(get(funInString)(1:3)) != 1){
+      warning(paste0(function_name, ": ", funInString, " is not an aggegaration function, it wont be used."))
+      print("An aggregation function is a function that for multiple input return only one, exemple: sum.")
+      functions <- functions[functions != funInString]
+    }
+    
+  }
+
+  # Wrapp-up
+  return(functions)
+}
+
+
+
+
