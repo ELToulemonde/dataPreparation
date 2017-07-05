@@ -226,7 +226,7 @@ diffDates <- function(dataSet, analysisDate = NULL, units = "years", name_separa
   if (!is.null(analysisDate) & ! any(class(analysisDate) %in% c("Date", "POSIXct"))){
     stop("diffDates: analysisDate must be a Date")
   }
-  if(is.null(name_separator)){
+  if (is.null(name_separator)){
 	name_separator = "."
   }
   ## Initialization

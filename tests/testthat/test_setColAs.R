@@ -15,7 +15,7 @@ test_that("setColAsNumeric:",
 
 dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
 # Set numCol and factorCol as character
-dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"))
+dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"), verbose = FALSE)
 
 test_that("setColAsCharacter:", 
           {
@@ -44,7 +44,7 @@ test_that("setColAsDate:",
 ## setColAsFactorOrLogical
 #---------------------------
 data("messy_adult")
-messy_adult <- setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"))
+messy_adult <- setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), verbose = FALSE)
 
 test_that("setColAsFactorOrLogical:", 
           {

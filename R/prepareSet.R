@@ -61,7 +61,9 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   ## Computation
   ### 1. Correct dataSet set
-  printl(function_name, ": step one: correcting mistakes.")
+  if(verbose){
+	printl(function_name, ": step one: correcting mistakes.")
+  }
   # 1.0 Filter useless vars
   dataSet <- fastFilterVariables(dataSet, verbose = verbose)
   
@@ -70,7 +72,9 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   dataSet <- findAndTransformDates(dataSet, formats = args[["dateFormats"]], verbose = verbose) 
   
   ### 2. Transform dataSet set
-  printl(function_name, ": step two: transforming dataSet.")
+  if(verbose){
+	printl(function_name, ": step two: transforming dataSet.")
+  }
   # 2.1 Compute differences between dates
   result <- diffDates(dataSet, analysisDate = args[["analysisDate"]], 
                       name_separator = args[["name_separator"]])
@@ -84,7 +88,9 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   }
   
   ### 3 Filter
-  printl(function_name, ": step three: filtering dataSet.")
+  if(verbose){
+	printl(function_name, ": step three: filtering dataSet.")
+  }
   # 3.1 Get ride of useless variables
   result <- fastFilterVariables(dataSet = result, function_name = function_name, 
                                 dataName = "result", verbose = verbose)
@@ -96,11 +102,15 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   }
   
   ### 4 Handle NA
-  printl(function_name, ": step four: handling NA.")
+  if(verbose){
+	printl(function_name, ": step four: handling NA.")
+  }
   result <- fastHandleNa(result, verbose = verbose)
   
   ### 5 Shape set
-  printl(function_name, ": step five: shaping result.")
+  if(verbose){
+	printl(function_name, ": step five: shaping result.")
+  }
   result <- shapeSet(result, finalForm = finalForm, verbose = verbose)
   
   ## Wrapp-up

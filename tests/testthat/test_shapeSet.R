@@ -9,7 +9,7 @@
 
 require(dataPreparation)
 data(adult)
-adult_prep <- shapeSet(copy(adult))
+adult_prep <- shapeSet(copy(adult), verbose = FALSE)
 
 
 adult_numMat <- shapeSet(copy(adult), finalForm = "numerical_matrix")
