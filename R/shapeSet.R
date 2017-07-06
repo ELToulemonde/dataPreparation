@@ -34,7 +34,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   col_class <- sapply(dataSet, class)
   col_class_init <- col_class
   ## Computation
-  if (verbose) cat("Transforming characters into factors. \n")
+  if (verbose) {printl("Transforming characters into factors.")}
   carac_cols <- names(col_class)[col_class %in% c("character")]
   dataSet = setColAsFactorOrLogical(dataSet, carac_cols, verbose = verbose)
   
@@ -48,7 +48,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)
   # TODO : paralleliser la recherche de variables à transformer
-  if (verbose) cat("Transforming numerical variables into factors when length(unique(col)) <=",  thresh, ".\n")
+  if (verbose) {printl("Transforming numerical variables into factors when length(unique(col)) <=",  thresh, ".")}
   num_cols <- names(col_class)[col_class %in% c("numeric", "integer")]
   if (verbose) {
     cat("Going through", length(num_cols), "numerical variables to transform if necessary.\n")
@@ -69,23 +69,23 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   col_class <- sapply(dataSet, class)
   
   # LOGICAL INTO BINARY
-  if (verbose) cat("Transforming logicals into binaries.\n")
+  if (verbose) {printl("Transforming logicals into binaries.\n")}
   logical_col <- names(col_class)[which(col_class %in% c("logical"))]
   for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
   
   # Distribution des types de colonnes
   if (verbose){
     col_class_end <- sapply(dataSet, class)
-    cat("Previous distribution of column types:\n")
+    printl("Previous distribution of column types:")
     print(table(col_class_init))
-    cat("Current distribution of column types:\n")
+    printl("Current distribution of column types:")
     print(table(col_class_end))
     # Number of levels for each factor
     col_class <- sapply(dataSet, class)
     factor_cols <- names(col_class)[which(col_class %in% c("factor"))]
     listCardLevels <- sapply(factor_cols, function(x, dataSet)
       length(levels(dataSet[[x]])), dataSet = dataSet)
-    cat("Quantiles for the number of factor modalities:\n")
+    printl("Quantiles for the number of factor modalities:")
     print(quantile(listCardLevels, probs = seq(0, 1, .1)))
   }
 

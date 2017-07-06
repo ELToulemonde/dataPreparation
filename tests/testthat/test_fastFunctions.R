@@ -45,6 +45,7 @@ test_that("private function: fastIsEqual",
           {
             expect_equal(fastIsEqual(messy_adult[["education"]], messy_adult[["education_num"]]), FALSE)
             expect_equal(fastIsEqual(1:10, 1:10), TRUE)
+			expect_equal(fastIsEqual(1:1001, 1:1001), TRUE)
             expect_equal(fastIsEqual(LETTERS, LETTERS), TRUE)
             expect_equal(fastIsEqual(1, 1), TRUE)
             expect_equal(fastIsEqual(1, 2), FALSE)

@@ -107,27 +107,6 @@ real_cols <- function(cols, data_names, function_name){
   return(cols)
 }
 
-## drop cols
-# Method return no result
-drop_cols <- function(dataSet, cols, ...){
-
-  ## Initialization
-  # Arguments for log
-  args <- list(...)
-  if (length(args) > 0){
-  	if (!is.null(args[["function_name"]])){
-  	  function_name <- args[["function_name"]]
-  	}
-  }
-  else{
-    function_name <- "drop_cols"
-  }
-  
-  
-  for (col in cols){
-	set(dataSet, NULL, col, NULL)
-  }
-}
 
 ###################################################################################################
 ########################################### getPossibleSeparators #################################
@@ -147,7 +126,7 @@ getPossibleSeparators <- function(){
 printl <- function(...){
   args <- list(...)
   
-  toPrint <- paste(args, collapse = " ")
+  toPrint <- paste(args, collapse = "")
   print(toPrint)
 }
 
@@ -193,9 +172,9 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
   
   ## Computation
   if (nb_rows > nrow(dataSet)){
-    warning(paste0(function_name,": You want to check more rows than there are in dataSet, I set ", 
-                   variable_name," to nrow(dataSet)"))
     nb_rows <- nrow(dataSet)
+    warning(paste0(function_name,": You want to check more rows than there are in dataSet, I set ", 
+                   variable_name," to ", nb_rows))
   }
   if (nb_rows < 1){
     nb_rows <- min(30, nrow(dataSet))
@@ -213,30 +192,23 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
 ############################### Return true aggregation functions #################################
 ###################################################################################################
 # power <- function(x){sum(x^2}
-# Ex: true.aggFunction("power", "sqrt")
-true.aggFunction <- function(functions, function_name = "is.aggFunction "){
-  for(funInString in functions){
-    ## Sanity check
-    if (class(funInString) != "character"){
-      stop("is.aggFunction: please provide function name in a string")
-    }
-    
+# Ex: true.aggFunction(c(power = power, sqrt = sqrt))
+true.aggFunction <- function(functions, function_name = "true.aggFunction "){
+  for(fun in names(functions)){
     ## Check it
     # check type
-    if (class(get(funInString)) != "function"){
-      warning(paste0(function_name, ": ", funInString, " is not a function, it wont be used."))
-      functions <- functions[functions != funInString]
+    if (!is.function(functions[[fun]])){
+      warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
+      functions <- functions[names(functions) != fun]
     }
-    
-    # check aggregation
-    if (length(get(funInString)(1:3)) != 1){
-      warning(paste0(function_name, ": ", funInString, " is not an aggegaration function, it wont be used."))
-      print("An aggregation function is a function that for multiple input return only one, exemple: sum.")
-      functions <- functions[functions != funInString]
-    }
-    
+	else{
+	  # check aggregation
+	  if (length(functions[[fun]](1:3)) != 1){
+		warning(paste0(function_name, ": ", fun, " is not an aggegaration function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
+		functions <- functions[names(functions) != fun]
+	  }
+	}
   }
-
   # Wrapp-up
   return(functions)
 }
@@ -244,3 +216,64 @@ true.aggFunction <- function(functions, function_name = "is.aggFunction "){
 
 
 
+
+# Make if a function
+#
+# Taking a constant and transforming it into a function. If it's a function don't do anything. \cr
+# Control that tehe function is giving the wanted type of input
+# @param object object to be transformed and control
+# @param function_name for log, from where do you call it (character, default to "function.maker")
+# @param object_name for log, object name when called (character)
+# @param type what type of output is expected for built function (character, numeric or logical)
+# @return A function
+function.maker <- function(object, function_name = "function.maker",  object_name, type){
+  built_function <- NULL
+  # If it's a constant
+  if (any(class(object) %in% c("numeric", "integer", "factor", "logical", "date", "character"))){
+    built_function <- function(...){return(object)}
+  }
+  if (is.function(object)){
+    built_function <- object
+  }
+  
+  if (!is.null(built_function)){
+    if (type == "numeric"){
+      if (length(built_function(1:3)) == 1){
+        if (!is.numeric(built_function(1:3))){ 
+          stop(paste0(function_name, ": ", object_name, " should be or should return a numeric."))
+        }
+        if (is.na(built_function(c(1, NA)))){
+          warning(paste0(function_name, ": ", object_name, " is not handling NAs, it won't do anything"))
+        }
+        return(built_function)  
+      }
+    }
+    
+    if (type == "logical"){
+      if (length(built_function(c(TRUE, FALSE))) == 1){
+        if (!is.logical(built_function(c(TRUE, FALSE)))){ 
+          stop(paste0(function_name, ": ", object_name, " should be or should return a logical"))
+        }
+        if (is.na(built_function(c(TRUE, NA)))){
+          warning(paste0(function_name, ": ", object_name, " is not handling NAs, it won't do anything"))
+        }
+        return(built_function)  
+      }
+    }
+    if (type == "character"){
+      if (length(built_function(c("a", "b"))) == 1){
+        if (!is.character(built_function(c("a", "b")))){ 
+          stop(paste0(function_name, ": ", object_name, " should be or should return a character"))
+        }
+        if (is.na(built_function(c("a", NA)))){
+          warning(paste0(function_name, ": ", object_name, " is not handling NAs, it won't do anything"))
+        }
+        return(built_function)  
+      }
+    }
+    stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
+  }
+  else{
+    stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
+  }
+}

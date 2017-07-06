@@ -12,7 +12,7 @@ whichAreBijection(dataSet, verbose = TRUE)
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
 \value{
-A list of index of columns that have an exact duplicate in the dataSet set.
+A list of index of columns that have an exact bijection in the dataSet set.
 }
 \description{
 Find all the columns that are bijections of another column

@@ -22,7 +22,7 @@ data("adult")
 adult <- adult[1:5000, ]
 
 power <- function(x){sum(x^2)}
-adult_aggregated <- aggregateByKey(adult, key = 'country', functions = "power", verbose = FALSE)
+adult_aggregated <- aggregateByKey(adult, key = 'country', functions = power, verbose = FALSE)
 
 test_that("aggegateByKey: add function",
           {
@@ -39,5 +39,5 @@ adult <- adult[1:5000, ]
 
 test_that("aggegateByKey: add function that is not an agg function",
           {
-            expect_warning(aggregateByKey(adult, key = 'country', functions = c("power", "sqrt"), verbose = FALSE))
+            expect_warning(aggregateByKey(adult, key = 'country', functions = c(power, sqrt), verbose = FALSE))
           })
