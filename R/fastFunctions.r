@@ -52,17 +52,16 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   }
   
   ## Computation
-  # Delete constant in double
+  # Delete constant columns
   if (verbose){
     printl(function_name, ": I check for constant columns")
   }
   listOfConstantCols <- whichAreConstant(dataSet, verbose = verbose)
   if (length(listOfConstantCols) > 0){
     if (verbose){
-      printl(function_name, ": I delete", length(listOfConstantCols), "constant column(s) in", dataName)
+      printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName)
     }
 	dataSet[, (listOfConstantCols) := NULL]
-	#drop_cols(dataSet, listOfConstantCols, function_name = function_name)
   }
   # Delete columns in double
   if (verbose){
@@ -71,10 +70,9 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   listOfDoubles <- whichAreInDouble(dataSet, verbose = verbose)
   if (length(listOfDoubles) > 0){
     if (verbose){
-      printl(function_name, ": I delete", length(listOfDoubles), "column(s) that are in double in", dataName)
+      printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName)
     }  
 	dataSet[, (listOfDoubles) := NULL]
-    #drop_cols(dataSet, listOfDoubles, function_name = function_name)
   }
   
   # Delete columns that are bijections
@@ -84,11 +82,10 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   listOfBijections <- whichAreBijection(dataSet, verbose = verbose)
   if (length(listOfBijections) > 0){
     if (verbose){
-      printl(function_name, ": I delete", length(listOfBijections), 
-             "column(s) that are bijections of another column in", dataName)
+      printl(function_name, ": I delete ", length(listOfBijections), 
+             " column(s) that are bijections of another column in ", dataName)
     }  
 	dataSet[, (listOfBijections) := NULL]
-    #drop_cols(dataSet, listOfBijections, function_name = function_name)
   }
   ## Wrapp up
   return(dataSet)
@@ -161,12 +158,13 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
 #'
 #' Function to handle NAs values depending on the class of the column
 #' @param dataSet Matrix, data.frame or data.table
-#' @param codeToSetNumeric NAs replacement in numeric column, (numeric or code in a string, default to 0)
-#' @param codeToSetBooleans NAs replacement in logical column, (logical or code in a string, default to FALSE)
-#' @param codeToSetCharacter NAs replacement in character column, (character or code in a string, default to '""')
+#' @param set_num NAs replacement for numeric column, (numeric or function, default to 0)
+#' @param set_logical NAs replacement for logical column, (logical or function, default to FALSE)
+#' @param set_char NAs replacement for character column, (character or function, default to "")
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @details 
-#' To preserve RAM this function edit directly the dataSet set.  
+#' To preserve RAM this function edit directly the dataSet set. To keep object unchanged, please use \code{\link{copy}} \cr
+#' If you provide a function, it will be applyed to the full column. So this function should handle NAs. \cr
 #' For factor columns, it will add NA to list of values.
 #' @return dataSet as a \code{\link{data.table}} with NAs handled
 #' @examples
@@ -176,31 +174,34 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
 #'                    booleanCol = c(TRUE, NA, FALSE, NA))
 #'
 #' # To set NAs to 0, FALSE and "" (respectively for numeric, logical, character)
-#' dataSet <- fastHandleNa(dataSet)
+#' fastHandleNa(copy(dataSet))
 #'
 #' # In a numeric column to set NAs as "missing"
-#' dataSet <-  data.table(numCol = c(1, 2, 3, NA),
-#'                    charCol = c("", "a", NA, "c"),
-#'                    booleanCol = c(TRUE, NA, FALSE, NA))
-#' dataSet <- fastHandleNa(dataSet, codeToSetCharacter = '"missing"')
+#' fastHandleNa(copy(dataSet), set_char = "missing")
 #' 
-#' # In a numeric column, to set NAs to the minimum value of the column
-#' dataSet <-  data.table(numCol = c(1, 2, 3, NA),
-#'                    charCol = c("", "a", NA, "c"),
-#'                    booleanCol = c(TRUE, NA, FALSE, NA))
-#' dataSet <- fastHandleNa(dataSet, codeToSetNumeric = "min(dataSet[[col]], na.rm = TRUE)")
+#' # In a numeric column, to set NAs to the minimum value of the column#'                    
+#' fastHandleNa(copy(dataSet), set_num = min) # Won't work because min(c(1, NA)) = NA so put back NA
+#' fastHandleNa(copy(dataSet), set_num = function(x)min(x,na.rm = TRUE)) # Now we handle NAs
 #'
+#' # In a numeric column, to set NAs to the share of NAs values
+#' rateNA <- function(x){sum(is.na(x)) / length(x)}
+#' fastHandleNa(copy(dataSet), set_num = rateNA) 
+#' 
 #' @export
-fastHandleNa <- function(dataSet, codeToSetNumeric = 0, codeToSetBooleans = FALSE, 
-                         codeToSetCharacter = '""', verbose = TRUE){
+fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE, 
+                         set_char = "", verbose = TRUE){
   ## Working environement
   function_name = "fastHandleNa"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  # To do sanity check on code
   
   ## Initialization
+  # Transform into function
+  num_fun <- function.maker(set_num, function_name, "set_num", "numeric")
+  logical_fun <- function.maker(set_logical, function_name, "set_logical", "logical")
+  char_fun <- function.maker(set_char, function_name, "set_char", "character")
+  
   if (verbose){
     pb <- initPB(function_name, names(dataSet))
   }
@@ -208,25 +209,13 @@ fastHandleNa <- function(dataSet, codeToSetNumeric = 0, codeToSetBooleans = FALS
   ## Computation
   for (col in names(dataSet)){ 
     if (any(class(dataSet[[col]]) %in% c("numeric", "integer"))){
-      code <- paste0("set(dataSet, which(is.na(dataSet[[col]])), col, ", codeToSetNumeric, ")")
-      if (verbose == "debug"){
-        print(code)
-      }
-      try(eval(parse(text = code)))
+      set(dataSet, which(is.na(dataSet[[col]])), col, num_fun(dataSet[[col]]))
     }
     if (any(class(dataSet[[col]]) %in% c("logical"))){
-      code <- paste("set(dataSet, which(is.na(dataSet[[col]])), col, ", codeToSetBooleans, ")", sep = "")
-      if (verbose == "debug"){
-        print(code)
-      }
-      try(eval(parse(text = code)))
+      set(dataSet, which(is.na(dataSet[[col]])), col, logical_fun(dataSet[[col]]))
     }
     if (any(class(dataSet[[col]]) %in% c("character"))){
-      code <- paste("set(dataSet, which(is.na(dataSet[[col]])), col, ", codeToSetCharacter, ")", sep = "")
-      if (verbose == "debug"){
-        print(code)
-      }
-      try(eval(parse(text = code)))
+      set(dataSet, which(is.na(dataSet[[col]])), col, char_fun(dataSet[[col]]))
     }
     if (any(class(dataSet[[col]]) %in% c("factor"))){
       if (sum(is.na(dataSet[[col]])) > 0 ){

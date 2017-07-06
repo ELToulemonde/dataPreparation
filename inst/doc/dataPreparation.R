@@ -78,7 +78,7 @@ agg_adult <- aggregateByKey(messy_adult, key = "country")
 
 ## ----echo=FALSE----------------------------------------------------------
 print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
-kable(cbind(head(agg_adult[,65:70]), data.frame("..." = rep("  ...", 6)))) %>%
+kable(cbind(head(agg_adult[,c(1,65:71)]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ------------------------------------------------------------------------

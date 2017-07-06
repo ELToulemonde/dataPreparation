@@ -14,7 +14,7 @@ aggregateByKey(dataSet, key, verbose = TRUE, ...)
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 
 \item{...}{optional argument: \code{functions}:  aggregation functions for numeric columns 
-(vector of character, optional, if not set we use: c("mean", "min", "max", "sd"))}
+(vector of function, optional, if not set we use: c(mean, min, max, sd))}
 }
 \value{
 A \code{\link{data.table}} with one line per key elements.
@@ -34,5 +34,7 @@ adult_aggregated <- aggregateByKey(adult, key = 'country')
 
 # Exmple with other functions
 power <- function(x){sum(x^2)}
-adult_aggregated <- aggregateByKey(adult, key = 'country', functions = "power")
+adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c(power, sqrt))
+
+# sqrt is not an aggregation function, so it wasn't used.
 }

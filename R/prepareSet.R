@@ -48,7 +48,7 @@
 #' # With some new aggregation functions
 #' power <- function(x){sum(x^2)}
 #' adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country", 
-#'                         functions = c("min", "max", "mean", "power"))
+#'                         functions = c(min, max, mean, power))
 prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   ## Environement
   function_name <- "prepareSet"                                     # For print(s)
@@ -84,7 +84,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   # 2.2 Aggregate by key 
   if(!is.null(args[["key"]])){
     key = args[["key"]]
-    result <- aggregateByKey(result, key, verbose = verbose, ...)
+    result <- aggregateByKey(result, key, verbose = verbose, listNames = match.call()$functions, ...)
   }
   
   ### 3 Filter

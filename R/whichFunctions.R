@@ -56,7 +56,7 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
   ## Wrapp-up
   listOfConstantCols <- which(names(dataSet) %in% listOfConstantCols) # To return indexes
   if (verbose){
-    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), 
            "s to identify ", length(listOfConstantCols), " constant column(s)")
   }
   
@@ -122,9 +122,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
   I <- 1:max(ncol(dataSet) - 1, 1) 
   start_time <- proc.time()
   if (verbose){
-    pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, 
-                         max = ncol(dataSet) - 1, width = 300) # Construction d"une progress bar
-	# Not using initPB, cause this one is weird
+	pb <- initPB(function_name, names(dataSet))
   }
   ## Computation # to-do dé-gorifier
   while (length(I) > 0){
@@ -137,7 +135,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
       if ( fastIsEqual(dataSet[[i]], dataSet[[j]])){
         listOfDoubles <- c(listOfDoubles, j)
 		if(verbose){
-		  printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], " I put it in result list.")
+		  printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], ". I put it in drop list.")
 		}
       }
       J <- J[-1] # drop handled j
@@ -145,8 +143,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfDoubles]
     I <- I[-1] # drop handled i
     if (verbose){
-      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), 
-                        title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
+	  setPB(pb, names(dataSet)[i])
     }
   }
   if (verbose){
@@ -155,7 +152,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
   ## Wrapp up
   listOfDoubles <- unique(listOfDoubles)
   if (verbose){
-    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfDoubles), " double(s)")
+    printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfDoubles), " double(s)")
   }
   
   return(listOfDoubles)
@@ -171,7 +168,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
 #' Find all the columns that are bijections of another column
 #' @param dataSet Matrix, data.frame or data.table
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
-#' @return A list of index of columns that have an exact duplicate in the dataSet set. 
+#' @return A list of index of columns that have an exact bijection in the dataSet set. 
 #' @details 
 #' Bijection, meaning that there is another column containing the exact same information (but maybe
 #'  coded differently) for example col1: Men/Women, col2 M/W. \cr
@@ -210,8 +207,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   start_time <- proc.time()
   
   if (verbose){
-    pb <- tkProgressBar(title = paste0(function_name,": 0% done"), 
-                         min = 1, max = ncol(dataSet) - 1, width = 300) # Construction d'une progress bar
+    pb <- initPB(function_name, names(dataSet))
   }
   ## Computation # to-do dé-gorifier
   while (length(I) > 0){
@@ -226,14 +222,14 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
           # If j is a character we keep it and drop i, we prefer to have character instead of "false" numerics.
           listOfBijection <- c(listOfBijection, i)
 		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], " I put it in result list.")
+		    printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], ". I put it in drop list.")
 		  }
 		  break # Break loop since i will be dropped.
         }
         else{
           listOfBijection <- c(listOfBijection, j)
 		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], " I put it in result list.")
+		    printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], ". I put it in drop list.")
 		  }
         }
       }
@@ -242,7 +238,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfBijection]
     I <- I[-1] # drop handled i
     if (verbose){
-      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
+      setPB(pb, names(dataSet)[i])
     }
   }
   if (verbose){
@@ -251,7 +247,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   ## Wrapp up
   listOfBijection <- unique(listOfBijection)
   if (verbose){
-    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfBijection), " bijection(s)")
+    printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfBijection), " bijection(s)")
   }
   
   return(listOfBijection)
@@ -314,7 +310,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
   I <- 1:max(ncol(dataSet) - 1, 1) 
   
   if (verbose){
-    pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = ncol(dataSet) - 1, width = 300) # Construction d'une progress bar
+    pb <- initPB(function_name, names(dataSet))
   }
   nbr_various_val <- sapply(dataSet, uniqueN)
   ## Computation # to-do dé-gorifier
@@ -323,7 +319,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
     
     J <- (i+1):ncol(dataSet)
     J <- J[!J %in% listOfIncluded]
-    while (length(J)>0){
+    while (length(J) > 0){
       j <- J[1]
       
       temp_data <- dataSet[, c(i, j), with = FALSE]
@@ -349,7 +345,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
     I <- I[!I %in% listOfIncluded]
     I <- I[-1] # drop handled i
     if (verbose){
-      setTkProgressBar(pb,(ncol(dataSet) - 1 - length(I)), title=paste(function_name, ": ", round((ncol(dataSet) - 1 - length(I))/(ncol(dataSet)-1)*100, 0), "% done"))  
+      setPB(pb, names(dataSet)[i])
     }
   }
   if (verbose){

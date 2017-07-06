@@ -43,7 +43,7 @@ This package is
 
 Before using any machine learning (ML) algorithm, one need to prepare its data. Preparing a data set for a data science project can be long and tricky. The main steps are the followings:
 
-  * **Read**: load the data set (this package don't treat this point: for csv we recommend `fread`)
+  * **Read**: load the data set (this package don't treat this point: for csv we recommend `data.table::fread`)
   * **Correct**: most of the times, there are some mistake after reading, wrong format... one have to correct them
   * **Transform**: aggregating according to a key, computing differences between dates, ... in order to have information usable for a ML algorithm (aka: numeric or categorical)
   * **Filter**: get read of useless information in order to speed up computation
@@ -211,7 +211,7 @@ agg_adult <- aggregateByKey(messy_adult, key = "country")
 ```
 ```{r echo=FALSE}
 print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
-kable(cbind(head(agg_adult[,65:70]), data.frame("..." = rep("  ...", 6)))) %>%
+kable(cbind(head(agg_adult[,c(1,65:71)]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
 
@@ -285,7 +285,7 @@ kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
 # Conclusion
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
 
-If you would like to add some features to this package, please don't hesitate to tell us on git hub. Also if you want to contribute, please don't hesitate to contact us.
+If you would like to add some features to this package, notice some issues, please tell us on [git hub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
 
 
 

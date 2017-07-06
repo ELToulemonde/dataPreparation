@@ -49,7 +49,7 @@ result <- getPossibleSeparators()
 
 ## printl
 #--------
-printl("printl", " is a private fuction ", " easier to use than print")
+printl("printl", " is a private function ", " easier to use than print")
 
 ## controlNumberOfRows
 #--------------------
@@ -59,7 +59,6 @@ control_nb_rows(dataSet, 1)
 test_that("control_nb_rows:", 
           {
             expect_equal(control_nb_rows(dataSet, 1), 1)
-            expect_equal(control_nb_rows(dataSet, 10), 3)
-            expect_warning(control_nb_rows(dataSet, 10), "You want to check more rows than there are in dataSet, I set")
-            expect_warning(control_nb_rows(dataSet, 0), "You want to check at least a few rows than there are in dataSet, I set ")
+            expect_warning(control_nb_rows(dataSet, 10), "You want to check more rows than there are in dataSet, I set nb_rows to 3")
+            expect_warning(control_nb_rows(dataSet, 0), "You want to check at least a few rows than there are in dataSet, I set nb_rows to 3")
           })

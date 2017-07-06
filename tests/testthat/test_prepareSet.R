@@ -2,7 +2,7 @@
 # -----------
 data(messy_adult)
 
-adult_agg <-  prepareSet(messy_adult, key = "country", verbose = FALSE)
+adult_agg <-  prepareSet(messy_adult, key = "country", verbose = FALSE, functions = c(mean, max))
 
 test_that("prepareSet:", 
           {

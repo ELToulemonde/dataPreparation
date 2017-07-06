@@ -5,7 +5,7 @@
 #' @param key The name of a column of dataSet according to which the set should be aggregated (character)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @param ... optional argument: \code{functions}:  aggregation functions for numeric columns 
-#' (vector of character, optional, if not set we use: c("mean", "min", "max", "sd"))
+#' (vector of function, optional, if not set we use: c(mean, min, max, sd))
 #' @details
 #' Be carefull using functions agrument, the function given should be an aggregation fuction, meaning that for multiple values it should only return one value.
 #' @return A \code{\link{data.table}} with one line per key elements.
@@ -19,8 +19,11 @@
 #'
 #' # Exmple with other functions
 #' power <- function(x){sum(x^2)}
-#' adult_aggregated <- aggregateByKey(adult, key = 'country', functions = "power")
+#' adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c(power, sqrt))
+#' 
+#' # sqrt is not an aggregation function, so it wasn't used.
 #' @import data.table
+#' @importFrom stats sd
 aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   ## Environement
   function_name <- "aggregateByKey"                                           # For print(s)
@@ -30,18 +33,45 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   dataSet <- checkAndReturnDataTable(dataSet)
   is.col(dataSet, cols = key, function_name = function_name)
   if (any(! sapply(dataSet, class) %in% c("numeric", "integer", "factor", "logical", "character"))){
-	stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
-	              Please provide them in one of those format."))
+    stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
+                  Please provide them in one of those format."))
   }
-  # To-do check if functions are indeed aggregation functions.
+  
   ## Initialization
+  # Make an nice list of functions
   if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
-	functions <- true.aggFunction (functions)
+	# Make as vector
+    if (! is.vector(functions)){
+	  store_name <-  as.character(match.call()$functions)
+      functions <- c(functions)
+	  names(functions) <- store_name
+    }
+    
+    functions <- unique(functions)
+	
+    # If functions have no names, give one
+	if (!is.null(args[["listNames"]])){ # passed by prepareSet
+	# This is a bit ugly, but since we are retriving function name depending on how function was called, we need to get the names from first function.
+	  listNames <- as.character(args[["listNames"]])
+	}
+	else{
+	  listNames <- as.character(match.call()$functions)
+	}
+    if(is.null(names(functions))){
+      names(functions) <- listNames[! listNames %in% c("c", "list")]
+    }
+    # If some functions still have no name, put fun1, fun2...
+    if(any(names(functions) == "")){
+      names(functions)[names(functions) == ""] <- paste0("fun", 1:sum(names(functions) == ""))
+    }
+    
+    functions <- true.aggFunction(functions, function_name)
   }
   else{
-    functions <- c("mean", "min", "max", "sd")
+    functions <- c(mean = mean, min = min, max = max, sd = sd)
   }
+  
   if (! is.null(args[["name_separator"]])){
     name_separator <- args[["name_separator"]]
   }
@@ -57,9 +87,9 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   if (nrow(dataSet) != uniqueN_byCol[key]){ 
     result <- dataSet[, .(nbrLines = .N), by = key]
     if (verbose){
-	  printl(function_name, ": I start to aggregate")
-	  pb <- initPB(function_name, names(dataSet))
-	  start_time = proc.time()
+      printl(function_name, ": I start to aggregate")
+      pb <- initPB(function_name, names(dataSet))
+      start_time = proc.time()
     }
     for (col in colnames(dataSet)[colnames(dataSet) != key]){ # we don't aggregate the key!
       data_sample <- dataSet[, c(key, col), with = FALSE] # To save some RAM
@@ -71,16 +101,17 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
     }
     if (verbose){
       close(pb); rm(pb); gc(verbose = FALSE)
-	  printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
-	         round((proc.time() - start_time)[[3]], 2), "seconds. ")
+      printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
+             round((proc.time() - start_time)[[3]], 2), "seconds. ")
     }
-	
-	return(result)
+    
+    return(result)
   }
   else{ # If there is as many unique key as lines, there is nothing to do
     return(dataSet)
   }
 }
+
 
 
 
@@ -120,9 +151,9 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
       # To-do: if there is a constant nbr of value for each line consider make
       # them columns
       # To-do: if there is a small amount of values: factorize
-      for(fct in functions){
+      for(fct in names(functions)){
         new_col <- paste(fct, col, sep = name_separator)
-        set(result_tmp, NULL, new_col, dataSet[, get(fct)(get(col)), by = key][, - key, with = FALSE])
+        set(result_tmp, NULL, new_col, dataSet[, functions[[fct]](get(col)), by = key][, - key, with = FALSE])
 
         if (fct == "sd"){
           # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0

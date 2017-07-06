@@ -4,17 +4,17 @@
 \alias{fastHandleNa}
 \title{Handle NA values}
 \usage{
-fastHandleNa(dataSet, codeToSetNumeric = 0, codeToSetBooleans = FALSE,
-  codeToSetCharacter = "\\"\\"", verbose = TRUE)
+fastHandleNa(dataSet, set_num = 0, set_logical = FALSE, set_char = "",
+  verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{codeToSetNumeric}{NAs replacement in numeric column, (numeric or code in a string, default to 0)}
+\item{set_num}{NAs replacement for numeric column, (numeric or function, default to 0)}
 
-\item{codeToSetBooleans}{NAs replacement in logical column, (logical or code in a string, default to FALSE)}
+\item{set_logical}{NAs replacement for logical column, (logical or function, default to FALSE)}
 
-\item{codeToSetCharacter}{NAs replacement in character column, (character or code in a string, default to '""')}
+\item{set_char}{NAs replacement for character column, (character or function, default to "")}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
@@ -25,7 +25,8 @@ dataSet as a \code{\link{data.table}} with NAs handled
 Function to handle NAs values depending on the class of the column
 }
 \details{
-To preserve RAM this function edit directly the dataSet set.  
+To preserve RAM this function edit directly the dataSet set. To keep object unchanged, please use \code{\link{copy}} \cr
+If you provide a function, it will be applyed to the full column. So this function should handle NAs. \cr
 For factor columns, it will add NA to list of values.
 }
 \examples{
@@ -35,18 +36,17 @@ dataSet <-  data.table(numCol = c(1, 2, 3, NA),
                    booleanCol = c(TRUE, NA, FALSE, NA))
 
 # To set NAs to 0, FALSE and "" (respectively for numeric, logical, character)
-dataSet <- fastHandleNa(dataSet)
+fastHandleNa(copy(dataSet))
 
 # In a numeric column to set NAs as "missing"
-dataSet <-  data.table(numCol = c(1, 2, 3, NA),
-                   charCol = c("", "a", NA, "c"),
-                   booleanCol = c(TRUE, NA, FALSE, NA))
-dataSet <- fastHandleNa(dataSet, codeToSetCharacter = '"missing"')
+fastHandleNa(copy(dataSet), set_char = "missing")
 
-# In a numeric column, to set NAs to the minimum value of the column
-dataSet <-  data.table(numCol = c(1, 2, 3, NA),
-                   charCol = c("", "a", NA, "c"),
-                   booleanCol = c(TRUE, NA, FALSE, NA))
-dataSet <- fastHandleNa(dataSet, codeToSetNumeric = "min(dataSet[[col]], na.rm = TRUE)")
+# In a numeric column, to set NAs to the minimum value of the column#'                    
+fastHandleNa(copy(dataSet), set_num = min) # Won't work because min(c(1, NA)) = NA so put back NA
+fastHandleNa(copy(dataSet), set_num = function(x)min(x,na.rm = TRUE)) # Now we handle NAs
+
+# In a numeric column, to set NAs to the share of NAs values
+rateNA <- function(x){sum(is.na(x)) / length(x)}
+fastHandleNa(copy(dataSet), set_num = rateNA) 
 
 }
