@@ -309,9 +309,9 @@ fastIsEqual <- function(object1, object2){
   }
   
   # Comparaison for long object
-  maxPower <- round(log(length(object1))/log(10))
+  maxPower <- floor(log(length(object1)) / log(10)) + 1
   for (i in 1:maxPower){
-    I <- (10^(i - 1)):min(10^i - 1, length(object1) - 1)
+    I <- (10^(i - 1)):min(10^i - 1, length(object1))
     if (sum(object1[I] == object2[I], na.rm = TRUE) + sum(is.na(object1[I]) & is.na(object2[I])) != length(I)){
       return(FALSE)
     }
@@ -339,9 +339,9 @@ fastIsBijection <- function(dataSet){
   }
   # Comparaison for long object
   nrows <- nrow(dataSet)
-  maxPower <- round(log(nrows)/log(10))
+  maxPower <- floor(log(nrows)/log(10)) + 1
   for (i in 1:maxPower){
-    I <- (10^(i - 1)):min(10^i - 1,  nrows - 1)
+    I <- (10^(i - 1)):min(10^i - 1,  nrows)
     n1 <- uniqueN(dataSet[I, 1])
     n2 <- uniqueN(dataSet[I, 2])
     if (n1 != n2){

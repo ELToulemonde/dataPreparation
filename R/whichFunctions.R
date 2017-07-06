@@ -137,7 +137,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
       if ( fastIsEqual(dataSet[[i]], dataSet[[j]])){
         listOfDoubles <- c(listOfDoubles, j)
 		if(verbose){
-		  printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], ".")
+		  printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], " I put it in result list.")
 		}
       }
       J <- J[-1] # drop handled j
@@ -222,17 +222,18 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     while (length(J)>0){
       j <- J[1]
       if (fastIsBijection(dataSet[, c(i, j), with = FALSE])){
-        if (any(class(dataSet[[j]]) == "character")){
+        if (any(class(dataSet[[j]]) %in% c("character", "factor"))){
           # If j is a character we keep it and drop i, we prefer to have character instead of "false" numerics.
           listOfBijection <- c(listOfBijection, i)
 		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], ".")
+		    printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], " I put it in result list.")
 		  }
+		  break # Break loop since i will be dropped.
         }
         else{
           listOfBijection <- c(listOfBijection, j)
 		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], ".")
+		    printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], " I put it in result list.")
 		  }
         }
       }
