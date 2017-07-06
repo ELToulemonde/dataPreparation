@@ -1,5 +1,6 @@
 ## ----results='hide', message=FALSE, warning=FALSE, echo=FALSE------------
 library(dataPreparation)
+library(data.table)
 library(knitr)
 library(kableExtra)
 library(pander)

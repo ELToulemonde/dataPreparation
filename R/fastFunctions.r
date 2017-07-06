@@ -10,8 +10,6 @@
 #' @return 
 #' The same dataSet set but with fewer columns. Columns that are constant, in double, 
 #' or bijection of anotger have been deleted.
-#' @import data.table
-#' @export
 #' @examples
 #' # First let's build a data.frame with 3 columns: a constant column, and a column in double
 #' df <- data.frame(col1 = 1, col2 = rnorm(1e6), col3 = sample(c(1, 2), 1e6, replace = TRUE))
@@ -23,6 +21,8 @@
 #' # Let's filter columns:
 #' df <- fastFilterVariables(df)
 #' head(df)
+#' @import data.table
+#' @export
 fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   ## Working environement
   
@@ -108,6 +108,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
 #' @return The same datasets but as a data.table and with numerics rounded
 #' @examples
 #' # First let's build a very large data.table with random numbers
+#' require(data.table)
 #' M <- as.data.table(matrix(runif (3e4), ncol = 10))
 #' 
 #' M_rouded <- fastRound(M, 2)
@@ -117,6 +118,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
 #' # And use our function
 #' M_rouded <- fastRound(M, 2)
 #' # It still work :) and you don't have to worry about the string.
+#' @import data.table
 #' @export
 fastRound <- function(dataSet, digits = 2, verbose = TRUE){
   ## Working environement
@@ -169,7 +171,8 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
 #' @return dataSet as a \code{\link{data.table}} with NAs handled
 #' @examples
 #' # Build a useful dataSet set for example
-#' dataSet <-  data.table(numCol = c(1, 2, 3, NA),
+#' require(data.table)
+#' dataSet <- data.table(numCol = c(1, 2, 3, NA),
 #'                    charCol = c("", "a", NA, "c"),
 #'                    booleanCol = c(TRUE, NA, FALSE, NA))
 #'
@@ -187,6 +190,7 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
 #' rateNA <- function(x){sum(is.na(x)) / length(x)}
 #' fastHandleNa(copy(dataSet), set_num = rateNA) 
 #' 
+#' @import data.table
 #' @export
 fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE, 
                          set_char = "", verbose = TRUE){
@@ -257,8 +261,8 @@ fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE,
 #' fastIsEqual(myVector, myVector)
 #' 
 #' # Test on a data.table
-#' dataSet <- data.table(messy_adult)
-#' fastIsEqual(dataSet, dataSet)
+#' fastIsEqual(messy_adult, messy_adult)
+#' @import data.table
 #' @export
 fastIsEqual <- function(object1, object2){
   # Control on class

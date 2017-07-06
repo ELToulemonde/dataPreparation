@@ -42,6 +42,7 @@ findNFirstNonNull <- function(dataSet, N){
 # Description: Verify that the provided dataSet set is indeed a dataSet set
 # @param dataSet an object. We will check that it is a dataSet set
 # @param name name of the object passed in order to make an understandable log
+#' @import data.table
 checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
   if (!any( class(dataSet) %in% c("data.table", "data.frame", "matrix"))){
     stop(paste(name, "should be a data.table, a data.frame or a matrix"))

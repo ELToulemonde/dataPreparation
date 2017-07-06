@@ -7,7 +7,7 @@
 #----------------
 
 
-require(dataPreparation)
+
 data(adult)
 adult_prep <- shapeSet(copy(adult), verbose = FALSE)
 

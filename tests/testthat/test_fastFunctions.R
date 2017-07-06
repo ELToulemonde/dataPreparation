@@ -1,3 +1,4 @@
+requireNamespace("data.table")
 ## fastFilterVariables
 #---------------------
 data("messy_adult")

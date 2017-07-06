@@ -23,6 +23,7 @@ POSIXct format is a bit slower than Date but can keep hours-min.
 }
 \examples{
 # build a data.table
+require(data.table)
 dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("2017-01-01") )
 
 # Use the function

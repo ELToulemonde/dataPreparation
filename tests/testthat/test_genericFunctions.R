@@ -1,3 +1,5 @@
+
+requireNamespace("data.table")
 ## findNFirstNonNull
 #-------------------
 
@@ -49,7 +51,7 @@ result <- getPossibleSeparators()
 
 ## printl
 #--------
-printl("printl", " is a private function ", " easier to use than print")
+#printl("printl", " is a private function ", " easier to use than print")
 
 ## controlNumberOfRows
 #--------------------

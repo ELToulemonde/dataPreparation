@@ -1,3 +1,4 @@
+requireNamespace("data.table")
 ## findAndTransformDates
 #-----------------------
 

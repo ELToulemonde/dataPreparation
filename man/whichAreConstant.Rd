@@ -24,10 +24,10 @@ If you have a lot of columns than aren't constant, this function is way faster t
 length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
 }
 \examples{
-# Let's create a dataSet set to test
-dataSet <- data.table(constantCol = rep("a",100), nonConstantCol = rnorm(100))
+# Let's load our dataSet
+data("messy_adult") 
 
 # Lets try our function
-whichAreConstant(dataSet)
-# Indeed it return constantCol the name of the constant column.
+whichAreConstant(messy_adult)
+# Indeed it return constant the name of the constant column.
 }

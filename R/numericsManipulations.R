@@ -17,13 +17,14 @@
 #' @return The dataSet set (as a data.table) with identified numeric transformed.
 #' @examples
 #' # Let's build a dataSet set
-#' dataSet <- data.table(ID = 1:5,
+#' dataSet <- data.frame(ID = 1:5,
 #'                   col1 = c("1.2", "1.3", "1.2", "1", "6"), 
 #'                   col2 = c("1,2", "1,3", "1,2", "1", "6")
 #'                   )
 #' 
 #' # using the findAndTransformNumerics
 #' findAndTransformNumerics(dataSet, n_test = 5)
+#' @import data.table
 #' @export
 findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
   ## Working environement

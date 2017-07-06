@@ -31,7 +31,8 @@ For factor columns, it will add NA to list of values.
 }
 \examples{
 # Build a useful dataSet set for example
-dataSet <-  data.table(numCol = c(1, 2, 3, NA),
+require(data.table)
+dataSet <- data.table(numCol = c(1, 2, 3, NA),
                    charCol = c("", "a", NA, "c"),
                    booleanCol = c(TRUE, NA, FALSE, NA))
 

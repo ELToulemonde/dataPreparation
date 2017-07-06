@@ -28,6 +28,7 @@ Perform the differences between all dates of the dataSet set and optionally with
 }
 \examples{
 # First build a useful dataSet set
+require(data.table)
 dataSet <- data.table(ID = 1:100, 
                   date1 = seq(from = as.Date("2010-01-01"), 
                               to = as.Date("2015-01-01"), 

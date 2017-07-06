@@ -20,8 +20,8 @@ dataSet (as a \code{\link{data.table}}), with specified columns set as character
 Set as character a column (or a list of columns) from a data.table
 }
 \examples{
-# Build a fake data.table
-dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
+# Build a fake data.frame
+dataSet <- data.frame(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
 
 # Set numCol and factorCol as character
 dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"))

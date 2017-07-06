@@ -1,3 +1,4 @@
+requireNamespace("data.table")
 ## whichAreConstant
 #----------------
 dataSet <- data.table(constantCol = rep("a", 100), nonConstantCol = rnorm(100))

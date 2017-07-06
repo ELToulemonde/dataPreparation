@@ -24,14 +24,14 @@ Set as numeric a character column (or a list of columns) from a data.table
 }
 \examples{
 # Build a fake data.table
-dataSet <- data.table(charCol1 = c("1", "2", "3"), 
+dataSet <- data.frame(charCol1 = c("1", "2", "3"), 
 						 charCol2 = c("4", "5", "6"))
 
 # Set charCol1 and charCol2 as numeric
 dataSet <- setColAsNumeric(dataSet, cols = c("charCol1", "charCol2"))
 
 # Using strip string when spaces or wrong decimal separator is used
-dataSet <- data.table(charCol1 = c("1", "2", "3"), 
+dataSet <- data.frame(charCol1 = c("1", "2", "3"), 
                       charCol2 = c("4, 1", "5, 2", "6, 3"))
 
 # Set charCol1 and charCol2 as numeric

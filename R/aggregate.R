@@ -4,12 +4,11 @@
 #' @param dataSet Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns).
 #' @param key The name of a column of dataSet according to which the set should be aggregated (character)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
-#' @param ... optional argument: \code{functions}:  aggregation functions for numeric columns 
+#' @param ... optional argument: \code{functions}:  aggregation functions for numeric columns (list of functions)
 #' (vector of function, optional, if not set we use: c(mean, min, max, sd))
 #' @details
 #' Be carefull using functions agrument, the function given should be an aggregation fuction, meaning that for multiple values it should only return one value.
 #' @return A \code{\link{data.table}} with one line per key elements.
-#' @export
 #' @examples
 #' # Get generic dataset from R
 #' data("adult")
@@ -24,6 +23,7 @@
 #' # sqrt is not an aggregation function, so it wasn't used.
 #' @import data.table
 #' @importFrom stats sd
+#' @export
 aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   ## Environement
   function_name <- "aggregateByKey"                                           # For print(s)
@@ -85,7 +85,8 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
   ## Aggregation
   # If there are more lines than unique key: we aggregate
   if (nrow(dataSet) != uniqueN_byCol[key]){ 
-    result <- dataSet[, .(nbrLines = .N), by = key]
+    result <- dataSet[, .N, by = key]
+	setnames(result, "N", "nbrLines")
     if (verbose){
       printl(function_name, ": I start to aggregate")
       pb <- initPB(function_name, names(dataSet))

@@ -1,5 +1,5 @@
 
-
+requireNamespace("data.table")
 ## setColAsNumeric
 #-----------------------
 dataSet <- data.table(charCol1 = c("1", "2", "3"), charCol2 = c("4", "5", "6"))

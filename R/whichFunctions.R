@@ -13,12 +13,13 @@
 #' If you have a lot of columns than aren't constant, this function is way faster than a simple 
 #' length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
 #' @examples
-#' # Let's create a dataSet set to test
-#' dataSet <- data.table(constantCol = rep("a",100), nonConstantCol = rnorm(100))
-#' 
+#' # Let's load our dataSet
+#' data("messy_adult") 
+#'
 #' # Lets try our function
-#' whichAreConstant(dataSet)
-#' # Indeed it return constantCol the name of the constant column.
+#' whichAreConstant(messy_adult)
+#' # Indeed it return constant the name of the constant column.
+#' @import data.table
 #' @export
 whichAreConstant <- function(dataSet, verbose = TRUE){
   ## Working environement
@@ -105,7 +106,6 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
 #' whichAreInDouble(M)
 #' # It only returns 2
 #' @export
-#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreInDouble <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name = "whichAreInDouble"
@@ -190,7 +190,6 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
 #' whichAreBijection(adult)
 #' # Return education_num and education which contain the same info
 #' @export
-#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreBijection <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name = "whichAreBijection"
@@ -277,6 +276,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
 #' @return A list of index of columns that have an exact duplicate in the dataSet set.
 #' @examples
 #' # Load toy data set
+#' require(data.table)
 #' data(messy_adult)
 #' 
 #' # Check for included columns
@@ -294,7 +294,6 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
 #' setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 #' whichAreIncluded(messy_adult)
 #' @export
-#' @importFrom tcltk tkProgressBar setTkProgressBar
 whichAreIncluded <- function(dataSet, verbose = TRUE){
   ## Working environement
   function_name <- "whichAreIncluded"

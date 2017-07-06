@@ -196,8 +196,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">2.1</span> Identifing and transforming date columns</h2>
 <p>The first thing to do is to <strong>identify</strong> columns that are dates (the first 4 ones) and <strong>transform</strong> them.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformDates</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformDates: It took me 0.41s to identify formats&quot;
-## [1] &quot;findAndTransformDates: It took me 0.06s to transform 4 columns to a Date format&quot;</code></pre>
+<pre><code>## [1] &quot;findAndTransformDates: It took me 0.37s to identify formats&quot;
+## [1] &quot;findAndTransformDates: It took me 0.05s to transform 4 columns to a Date format&quot;</code></pre>
 Let’s have a look to the transformation performed on those 4 columns:
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -415,8 +415,8 @@ NA
 <h2><span class="header-section-number">2.2</span> Identifing and transforming numeric columns</h2>
 <p>And now the same thing with numeric</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformNumerics</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.26s to identify 3 numerics column(s), i will set them as numerics&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.08s to transform 3 column(s) to a numeric format&quot;</code></pre>
+<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.19s to identify 3 numerics column(s), i will set them as numerics&quot;
+## [1] &quot;findAndTransformNumerics: It took me 0.05s to transform 3 column(s) to a numeric format&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -602,13 +602,13 @@ NA
 <h3><span class="header-section-number">3.1.1</span> Look for constant variables</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.25s to identify 1 constant column(s)&quot;</code></pre>
+## [1] &quot;whichAreConstant: it took me 0.23s to identify 1 constant column(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-in-double" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Look for columns in double</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.25s to identify 1 double(s)&quot;</code></pre>
+## [1] &quot;whichAreInDouble: it took me 0.23s to identify 1 double(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-that-are-bijections-of-one-another" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> Look for columns that are bijections of one another</h3>
@@ -616,7 +616,7 @@ NA
 <pre><code>## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: num3 is a bijection of num1. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 0.58s to identify 3 bijection(s)&quot;</code></pre>
+## [1] &quot;whichAreBijection: it took me 0.68s to identify 3 bijection(s)&quot;</code></pre>
 <p>To control this, let’s have a look to the concerned columns:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">head</span>(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %&gt;%
 <span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>, <span class="dt">font_size =</span> <span class="dv">12</span>)</code></pre></div>
@@ -804,16 +804,16 @@ messy_adult &lt;-<span class="st"> </span><span class="kw">fastFilterVariables</
 <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;messy_adult now have &quot;</span>, <span class="kw">ncol</span>(messy_adult), <span class="st">&quot; columns; so &quot;</span>, ncols -<span class="st"> </span><span class="kw">ncol</span>(messy_adult), <span class="st">&quot; less than before.&quot;</span>))</code></pre></div>
 <pre><code>## [1] &quot;fastFilterVariables: I check for constant columns&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.25s to identify 1 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.26s to identify 1 constant column(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet&quot;
 ## [1] &quot;fastFilterVariables: I check for columns in double&quot;
 ## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.3s to identify 1 double(s)&quot;
+## [1] &quot;whichAreInDouble: it took me 0.21s to identify 1 double(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 column(s) that are in double in dataSet&quot;
 ## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column&quot;
 ## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 0.59s to identify 2 bijection(s)&quot;
+## [1] &quot;whichAreBijection: it took me 0.51s to identify 2 bijection(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 2 column(s) that are bijections of another column in dataSet&quot;
 ## [1] &quot;messy_adult now have 20 columns; so 4 less than before.&quot;</code></pre>
 <p>4 useless rows have been deleted. Without those useless columns, your machine learning algorithm will at least be faster and maybe give better results.</p>
@@ -1179,7 +1179,7 @@ NA
 <p>Say in fact you want to model something by country, you would want to compute an aggregation of this table in order to have one line per country.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">agg_adult &lt;-<span class="st"> </span><span class="kw">aggregateByKey</span>(messy_adult, <span class="dt">key =</span> <span class="st">&quot;country&quot;</span>)</code></pre></div>
 <pre><code>## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.66seconds. &quot;</code></pre>
+## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.85seconds. &quot;</code></pre>
 <pre><code>## [1] &quot;117 columns have been built; for 42 countries.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1613,7 +1613,7 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 <pre><code>## [1] &quot;prepareSet: step one: correcting mistakes.&quot;
 ## [1] &quot;fastFilterVariables: I check for constant columns&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.23s to identify 1 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.26s to identify 1 constant column(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet&quot;
 ## [1] &quot;fastFilterVariables: I check for columns in double&quot;
 ## [1] &quot;whichAreInDouble: it took me 0.22s to identify 0 double(s)&quot;
@@ -1625,19 +1625,19 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;fastFilterVariables: I delete 3 column(s) that are bijections of another column in dataSet&quot;
 ## [1] &quot;findAndTransformNumerics: It took me 0.2s to identify 2 numerics column(s), i will set them as numerics&quot;
 ## [1] &quot;findAndTransformNumerics: It took me 0.05s to transform 2 column(s) to a numeric format&quot;
-## [1] &quot;findAndTransformDates: It took me 0.23s to identify formats&quot;
-## [1] &quot;findAndTransformDates: It took me 0.03s to transform 3 columns to a Date format&quot;
+## [1] &quot;findAndTransformDates: It took me 0.21s to identify formats&quot;
+## [1] &quot;findAndTransformDates: It took me 0.05s to transform 3 columns to a Date format&quot;
 ## [1] &quot;prepareSet: step two: transforming dataSet.&quot;
 ## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.6seconds. &quot;
+## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.62seconds. &quot;
 ## [1] &quot;prepareSet: step three: filtering dataSet.&quot;
 ## [1] &quot;prepareSet: I check for constant columns&quot;
 ## [1] &quot;whichAreConstant: min.capital_gain is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.22s to identify 1 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.24s to identify 1 constant column(s)&quot;
 ## [1] &quot;prepareSet: I delete 1 constant column(s) in result&quot;
 ## [1] &quot;prepareSet: I check for columns in double&quot;
 ## [1] &quot;whichAreInDouble: nbr.mail is exactly equal to nbrLines. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.4s to identify 1 double(s)&quot;
+## [1] &quot;whichAreInDouble: it took me 0.45s to identify 1 double(s)&quot;
 ## [1] &quot;prepareSet: I delete 1 column(s) that are in double in result&quot;
 ## [1] &quot;prepareSet: I check for columns that are bijections of another column&quot;
 ## [1] &quot;whichAreBijection: mean.age is a bijection of country. I put it in drop list.&quot;
@@ -1671,7 +1671,7 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;whichAreBijection: min.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: max.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.date2.Minus.analysisDate is a bijection of sd.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 5.34s to identify 31 bijection(s)&quot;
+## [1] &quot;whichAreBijection: it took me 6.64s to identify 31 bijection(s)&quot;
 ## [1] &quot;prepareSet: I delete 31 column(s) that are bijections of another column in result&quot;
 ## [1] &quot;prepareSet: step four: handling NA.&quot;
 ## [1] &quot;prepareSet: step five: shaping result.&quot;

@@ -79,7 +79,7 @@ How to Contribute
 
 dataPreparation has been developed and used by many active community members. Your help is very valuable to make it better for everyone.
 
-- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/blob/master/CONTRIBUTING.md) to see what can be improved, or open an issue if you want something.
+- Check out call for [contributions](https://github.com/ELToulemonde/dataPreparation/blob/master/CONTRIBUTING.rst) to see what can be improved, or open an issue if you want something.
 - Contribute to add new usesfull features.
 - Contribute to the [tests](https://github.com/ELToulemonde/dataPreparation/tree/master/tests/testthat) to make it more reliable.
 - Contribute to the documents to make it clearer for everyone.

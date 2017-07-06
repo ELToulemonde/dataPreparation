@@ -26,6 +26,7 @@ So that it avoid to copy dataSet in RAM.
 }
 \examples{
 # First let's build a very large data.table with random numbers
+require(data.table)
 M <- as.data.table(matrix(runif (3e4), ncol = 10))
 
 M_rouded <- fastRound(M, 2)

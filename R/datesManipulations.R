@@ -204,6 +204,7 @@ identifyFormats <- function(dataSet, formats){
 #' A numeric column has been added for every couple of Dates. The result is in years. 
 #' @examples
 #' # First build a useful dataSet set
+#' require(data.table)
 #' dataSet <- data.table(ID = 1:100, 
 #'                   date1 = seq(from = as.Date("2010-01-01"), 
 #'                               to = as.Date("2015-01-01"), 
@@ -297,9 +298,9 @@ diffTime <- function(col1, col2, units = "days"){
 #' This function only handle Date, POSIXct and POSIXlt dates. 
 #' POSIXct format is a bit slower than Date but can keep hours-min.
 #' @return The same dataSet set but with dates column with the desired format
-#' @export
 #' @examples
 #' # build a data.table
+#' require(data.table)
 #' dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("2017-01-01") )
 #'
 #' # Use the function
@@ -308,6 +309,8 @@ diffTime <- function(col1, col2, units = "days"){
 #' # Control result
 #' sapply(dataSet, class)
 #' # return date for both column
+#' @import data.table
+#' @export
 dateFormatUnifier <- function(dataSet, format = "Date"){
   ## Working environement
   

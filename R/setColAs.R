@@ -12,14 +12,14 @@
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as numeric. 
 #' @examples
 #' # Build a fake data.table
-#' dataSet <- data.table(charCol1 = c("1", "2", "3"), 
+#' dataSet <- data.frame(charCol1 = c("1", "2", "3"), 
 #' 						 charCol2 = c("4", "5", "6"))
 #'
 #' # Set charCol1 and charCol2 as numeric
 #' dataSet <- setColAsNumeric(dataSet, cols = c("charCol1", "charCol2"))
 #'
 #' # Using strip string when spaces or wrong decimal separator is used
-#' dataSet <- data.table(charCol1 = c("1", "2", "3"), 
+#' dataSet <- data.frame(charCol1 = c("1", "2", "3"), 
 #'                       charCol2 = c("4, 1", "5, 2", "6, 3"))
 #'
 #' # Set charCol1 and charCol2 as numeric
@@ -27,6 +27,7 @@
 #' # generate mistakes
 #' setColAsNumeric(dataSet, cols = c("charCol1", "charCol2"), stripString = TRUE) 
 #' # Doesn't generate any mistake (but is a bit slower)
+#' @import data.table
 #' @export
 setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){ 
   ## Working environement
@@ -81,16 +82,15 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 #' @param verbose should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as character. 
 #' @examples
-#' # Build a fake data.table
-#' dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
+#' # Build a fake data.frame
+#' dataSet <- data.frame(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
 #'
 #' # Set numCol and factorCol as character
 #' dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"))
+#' @import data.table
 #' @export
 setColAsCharacter <- function(dataSet, cols, verbose = TRUE){ 
   ## Working environement
-  library(data.table)
-  setNumericRounding(0) # Good practice for data.table
   function_name <- "setColAsCharacter"
   
   ## Sanity check
@@ -135,7 +135,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
 #' # Lets build a dataSet set
-#' dataSet <- data.table(ID = 1:5, 
+#' dataSet <- data.frame(ID = 1:5, 
 #'                   date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
 #'                   date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")
 #'                   )
@@ -145,15 +145,12 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #' 
 #' # Control the results
 #' lapply(data_transformed,class)
+#' @import data.table
 #' @importFrom lubridate parse_date_time 
 #' @importFrom stringr str_replace_all
 #' @export
 setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   ## Working environment
-  library(lubridate)
-  library(stringr)
-  library(data.table)
-  setNumericRounding(0) # Good practice for data.table
   function_name <- "setColAsDate"
   
   ## Sanity check
@@ -247,8 +244,6 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' @export
 setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   ## Working environment
-  library(data.table)
-  setNumericRounding(0) # Good practice for data.table
   function_name = "setColAsFactorOrLogical"
   
   ## Sanity check

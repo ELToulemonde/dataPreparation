@@ -25,10 +25,9 @@
 #'   \item \code{digits} The number of digits after comma (optional, numeric, if set will perform \code{\link{fastRound}})
 #'   \item \code{dateFormats} List of format of Dates in dataSet (list of characters)
 #'   \item \code{name_separator} string to separate parts of new column names (string)
+#'   \item \code{functions}:  aggregation functions for numeric columns (list of functions)
 #' }
 #' @return A data.table or a numerical matrix (according to finalForm)  and 
-#' @export
-#' @import data.table
 #' @examples 
 #' # Load ugly set
 #' data(messy_adult)
@@ -36,19 +35,23 @@
 #' # Have a look to set
 #' head(messy_adult)
 #' 
+# reduce it to test it faster (you can use full data set if you want)
+#' messy_adult <- messy_adult[1:50, ] 
+#' 
 #' # Compute full pipeline
 #' clean_adult <- prepareSet(messy_adult)
 #' 
-#' # With a reference date
-#' adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"))
 #' 
-#' # Add aggregation by country
-#' adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country")
-#' 
-#' # With some new aggregation functions
+#' # With:
+#' # - reference date (analysisDate is set)
+#' # - aggregation according to a key = "country"
+#' # - Using some personnal functions (mean and power)
+#' # - setting verbose to false
 #' power <- function(x){sum(x^2)}
 #' adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country", 
-#'                         functions = c(min, max, mean, power))
+#'                         functions = c(mean, power), verbose = FALSE)
+#' @import data.table
+#' @export
 prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   ## Environement
   function_name <- "prepareSet"                                     # For print(s)

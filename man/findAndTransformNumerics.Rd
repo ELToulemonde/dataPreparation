@@ -32,7 +32,7 @@ original dataSet to be modified.
 
 \examples{
 # Let's build a dataSet set
-dataSet <- data.table(ID = 1:5,
+dataSet <- data.frame(ID = 1:5,
                   col1 = c("1.2", "1.3", "1.2", "1", "6"), 
                   col2 = c("1,2", "1,3", "1,2", "1", "6")
                   )

@@ -13,7 +13,7 @@ aggregateByKey(dataSet, key, verbose = TRUE, ...)
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 
-\item{...}{optional argument: \code{functions}:  aggregation functions for numeric columns 
+\item{...}{optional argument: \code{functions}:  aggregation functions for numeric columns (list of functions)
 (vector of function, optional, if not set we use: c(mean, min, max, sd))}
 }
 \value{

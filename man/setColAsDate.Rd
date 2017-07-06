@@ -28,7 +28,7 @@ automatically, have a look to \code{\link{findAndTransformDates}}
 }
 \examples{
 # Lets build a dataSet set
-dataSet <- data.table(ID = 1:5, 
+dataSet <- data.frame(ID = 1:5, 
                   date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
                   date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")
                   )

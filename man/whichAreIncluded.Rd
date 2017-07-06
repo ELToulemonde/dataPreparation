@@ -30,6 +30,7 @@ And last but not least, sing machine learning algorithm it's not always smart to
 }
 \examples{
 # Load toy data set
+require(data.table)
 data(messy_adult)
 
 # Check for included columns
