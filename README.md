@@ -41,7 +41,7 @@ setColAsDate                |                          | fastRound           |  
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
 
-For more details on how it work go check our tutorial vignette after installation.
+For more details on how it work go check our [tutorial](https://cran.r-project.org/web/packages/dataPreparation/vignettes/dataPreparation.html).
 
 Getting started: 30 seconds to dataPreparation
 ==============================================
