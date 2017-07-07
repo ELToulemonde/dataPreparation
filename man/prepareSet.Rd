@@ -43,23 +43,25 @@ Aditional arguments are available to thune pipeline:
 }
 \examples{
 # Load ugly set
+\dontrun{
 data(messy_adult)
 
 # Have a look to set
 head(messy_adult)
 
-messy_adult <- messy_adult[1:50, ] 
-
 # Compute full pipeline
 clean_adult <- prepareSet(messy_adult)
 
+# With a reference date
+adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"))
 
-# With:
-# - reference date (analysisDate is set)
-# - aggregation according to a key = "country"
-# - Using some personnal functions (mean and power)
-# - setting verbose to false
+# Add aggregation by country
+adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country")
+
+# With some new aggregation functions
 power <- function(x){sum(x^2)}
 adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country", 
-                        functions = c(mean, power), verbose = FALSE)
+                        functions = c(min, max, mean, power))
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }
