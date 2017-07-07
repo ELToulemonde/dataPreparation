@@ -1,14 +1,26 @@
 #' Automatic dataSet aggregation by key
 #'
-#' Automatic aggregation of a dataSet set according to a key.\cr
+#' Automatic aggregation of a dataSet set according to a \code{key}\cr
 #' @param dataSet Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns).
 #' @param key The name of a column of dataSet according to which the set should be aggregated (character)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
+#' @param thresh number of max values for frequencie count (numerical, default to 53)
 #' @param ... optional argument: \code{functions}:  aggregation functions for numeric columns (list of functions)
 #' (vector of function, optional, if not set we use: c(mean, min, max, sd))
 #' @details
-#' Be carefull using functions agrument, the function given should be an aggregation fuction, meaning that for multiple values it should only return one value.
-#' @return A \code{\link{data.table}} with one line per key elements.
+#' Perform aggregation depending on column type:\cr
+#' \itemize{
+#' \item If column is numeric \code{functions} are performed on the column. So 1 numeric column 
+#' give length(functions) new columns
+#' \item If column is character or factor and have less than \code{thresh} different values, 
+#' frequencie count of values is performed
+#' \item If column is character or factor with more than \code{thresh} different values, number 
+#' of different values for each \code{key} is performed
+#' \item If columbn is logical, count of number and rate of positive is performed.
+#' }
+#' Be carefull using functions agrument, the function given should be an aggregation fuction, 
+#' meaning that for multiple values it should only return one value.
+#' @return A \code{\link{data.table}} with one line per \code{key} elements and mulitple new columns.
 #' @examples
 #' # Get generic dataset from R
 #' data("adult")
@@ -24,13 +36,16 @@
 #' @import data.table
 #' @importFrom stats sd
 #' @export
-aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
+aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
   ## Environement
   function_name <- "aggregateByKey"                                           # For print(s)
   args <- list(...)
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  if (! is.character(key)){
+	stop(paste0(function_name, ": key should be a character, you provided a ", class(key), "."))
+  }
   is.col(dataSet, cols = key, function_name = function_name)
   if (any(! sapply(dataSet, class) %in% c("numeric", "integer", "factor", "logical", "character"))){
     stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
@@ -94,7 +109,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
     }
     for (col in colnames(dataSet)[colnames(dataSet) != key]){ # we don't aggregate the key!
       data_sample <- dataSet[, c(key, col), with = FALSE] # To save some RAM
-      result_tmp <- aggregateAcolumn(data_sample, col, key, uniqueN_byCol, name_separator, functions)
+      result_tmp <- aggregateAcolumn(data_sample, col, key, uniqueN_byCol, name_separator, functions, thresh)
       result <- merge(result, result_tmp, by = key, all.x = TRUE)
       if (verbose){
         setPB(pb, col)
@@ -131,10 +146,12 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, ...){
 # @param key name of the key according to which aggregation should be performed
 # @param numberOfUniqueEltPerCol
 # @param name_separator
+# @param aggregation functions for numeric columns
+# @param thresh number of max distinct values for frequencie count
 # @
 # @export # Before exporting this function should be improved!
 aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = ".", 
-                             functions, ...){
+                             functions, thresh = 53, ...){
   ## Environement
   function_name = "aggregateAcolumn"
   ## Sanity check
@@ -172,8 +189,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
                                       fun.aggregate = length,
                                       value.var = col
                                       )
-        setnames(result_tmp, colnames(result_tmp)[-1], 
-                 paste(col, colnames(result_tmp)[-1], sep = name_separator))
+        setnames(result_tmp, c(key, paste(col, colnames(result_tmp)[-1], sep = name_separator)))
       }
       if (uniqueN_byCol[col] >= 53){
         result_tmp <- dataSet[, c(key, col), with = FALSE][, .N, by = key]
