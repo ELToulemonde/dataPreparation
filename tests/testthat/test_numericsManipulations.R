@@ -1,4 +1,5 @@
 requireNamespace("data.table")
+verbose = TRUE
 ## findAndTransformNumerics
 #--------------------------
 
@@ -8,7 +9,7 @@ dataSet <- data.table(ID = 1:5,
                  col2 = c("1,2", "1,3", "1,2", "1", "6")
                  )
 
-data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = FALSE)
+data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = verbose)
 
 test_that("findAndTransformNumerics:",
           {
@@ -16,7 +17,14 @@ test_that("findAndTransformNumerics:",
           })
 
 
-
+data("messy_adult")
+dataSet <- messy_adult[, .(date1, date2, date3)]
+data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = verbose)
+test_that("findAndTransformNumerics: no numerics",
+          {
+            expect_equal(all(sapply(data_transformed, class) == "character"), TRUE)
+          })
+		  
 ## identifyNumerics
 # -----------------
 dataSet <- data.table(ID = 1:5,
@@ -25,9 +33,9 @@ dataSet <- data.table(ID = 1:5,
                  )
 test_that("private function identifyNumerics :",
           {
-            expect_equal(length(identifyNumerics(dataSet, n_test = 5, verbose =FALSE)), 2)
-            expect_equal(identifyNumerics(dataSet, n_test = 5, verbose =FALSE)[[1]], "col1")
-            expect_equal(identifyNumerics(dataSet, n_test = 5, verbose =FALSE)[[2]], "col2")
+            expect_equal(length(identifyNumerics(dataSet, n_test = 5, verbose = verbose)), 2)
+            expect_equal(identifyNumerics(dataSet, n_test = 5, verbose = verbose)[[1]], "col1")
+            expect_equal(identifyNumerics(dataSet, n_test = 5, verbose = verbose)[[2]], "col2")
           })
 
 ## as.numericStrip

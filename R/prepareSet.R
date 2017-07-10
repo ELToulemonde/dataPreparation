@@ -59,6 +59,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   args <- list(...)

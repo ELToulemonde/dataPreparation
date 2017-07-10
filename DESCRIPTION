@@ -15,7 +15,8 @@ RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
 	kableExtra,
-	pander
+	pander,
+	testthat
 VignetteBuilder: knitr
 Imports: data.table
 BugReports: https://github.com/ELToulemonde/dataPreparation/issues

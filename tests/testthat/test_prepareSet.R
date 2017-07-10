@@ -1,8 +1,9 @@
+verbose = TRUE
 ## prepareSet
 # -----------
 data(messy_adult)
 
-adult_agg <-  prepareSet(messy_adult, key = "country", verbose = FALSE, functions = c(mean, max))
+adult_agg <-  prepareSet(messy_adult, key = "country", digits = 2, verbose = verbose, functions = c(mean, max))
 
 test_that("prepareSet:", 
           {

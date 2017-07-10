@@ -28,62 +28,56 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
+  is.verbose(verbose)
   
   ## Initalization
   # Arguments for log
   myArgs <- list(...)
+  function_name <- "fastFilterVariables"
+  dataName <- "dataSet"
   if (length(myArgs)>0){
     if (!is.null(myArgs[["function_name"]])){
       function_name <- myArgs[["function_name"]]
     }
-    else{
-      function_name <- "fastFilterVariables"
-    }
     if (!is.null(myArgs[["dataName"]])){
       dataName <- myArgs[["dataName"]]
     }
-    else{
-      dataName <- "dataSet"
-    }
   }
-  else{
-    function_name <- "fastFilterVariables"
-    dataName <- "dataSet"
-  }
+
   
   ## Computation
   # Delete constant columns
   if (verbose){
-    printl(function_name, ": I check for constant columns")
+    printl(function_name, ": I check for constant columns.")
   }
   listOfConstantCols <- whichAreConstant(dataSet, verbose = verbose)
   if (length(listOfConstantCols) > 0){
     if (verbose){
-      printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName)
+      printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName, ".")
     }
 	dataSet[, (listOfConstantCols) := NULL]
   }
   # Delete columns in double
   if (verbose){
-    printl(function_name, ": I check for columns in double")
+    printl(function_name, ": I check for columns in double.")
   }
   listOfDoubles <- whichAreInDouble(dataSet, verbose = verbose)
   if (length(listOfDoubles) > 0){
     if (verbose){
-      printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName)
+      printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName, ".")
     }  
 	dataSet[, (listOfDoubles) := NULL]
   }
   
   # Delete columns that are bijections
   if (verbose){
-    printl(function_name, ": I check for columns that are bijections of another column")
+    printl(function_name, ": I check for columns that are bijections of another column.")
   }
   listOfBijections <- whichAreBijection(dataSet, verbose = verbose)
   if (length(listOfBijections) > 0){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfBijections), 
-             " column(s) that are bijections of another column in ", dataName)
+             " column(s) that are bijections of another column in ", dataName, ".")
     }  
 	dataSet[, (listOfBijections) := NULL]
   }
@@ -126,7 +120,8 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  if (!is.numeric(digits)){stop(paste0(function_name, ": digits should be an integer"))}
+  if (!is.numeric(digits)){stop(paste0(function_name, ": digits should be an integer."))}
+  is.verbose(verbose)
   
   ## Initialization
   digits <- round(digits, 0) # just to be safe
@@ -199,12 +194,13 @@ fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE,
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   # Transform into function
-  num_fun <- function.maker(set_num, function_name, "set_num", "numeric")
-  logical_fun <- function.maker(set_logical, function_name, "set_logical", "logical")
-  char_fun <- function.maker(set_char, function_name, "set_char", "character")
+  num_fun <- function.maker(set_num, "numeric", function_name, "set_num")
+  logical_fun <- function.maker(set_logical, "logical", function_name, "set_logical")
+  char_fun <- function.maker(set_char, "character", function_name, "set_char")
   
   if (verbose){
     pb <- initPB(function_name, names(dataSet))
