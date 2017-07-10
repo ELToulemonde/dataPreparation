@@ -31,7 +31,8 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose 
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-
+  is.verbose(verbose)
+  
   ## initialization
   start_time <- proc.time()
   
@@ -82,8 +83,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   n_test <- control_nb_rows(dataSet = dataSet, nb_rows = n_test, function_name = function_name, variable_name = "n_test")
-  
-  if (!is.logical(verbose)){stop("identifyDates: verbose should be a logical")}
+  is.verbose(verbose)
   
   ## Initialization
   dates <- NULL

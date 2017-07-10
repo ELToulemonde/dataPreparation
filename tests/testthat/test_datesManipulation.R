@@ -1,4 +1,5 @@
 requireNamespace("data.table")
+verbose = TRUE
 ## findAndTransformDates
 #-----------------------
 
@@ -8,13 +9,20 @@ dataSet <- data.table(ID = 1:5,
                   hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "1:22")
                   )
 
-data_transformed <- findAndTransformDates(dataSet, verbose =  FALSE, n_test = 5)
+data_transformed <- findAndTransformDates(dataSet, verbose =  verbose, n_test = 5)
 
 test_that("findAndTransformDates:", 
           {
             expect_equal(all(sapply(data_transformed, function(x)class(x)[1]) == c("integer", "POSIXct", "POSIXct", "character")), TRUE)
           })
 
+data(iris)
+data_transformed <- findAndTransformDates(iris, verbose =  verbose, n_test = 5)
+test_that("findAndTransformDates: no dates to find", 
+          {
+            expect_equal(all(sapply(data_transformed, function(x)class(x)[1]) == c("numeric", "numeric", "numeric", "numeric", "factor")), TRUE)
+          })
+		  
 ## identifyDates
 #---------------
 dataSet <- data.table(ID = 1:5, 
@@ -29,9 +37,9 @@ dataSet <- data.table(ID = 1:5,
 
 test_that("private function identifyDates :",
           {
-            expect_equal(length(identifyDates(dataSet, n_test = 5, verbose =FALSE)), 2)
-            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose =FALSE)[[1]] == c( "date1", "date2")), TRUE)
-            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose =FALSE)[[2]] == c("%Y-%m-%d", "%Y_%m_%d")), TRUE)
+            expect_equal(length(identifyDates(dataSet, n_test = 5, verbose = verbose)), 2)
+            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose = verbose)[[1]] == c( "date1", "date2")), TRUE)
+            expect_equal(all(identifyDates(dataSet, n_test = 5, verbose = verbose)[[2]] == c("%Y-%m-%d", "%Y_%m_%d")), TRUE)
           })
 
 

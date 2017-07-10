@@ -27,6 +27,7 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   listOfConstantCols <- NULL
@@ -112,7 +113,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  
+  is.verbose(verbose)
   
   ## Initialization
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing
@@ -196,6 +197,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing
@@ -300,6 +302,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing

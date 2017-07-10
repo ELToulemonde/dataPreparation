@@ -29,6 +29,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ##  Initialization
   col_class <- sapply(dataSet, class)
@@ -129,7 +130,7 @@ setAsNumericMatrix <- function(dataSet, intercept = FALSE, allCols = FALSE,
   # functions that generate new dataSet.
   if (any(!sapply(dataSet, function(x) is.numeric(x) | is.logical(x) |
                  is.factor(x)))){
-    stop("setAsNumericMatrix: some columns are not numerical/logical/factor. Consider using toNumericMatrixPrepareByRef() to prepare the dataSet.")
+    stop("setAsNumericMatrix: some columns are not numerical/logical/factor. Consider using shapeSet() to prepare the dataSet.")
   } 
   
   # FORMULA

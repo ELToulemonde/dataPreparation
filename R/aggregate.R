@@ -51,6 +51,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
     stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
                   Please provide them in one of those format."))
   }
+  is.verbose(verbose)
   
   ## Initialization
   # Make an nice list of functions

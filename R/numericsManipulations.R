@@ -32,7 +32,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  
+  is.verbose(verbose)
   
   ## Initialization
   start_time <- proc.time()
@@ -57,8 +57,8 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
   }
   start_time <- proc.time()
   if (length(numerics$notToStrip) > 0 || length(numerics$toStrip) > 0 ){
-    dataSet <- setColAsNumeric(dataSet, cols = numerics$notToStrip, stripString = FALSE, verbose = FALSE)  
-    dataSet <- setColAsNumeric(dataSet, cols = numerics$toStrip, stripString = TRUE, verbose = FALSE)  
+    dataSet <- setColAsNumeric(dataSet, cols = numerics$notToStrip, stripString = FALSE, verbose = verbose)  
+    dataSet <- setColAsNumeric(dataSet, cols = numerics$toStrip, stripString = TRUE, verbose = verbose)  
     
     if (verbose){
       printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
@@ -83,6 +83,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   dataSet <- checkAndReturnDataTable(dataSet)
   n_test <- control_nb_rows(dataSet = dataSet, nb_rows = n_test, function_name = function_name, 
                             variable_name = "n_test")
+  is.verbose(verbose)
   
   ## Initialization
   numerics_cols_dont_strip <- NULL

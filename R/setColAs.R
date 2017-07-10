@@ -36,6 +36,8 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   cols = real_cols(cols, names(dataSet), function_name)
+  is.verbose(verbose)
+  
   ## Initialization
   
   ## Computation
@@ -45,10 +47,11 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   for (col in cols){
     if (verbose){
       printl(function_name, ": I am doing the column", col)
+	  options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if ( (!class(dataSet[[col]])%in% c("character", "integer", "numeric")) & verbose){
       warning(paste(function_name, ":", col, 
-					"isn\"t a character a numeric or an integer, i do nothing"))
+					"isn't a character a numeric or an integer, i do nothing"))
     }
     if (class(dataSet[[col]]) == "character"){
       
@@ -64,6 +67,10 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 			   "NA have been created due to transformation to numeric")
       } 
     }
+  }
+  if(verbose){
+	# reset warnings
+	options(warn = 0)
   }
   
   ## Wrapp-up
@@ -95,6 +102,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   cols = real_cols(cols, names(dataSet), function_name)
@@ -155,6 +163,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
   
   ## Initialization
   start_time <- proc.time()
@@ -170,13 +179,21 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
     }
     if (class(dataSet[[col]]) != "character" & verbose){
       warning(paste0(function_name, ": ", col, " is\'nt a character, i do nothing"))
+	  options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if (class(dataSet[[col]]) == "character"){
       nb_na_init <- sum(is.na(dataSet[[col]]))
       data_sample <- dataSet[[col]]
       # If format is NULL, we let R determine the format
       if (is.null(format)){
-        set(dataSet, NULL, col, as.POSIXct(dataSet[[col]])) 
+	    # If format is not given, search for it. 
+	    format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))$formats
+		if (!is.null(format_tmp)){
+		  set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format_tmp))
+		}
+		else{
+		  printl(function_name, ":, ", col, " doesn't seem to be a date, if it really is please provide format.")
+		}
       }
       # If it isn't NULL
       if (!is.null(format)){
@@ -201,6 +218,10 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
         }
         dataSet[[col]] <- data_sample
       }
+    }
+    if(verbose){
+	  # reset warnings
+	  options(warn = 0)
     }
   }
   
@@ -250,6 +271,7 @@ setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE
   dataSet <- checkAndReturnDataTable(dataSet)
   if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer"))}
   cols = real_cols(cols, names(dataSet), function_name)
+  is.verbose(verbose)
   
   ## Computation
   for (col in cols){ 
