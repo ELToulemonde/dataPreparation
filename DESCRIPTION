@@ -18,6 +18,7 @@ Suggests: knitr,
 	pander
 VignetteBuilder: knitr
 Imports: data.table
+BugReports: https://github.com/ELToulemonde/dataPreparation/issues
 		 
 
 
