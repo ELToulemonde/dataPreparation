@@ -32,11 +32,12 @@ Here are the functions available in this package to tackle those issues:
 
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
-findAndTransformDates       | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformNumerics    | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
-setColAsCharacter           | setColAsFactorOrLogical  | whichAreInDouble    |              |
-setColAsNumeric             |                          | whichAreBijection   |              |
-setColAsDate                |                          | fastRound           |              |
+unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
+findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
+findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              |
+setColAsCharacter           |                          | whichAreBijection   |              |
+setColAsNumeric             |                          | fastRound           |              |
+setColAsDate                |                          |                     |              |
 
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.

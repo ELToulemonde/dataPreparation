@@ -166,7 +166,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
   if (maxNbValuePerKey > 1 ){
     result_tmp <- unique(dataSet[, key, with = FALSE])
     ## Aggregation of numerics
-    if (any(class(dataSet[[col]]) %in% c("numeric", "integer"))){ 
+    if (is.numeric(dataSet[[col]])){ 
       # To-do: if there is a constant nbr of value for each line consider make
       # them columns
       # To-do: if there is a small amount of values: factorize
@@ -183,7 +183,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
       
     }
     ## aggregation of character (categorical or non-categorical)
-    if (any(class(dataSet[[col]]) %in% c("character", "factor"))){
+    if (is.character(dataSet[[col]]) || is.factor(dataSet[[col]])){
       if (uniqueN_byCol[col] < 53){ # 53 is finger in the nose...
         result_tmp <- dcast.data.table(dataSet[, c(key, col), with = FALSE], 
                                       formula = paste(key, col, sep = "~"), 
@@ -198,7 +198,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
       }
     }
     ## Aggregation of logicals
-    if (any(class(dataSet[[col]]) %in% c("logical"))){
+    if (is.logical(dataSet[[col]])){
       result_tmp <- dataSet[, sum(get(col)), by = key]
       setnames(result_tmp, c(key, paste("nbr", col, sep = name_separator)))
     }

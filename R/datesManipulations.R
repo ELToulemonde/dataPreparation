@@ -96,7 +96,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   }
   for ( col in names(dataSet) ){ 
     # We search dates only in characters
-    if ( all(class(dataSet[[col]]) == "character") ){
+    if (is.character(dataSet[[col]])){
       # Get a few lines that aren't NA, NULL nor ""
       data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
       
@@ -118,7 +118,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
         formats_tmp <- unique(c(defaultDateFormats, formats))
         
         # Look for the good format
-        format <- identifyFormats(dataSet = data_sample, formats = formats_tmp)
+        format <- identifyDatesFormats(dataSet = data_sample, formats = formats_tmp)
         
         # If a format has been found we note it
         if (! is.null(format)){ 
@@ -148,14 +148,14 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
 
 
 ############################################################################################################
-########################################### identifyFormats ################################################
+########################################### identifyDatesFormats ################################################
 ############################################################################################################
 # 
 # 
-identifyFormats <- function(dataSet, formats){
+identifyDatesFormats <- function(dataSet, formats){
   ## Sanity check
-  if (class(dataSet) != "character"){
-    stop("identifyFormats: dataSet should be some characters")
+  if (! is.character(dataSet)){
+    stop("identifyDatesFormats: dataSet should be some characters")
   }
   
   ## Initalization
@@ -225,7 +225,7 @@ diffDates <- function(dataSet, analysisDate = NULL, units = "years", name_separa
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (!is.null(analysisDate) & ! any(class(analysisDate) %in% c("Date", "POSIXct"))){
-    stop("diffDates: analysisDate must be a Date")
+    stop(paste0(function_name, ": analysisDate must be a Date"))
   }
   if (is.null(name_separator)){
 	name_separator = "."
@@ -280,7 +280,7 @@ diffTime <- function(col1, col2, units = "days"){
     return(as.numeric(difftime(col1, col2, units = "days")) / 365.25) # To-do: check number of days in years instead? 
   }
   else{
-    stop("Sorry this unit hasn\'t been implemented yet")
+    stop("Sorry this unit hasn't been implemented yet")
   }
 }
 

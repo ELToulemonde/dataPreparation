@@ -20,13 +20,13 @@ test_that("setColAsNumeric:",
 ## setColAsCharacter
 #-------------------
 
-dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
+dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")), charcol = c("1", "2", "a"))
 # Set numCol and factorCol as character
-dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"), verbose = verbose)
+dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol", "charcol"), verbose = verbose)
 
 test_that("setColAsCharacter:", 
           {
-            expect_equal(all(sapply(dataSet, class) == c("character", "character")), TRUE)
+            expect_equal(all(sapply(dataSet, class) == c("character", "character", "character")), TRUE)
           }
           )
 
@@ -56,6 +56,14 @@ test_that("setColAsDate: without giving format",
 			}
 			)
 
+# Try to transform ID
+test_that("setColAsDate: raise warning, when column is not character", 
+          {
+            expect_warning( setColAsDate(dataSet, cols = "ID", verbose = verbose),  " isn't a character, i do nothing")
+			}
+			)
+			
+			
 # set id as character, and try to transform it
 dataSet$ID = as.character(dataSet$ID)
 dataSet <- setColAsDate(dataSet, cols = "ID", verbose = verbose)
@@ -65,6 +73,15 @@ test_that("setColAsDate: don't transform a column that isn't a date",
 			}
 			)
 
+			
+dataSet <- setColAsDate(dataSet, cols = "ID", format = "%Y-%m-%d", verbose = verbose)
+test_that("setColAsDate: don't transform a column that isn't a date even if format is forced", 
+          {
+            expect_equal(lapply(dataSet, class)$ID,  "character")
+			}
+			)
+			
+			
 ## setColAsFactorOrLogical
 #---------------------------
 data("messy_adult")
@@ -74,5 +91,5 @@ test_that("setColAsFactorOrLogical:",
           {
             expect_equal(class(messy_adult[["mail"]]),  "logical")
             expect_equal(class(messy_adult[["education"]]),  "factor")
-			expect_error(setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), n_levelsverbose = verbose))
+			expect_error(setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), n_levels = "a", verbose = verbose))
           })
