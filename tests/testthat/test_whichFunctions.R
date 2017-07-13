@@ -67,7 +67,7 @@ messy_adult = messy_adult[1:5000, ]
 
 test_that("whichAreIncluded: standard test", 
           {
-            expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == c(7, 4, 9, 14)), TRUE)
+            expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == c(4, 7, 9, 14)), TRUE)
           })
 
 
@@ -77,7 +77,7 @@ messy_adult$are50OrMore <- messy_adult$age > 50
 
 test_that("whichAreIncluded: build column", 
           {
-            expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == c(7, 4, 9, 25, 14)), TRUE)
+            expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == c(4, 7, 9, 14, 25)), TRUE)
           })
 # As one can, see this column that doesn't have additional info than age is spotted.
 
@@ -86,7 +86,26 @@ messy_adult$id = 1:nrow(messy_adult) # build id
 setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 
 
-test_that("whichAreIncluded: id", 
+test_that("whichAreIncluded: id at the beginning", 
           {
             expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == 2:26), TRUE)
+          })
+
+	
+# Same but with inverse order
+rm(messy_adult)
+data(messy_adult)
+messy_adult$id = 1:nrow(messy_adult) # build id
+print("#####################################################")
+print(names(messy_adult))
+print(whichAreIncluded(messy_adult, verbose = verbose))
+test_that("whichAreIncluded: id at the end", 
+          {
+            expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == 1:24), TRUE)
+          })
+
+	
+test_that("whichAreIncluded: return NULL when no column", 
+          {
+            expect_equal(is.null(whichAreIncluded(data.table(col1 = c(1, 2, 3)), verbose = TRUE)), TRUE)
           })

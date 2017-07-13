@@ -8,8 +8,9 @@ verbose = TRUE
 
 
 
-data(adult)
-adult_prep <- shapeSet(copy(adult), verbose = verbose)
+data(messy_adult)
+messy_adult <- unFactor(messy_adult, verbose = FALSE)
+adult_prep <- shapeSet(copy(messy_adult), verbose = verbose)
 
 
 adult_numMat <- shapeSet(copy(adult), finalForm = "numerical_matrix")
@@ -32,11 +33,13 @@ test_that("setAsNumericMatrix: ",
 		  )
 		  
 data(messy_adult)
+messy_adult <- unFactor(messy_adult, n_unfactor = 53, verbose = FALSE)
 messy_adult <- shapeSet(messy_adult, verbose = FALSE, finalForm = "data.table")
 messy_adult <- fastFilterVariables(messy_adult, verbose = FALSE)
-
 test_that("setAsNumericMatrix: ",
 		  {
 		  expect_equal(ncol(setAsNumericMatrix(messy_adult)), 106)
+		  expect_equal(ncol(setAsNumericMatrix(messy_adult, allCols = TRUE, sparse = TRUE)), 114)
 		  }
 		  )
+

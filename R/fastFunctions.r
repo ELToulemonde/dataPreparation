@@ -131,7 +131,7 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
     pb <- initPB(function_name, names(dataSet))
   }
   for (col in names(dataSet)){
-    if (any(class(dataSet[[col]]) %in% c("numeric", "integer"))){
+    if (is.numeric(dataSet[[col]])){
       set(dataSet, NULL, col, round(dataSet[[col]], digits))
     } 
     if (verbose){
@@ -208,16 +208,16 @@ fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE,
   
   ## Computation
   for (col in names(dataSet)){ 
-    if (any(class(dataSet[[col]]) %in% c("numeric", "integer"))){
+    if (is.numeric(dataSet[[col]])){
       set(dataSet, which(is.na(dataSet[[col]])), col, num_fun(dataSet[[col]]))
     }
-    if (any(class(dataSet[[col]]) %in% c("logical"))){
+    if (is.logical(dataSet[[col]])){
       set(dataSet, which(is.na(dataSet[[col]])), col, logical_fun(dataSet[[col]]))
     }
-    if (any(class(dataSet[[col]]) %in% c("character"))){
+    if (is.character(dataSet[[col]])){
       set(dataSet, which(is.na(dataSet[[col]])), col, char_fun(dataSet[[col]]))
     }
-    if (any(class(dataSet[[col]]) %in% c("factor"))){
+    if (is.factor(dataSet[[col]])){
       if (sum(is.na(dataSet[[col]])) > 0 ){
         set(dataSet, NULL, col, addNA(dataSet[[col]]))
         # Set level to string NA, otherwise it cause mistake, especialy for randomForests
@@ -281,7 +281,7 @@ fastIsEqual <- function(object1, object2){
     return(result)
   }
   # Simple comparaison for factors
-  if (any(class(object1) == "factor")){
+  if (is.factor(object1)){
     if (!(sum(levels(object1) %in% levels(object2)) == length(levels(object1)) & sum(levels(object2) %in% levels(object1)) == length(levels(object2)))){
       return(FALSE) # To-do Limitation: les levels vides
     }

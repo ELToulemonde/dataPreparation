@@ -23,7 +23,7 @@ test_that("findNFirstNonNull: test character",
 		  
 test_that("findNFirstNonNull: not enough not NAs values", 
           {
-            expect_equal(length(findNFirstNonNull(c("A", "B", NA), 3)), 2)
+            expect_equal(length(findNFirstNonNull(c("A", "B", NA, NA), 3)), 2)
           })
 ## checkAndReturnDataTable
 #-------------------------
@@ -131,4 +131,5 @@ test_that("function.maker: error wrong type",
 			expect_error(function.maker("a", type = "numeric"))
 			expect_error(function.maker(1, type = "character"))
 			expect_error(function.maker("a", type = "logical"))
+			expect_error(function.maker(dataSet, type = "logical"), ": is in a shape that isn't handled, please provide constant or aggregation function.")
 			})
