@@ -47,13 +47,13 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   for (col in cols){
     if (verbose){
       printl(function_name, ": I am doing the column", col)
-	  options(warn = -1) # if verbose, disable warning, it will  be logged
+      options(warn = -1) # if verbose, disable warning, it will  be logged
     }
-    if ( (!class(dataSet[[col]])%in% c("character", "integer", "numeric")) & verbose){
+    if ( !(is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])) & verbose){
       warning(paste(function_name, ":", col, 
-					"isn't a character a numeric or an integer, i do nothing"))
+                    "isn't a character a numeric or an integer, i do nothing"))
     }
-    if (class(dataSet[[col]]) == "character"){
+    if (is.character(dataSet[[col]])){
       
       nb_na_init = sum(is.na(dataSet[[col]]))
       if (stripString){
@@ -64,13 +64,13 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
       }
       if (verbose){
         printl(function_name, ":", sum(is.na(dataSet[[col]])) - nb_na_init, 
-			   "NA have been created due to transformation to numeric")
+               "NA have been created due to transformation to numeric")
       } 
     }
   }
   if(verbose){
-	# reset warnings
-	options(warn = 0)
+    # reset warnings
+    options(warn = 0)
   }
   
   ## Wrapp-up
@@ -115,10 +115,10 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
     if (verbose){
       printl(function_name, ": I am doing the column", col)
     }
-    if ( (class(dataSet[[col]]) == "character") & verbose){
+    if ( (is.character(dataSet[[col]])) & verbose){
       printl(function_name, ":", col, "is a character, i do nothing")
     }
-    if (class(dataSet[[col]]) != "character"){
+    if (! (is.character(dataSet[[col]]))){
       set(dataSet, NULL, col, as.character(dataSet[[col]])) 
     }
     
@@ -168,7 +168,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   ## Initialization
   start_time <- proc.time()
   if (verbose){
-    printl(function_name, ": I will set some columns as Date")
+    printl(function_name, ": I will set some columns as Date.")
   }
   cols = real_cols(cols, names(dataSet), function_name)
   
@@ -177,30 +177,32 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
     if (verbose){
       printl(function_name, ": I am doing the column", col)
     }
-    if (class(dataSet[[col]]) != "character" & verbose){
-      warning(paste0(function_name, ": ", col, " is\'nt a character, i do nothing"))
-	  options(warn = -1) # if verbose, disable warning, it will  be logged
+    if (! (is.character(dataSet[[col]])) & verbose){
+      warning(paste0(function_name, ": ", col, " isn't a character, i do nothing."))
+      options(warn = -1) # if verbose, disable warning, it will  be logged
     }
-    if (class(dataSet[[col]]) == "character"){
+    if (is.character(dataSet[[col]])){
       nb_na_init <- sum(is.na(dataSet[[col]]))
       data_sample <- dataSet[[col]]
       # If format is NULL, we let R determine the format
       if (is.null(format)){
-	    # If format is not given, search for it. 
-	    format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))$formats
-		if (!is.null(format_tmp)){
-		  set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format_tmp))
-		}
-		else{
-		  printl(function_name, ":, ", col, " doesn't seem to be a date, if it really is please provide format.")
-		}
+        # If format is not given, search for it. 
+        format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))$formats
+        if (!is.null(format_tmp)){
+          set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format_tmp))
+        }
+        else{
+          printl(function_name, ":, ", col, " doesn't seem to be a date, if it really is please provide format.")
+        }
       }
       # If it isn't NULL
       if (!is.null(format)){
         format4parse_date_time <- formatForparse_date_time()
-		format_tmp = str_replace_all(format, "[[:punct:]]", "")
+        format_tmp = str_replace_all(format, "[[:punct:]]", "")
         if (format_tmp %in% format4parse_date_time){
+		  options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
           set(dataSet, NULL, col, parse_date_time(dataSet[[col]], orders = format_tmp))
+		  options(warn = 0)
         }
         else{
           set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format))
@@ -209,26 +211,26 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       
       nb_na_end <- sum(is.na(dataSet[[col]]))
       if (verbose){
-        printl(function_name, ":", nb_na_end - nb_na_init, "NA have been created due to transformation to Date")
+        printl(function_name, ":", nb_na_end - nb_na_init, "NA have been created due to transformation to Date.")
       }
       # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
-      if (nb_na_end == nrow(dataSet) & nb_na_init < nrow(dataSet) & is.null(format)){
+      if (nb_na_end == nrow(dataSet) & nb_na_init < nrow(dataSet)){
         if (verbose){
-          printl(function_name, ":", "Since i generated only NAs i set", col, "as it was before")
+          printl(function_name, ":", "Since i generated only NAs i set ", col, " as it was before.")
         }
         dataSet[[col]] <- data_sample
       }
     }
     if(verbose){
-	  # reset warnings
-	  options(warn = 0)
+      # reset warnings
+      options(warn = 0)
     }
   }
   
   ## Wrapp-up
   if (verbose){
     printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
-           "s to transform ", length(cols), " columns to Dates")
+           "s to transform ", length(cols), " columns to Dates.")
   }
   return(dataSet)
   
@@ -276,18 +278,18 @@ setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE
   ## Computation
   for (col in cols){ 
     if (verbose){
-      printl(function_name, ": I am doing the column", col)
+      printl(function_name, ": I am doing the column ", col, ".")
     }
     if (fastMaxNbElt(dataSet[[col]], n_levels)){
       set(dataSet, NULL, col, as.factor(dataSet[[col]]))
     }
     else{
       set(dataSet, NULL, col, !is.na(dataSet[[col]]) & dataSet[[col]] != "" )
-	  
+      
     }
   }
-
-
+  
+  
   ## Wrapp up
   return(dataSet)
 }

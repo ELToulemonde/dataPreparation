@@ -55,11 +55,12 @@ Here are the functions available in this package to tackle those issues:
 
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
-findAndTransformDates       | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformNumerics    | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
-setColAsCharacter           | setColAsFactorOrLogical  | whichAreInDouble    |              |
-setColAsNumeric             |                          | whichAreBijection   |              |
-setColAsDate                |                          | fastRound           |              |
+unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
+findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
+findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              |
+setColAsCharacter           |                          | whichAreBijection   |              |
+setColAsNumeric             |                          | fastRound           |              |
+setColAsDate                |                          |                     |              |
 
 All of those functions are integrated in the **full pipeline** function `prepareSet`.
 
@@ -84,8 +85,18 @@ The same info can be contained in two different columns.
 
 # *Correct* functions
 
+## Identifing factor that shouldn't be
+It often happens when reading a data set that R put string into a factor even if it shouldn't be. In this tutorial data set, `mail` is a factor but shouldn't be. It will automatically be detected using `unFactor` function:
+
+```{r}
+print(class(messy_adult$mail))
+messy_adult <- unFactor(messy_adult)
+print(class(messy_adult$mail))
+```
+
+
 ## Identifing and transforming date columns
-The first thing to do is to **identify** columns that are dates (the first 4 ones) and **transform** them.
+The next thing to do is to **identify** columns that are dates (the first 4 ones) and **transform** them.
 
 ```{r echo = FALSE, results='hide'}
 setDT(messy_adult)

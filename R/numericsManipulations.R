@@ -47,7 +47,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
   }
   
   # Format
-  if (length(numerics) < 1){
+  if (is.null(numerics$toStrip) & is.null(numerics$notToStrip)){
     if (verbose){
       printl(function_name, 
              ": There are no numerics to transform.", 
@@ -63,7 +63,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
     if (verbose){
       printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
              "s to transform ", length(numerics$notToStrip) + length(numerics$toStrip), 
-             " column(s) to a numeric format")
+             " column(s) to a numeric format.")
     }
   }
   
@@ -95,29 +95,24 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   ## Computation
   for (col in names(dataSet)){
     # Something is performed only if col is in a character format
-    if (all(class(dataSet[[col]]) == "character")){
+    if (is.character(dataSet[[col]])){
       # Get a few lines that aren't NA, NULL nor ""
       data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
       
       # We check only columns that contains something (not NA, NULL, "")
       if (length(data_sample) > 0){ 
-        # Check for direct convertion
-        options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
-        data_sample_converted <- as.numeric(data_sample)
-        options(warn = 0)
-        if (sum(is.na(data_sample_converted)) == sum(is.na(data_sample))){
-          numerics_cols_dont_strip <- c(numerics_cols_dont_strip, col)
-          next()
-        }
-        
-        ## Check for conversion with strip
-        options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
-        data_sample_converted <- as.numericStrip(data_sample)
-        options(warn = 0)
-        if (sum(is.na(data_sample_converted)) == sum(is.na(data_sample))){
-          numerics_cols_strip <- c(numerics_cols_strip, col)
-          next()
-        }
+        format <- identifyNumericsFormats(dataSet = data_sample)
+		if (is.null(format)){
+		  next()
+		}
+		if (format == "notstrip"){
+		  numerics_cols_dont_strip <- c(numerics_cols_dont_strip, col)
+		  next()
+		}
+		if (format == "strip"){
+		  numerics_cols_strip <- c(numerics_cols_strip, col)
+		  next()
+		}
       }
     }
     if (verbose){
@@ -133,6 +128,33 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   return(list(notToStrip = numerics_cols_dont_strip, toStrip = numerics_cols_strip))
 }
 
+
+#######################################################################################
+############################### Identify numeric format  ##############################
+#######################################################################################
+identifyNumericsFormats <- function(dataSet){
+  if (! is.character(dataSet)){
+    stop("identifyDatesFormats: dataSet should be some characters")
+  }
+  
+  # Check for direct convertion
+  options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
+  dataSet_converted <- as.numeric(dataSet)
+  options(warn = 0)
+  if (sum(is.na(dataSet_converted)) == sum(is.na(dataSet))){
+	return("notstrip")
+  }
+  
+  ## Check for conversion with strip
+  options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
+  dataSet_converted <- as.numericStrip(dataSet)
+  options(warn = 0)
+  if (sum(is.na(dataSet_converted)) == sum(is.na(dataSet))){
+	return("strip")
+  }
+  
+  return(NULL)
+}
 
 #######################################################################################
 ############################### As numerical strip  ###################################

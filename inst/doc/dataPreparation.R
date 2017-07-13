@@ -11,6 +11,11 @@ Sys.setlocale("LC_TIME", "C")
 data(messy_adult)
 print(head(messy_adult, n = 4))
 
+## ------------------------------------------------------------------------
+print(class(messy_adult$mail))
+messy_adult <- unFactor(messy_adult)
+print(class(messy_adult$mail))
+
 ## ----echo = FALSE, results='hide'----------------------------------------
 setDT(messy_adult)
 store <- copy(messy_adult[,.(date1, date2, date3, date4)])

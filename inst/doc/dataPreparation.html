@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-07-07" />
+<meta name="date" content="2017-07-13" />
 
 <title>dataPreparation</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">dataPreparation</h1>
-<h4 class="date"><em>2017-07-07</em></h4>
+<h4 class="date"><em>2017-07-13</em></h4>
 
 
 
@@ -111,37 +111,44 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </thead>
 <tbody>
 <tr class="odd">
-<td>findAndTransformDates</td>
+<td>unFactor</td>
 <td>diffDates</td>
 <td>fastFilterVariables</td>
 <td>fastHandleNa</td>
 <td>shapeSet</td>
 </tr>
 <tr class="even">
-<td>findAndTransformNumerics</td>
+<td>findAndTransformDates</td>
 <td>aggregateByKey</td>
 <td>whichAreConstant</td>
 <td></td>
 <td>setAsNumericMatrix</td>
 </tr>
 <tr class="odd">
-<td>setColAsCharacter</td>
+<td>findAndTransformNumerics</td>
 <td>setColAsFactorOrLogical</td>
 <td>whichAreInDouble</td>
 <td></td>
 <td></td>
 </tr>
 <tr class="even">
-<td>setColAsNumeric</td>
+<td>setColAsCharacter</td>
 <td></td>
 <td>whichAreBijection</td>
 <td></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td>setColAsDate</td>
+<td>setColAsNumeric</td>
 <td></td>
 <td>fastRound</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>setColAsDate</td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>
@@ -155,21 +162,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>For this tutorial, we are going to use a <em>messy</em> version of <a href="https://archive.ics.uci.edu/ml/datasets/adult">adult</a> data base.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(messy_adult)
 <span class="kw">print</span>(<span class="kw">head</span>(messy_adult, <span class="dt">n =</span> <span class="dv">4</span>))</code></pre></div>
-<pre><code>        date1      date2       date3          date4    num1   num2
-1: 2017-22-09 06/17/2017 24-Jul-2017   26-July-2017 -0.4543 -0,826
-2: 2017-18-07 07/15/2017 26-Jul-2017   28-July-2017  1.4432     NA
-3: 2017-05-01         NA 20-Aug-2017 22-August-2017  1.7226 0,7611
-4: 2017-28-11 12/19/2017 14-May-2017    16-May-2017  1.9542     NA
-   constant                      mail    num3 age    type_employer fnlwgt
-1:        1      lucas.pierre@aol.com -0,4543  39        State-gov  77516
-2:        1  caroline.marie@yahoo.com  1,4432  50 Self-emp-not-inc  83311
-3:        1 jake.lucas@protonmail.com  1,7226  38          Private 215646
-4:        1      marie.pierre@aol.com  1,9542  53          Private 234721
-   education education_num            marital        occupation
-1: Bachelors            13      Never-married      Adm-clerical
-2: Bachelors            13 Married-civ-spouse   Exec-managerial
-3:   HS-grad             9           Divorced Handlers-cleaners
-4:      11th             7 Married-civ-spouse Handlers-cleaners
+<pre><code>        date1      date2       date3           date4    num1    num2
+1: 2017-08-10 02/15/2017 26-Jan-2017 28-January-2017   -0.06      NA
+2: 2017-24-01         NA 22-May-2017     24-May-2017  0.2317 -0,3231
+3: 2017-27-11 10/22/2017 24-Oct-2017 26-October-2017 -1.2968      NA
+4: 2017-31-08 05/09/2017 09-Mar-2017   11-March-2017 -0.2346   1,241
+   constant                           mail    num3 age    type_employer
+1:        1        cynthia.lucas@gmail.com   -0,06  39        State-gov
+2:        1 pierre.caroline@protonmail.com  0,2317  50 Self-emp-not-inc
+3:        1   cynthia.lucas@protonmail.com -1,2968  38          Private
+4:        1      jake.lucas@protonmail.com -0,2346  53          Private
+   fnlwgt education education_num            marital        occupation
+1:  77516 Bachelors            13      Never-married      Adm-clerical
+2:  83311 Bachelors            13 Married-civ-spouse   Exec-managerial
+3: 215646   HS-grad             9           Divorced Handlers-cleaners
+4: 234721      11th             7 Married-civ-spouse Handlers-cleaners
     relationship  race  sex capital_gain capital_loss hr_per_week
 1: Not-in-family White Male         2174            0          40
 2:       Husband White Male            0            0          13
@@ -192,11 +199,23 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="correct-functions" class="section level1">
 <h1><span class="header-section-number">2</span> <em>Correct</em> functions</h1>
+<div id="identifing-factor-that-shouldnt-be" class="section level2">
+<h2><span class="header-section-number">2.1</span> Identifing factor that shouldn’t be</h2>
+<p>It often happens when reading a data set that R put string into a factor even if it shouldn’t be. In this tutorial data set, <code>mail</code> is a factor but shouldn’t be. It will automatically be detected using <code>unFactor</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">class</span>(messy_adult$mail))</code></pre></div>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">unFactor</span>(messy_adult)</code></pre></div>
+<pre><code>## [1] &quot;findAndTransformFalseFactor: I will identify variable that are factor but shouldn't be.&quot;
+## [1] &quot;findAndTransformFalseFactor: I unfactor mail.&quot;
+## [1] &quot;findAndTransformFalseFactor: It took me 0.25s to unfactor 1 column(s).&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">class</span>(messy_adult$mail))</code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+</div>
 <div id="identifing-and-transforming-date-columns" class="section level2">
-<h2><span class="header-section-number">2.1</span> Identifing and transforming date columns</h2>
-<p>The first thing to do is to <strong>identify</strong> columns that are dates (the first 4 ones) and <strong>transform</strong> them.</p>
+<h2><span class="header-section-number">2.2</span> Identifing and transforming date columns</h2>
+<p>The next thing to do is to <strong>identify</strong> columns that are dates (the first 4 ones) and <strong>transform</strong> them.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformDates</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformDates: It took me 0.31s to identify formats&quot;
+<pre><code>## [1] &quot;findAndTransformDates: It took me 0.28s to identify formats&quot;
 ## [1] &quot;findAndTransformDates: It took me 0.04s to transform 4 columns to a Date format&quot;</code></pre>
 Let’s have a look to the transformation performed on those 4 columns:
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -235,176 +254,176 @@ date4
 <tbody>
 <tr>
 <td style="text-align:left;">
-2017-22-09
+2017-08-10
 </td>
 <td style="text-align:left;">
-06/17/2017
+02/15/2017
 </td>
 <td style="text-align:left;">
-24-Jul-2017
+26-Jan-2017
 </td>
 <td style="text-align:left;">
-26-July-2017
+28-January-2017
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:left;">
-2017-09-22
+2017-10-08
+</td>
+<td style="text-align:left;">
+2017-02-15
+</td>
+<td style="text-align:left;">
+2017-01-26
+</td>
+<td style="text-align:left;">
+2017-01-28
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017-24-01
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+22-May-2017
+</td>
+<td style="text-align:left;">
+24-May-2017
+</td>
+<td style="text-align:left;">
+=&gt;
+</td>
+<td style="text-align:left;">
+2017-01-24
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+2017-05-22
+</td>
+<td style="text-align:left;">
+2017-05-24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017-27-11
+</td>
+<td style="text-align:left;">
+10/22/2017
+</td>
+<td style="text-align:left;">
+24-Oct-2017
+</td>
+<td style="text-align:left;">
+26-October-2017
+</td>
+<td style="text-align:left;">
+=&gt;
+</td>
+<td style="text-align:left;">
+2017-11-27
+</td>
+<td style="text-align:left;">
+2017-10-22
+</td>
+<td style="text-align:left;">
+2017-10-24
+</td>
+<td style="text-align:left;">
+2017-10-26
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017-31-08
+</td>
+<td style="text-align:left;">
+05/09/2017
+</td>
+<td style="text-align:left;">
+09-Mar-2017
+</td>
+<td style="text-align:left;">
+11-March-2017
+</td>
+<td style="text-align:left;">
+=&gt;
+</td>
+<td style="text-align:left;">
+2017-08-31
+</td>
+<td style="text-align:left;">
+2017-05-09
+</td>
+<td style="text-align:left;">
+2017-03-09
+</td>
+<td style="text-align:left;">
+2017-03-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017-04-06
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+15-Jun-2017
+</td>
+<td style="text-align:left;">
+17-June-2017
+</td>
+<td style="text-align:left;">
+=&gt;
+</td>
+<td style="text-align:left;">
+2017-06-04
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+2017-06-15
 </td>
 <td style="text-align:left;">
 2017-06-17
 </td>
-<td style="text-align:left;">
-2017-07-24
-</td>
-<td style="text-align:left;">
-2017-07-26
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-2017-18-07
+2017-13-11
 </td>
 <td style="text-align:left;">
-07/15/2017
+03/17/2017
 </td>
 <td style="text-align:left;">
-26-Jul-2017
+09-Nov-2017
 </td>
 <td style="text-align:left;">
-28-July-2017
+11-November-2017
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:left;">
-2017-07-18
+2017-11-13
 </td>
 <td style="text-align:left;">
-2017-07-15
+2017-03-17
 </td>
 <td style="text-align:left;">
-2017-07-26
+2017-11-09
 </td>
 <td style="text-align:left;">
-2017-07-28
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017-05-01
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-20-Aug-2017
-</td>
-<td style="text-align:left;">
-22-August-2017
-</td>
-<td style="text-align:left;">
-=&gt;
-</td>
-<td style="text-align:left;">
-2017-01-05
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-2017-08-20
-</td>
-<td style="text-align:left;">
-2017-08-22
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017-28-11
-</td>
-<td style="text-align:left;">
-12/19/2017
-</td>
-<td style="text-align:left;">
-14-May-2017
-</td>
-<td style="text-align:left;">
-16-May-2017
-</td>
-<td style="text-align:left;">
-=&gt;
-</td>
-<td style="text-align:left;">
-2017-11-28
-</td>
-<td style="text-align:left;">
-2017-12-19
-</td>
-<td style="text-align:left;">
-2017-05-14
-</td>
-<td style="text-align:left;">
-2017-05-16
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017-02-08
-</td>
-<td style="text-align:left;">
-01/14/2017
-</td>
-<td style="text-align:left;">
-31-Oct-2017
-</td>
-<td style="text-align:left;">
-02-November-2017
-</td>
-<td style="text-align:left;">
-=&gt;
-</td>
-<td style="text-align:left;">
-2017-08-02
-</td>
-<td style="text-align:left;">
-2017-01-14
-</td>
-<td style="text-align:left;">
-2017-10-31
-</td>
-<td style="text-align:left;">
-2017-11-02
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017-28-07
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-31-Dec-2017
-</td>
-<td style="text-align:left;">
-02-January-2018
-</td>
-<td style="text-align:left;">
-=&gt;
-</td>
-<td style="text-align:left;">
-2017-07-28
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-2017-12-31
-</td>
-<td style="text-align:left;">
-2018-01-02
+2017-11-11
 </td>
 </tr>
 </tbody>
@@ -412,11 +431,19 @@ NA
 <p>As one can see, even if formats where differents and some how ugly, they where all handled.</p>
 </div>
 <div id="identifing-and-transforming-numeric-columns" class="section level2">
-<h2><span class="header-section-number">2.2</span> Identifing and transforming numeric columns</h2>
+<h2><span class="header-section-number">2.3</span> Identifing and transforming numeric columns</h2>
 <p>And now the same thing with numeric</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformNumerics</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.24s to identify 3 numerics column(s), i will set them as numerics&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.04s to transform 3 column(s) to a numeric format&quot;</code></pre>
+<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.2s to identify 3 numerics column(s), i will set them as numerics&quot;
+## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
+## [1] &quot;setColAsNumeric: I am doing the columnnum1&quot;
+## [1] &quot;setColAsNumeric:0NA have been created due to transformation to numeric&quot;
+## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
+## [1] &quot;setColAsNumeric: I am doing the columnnum2&quot;
+## [1] &quot;setColAsNumeric:0NA have been created due to transformation to numeric&quot;
+## [1] &quot;setColAsNumeric: I am doing the columnnum3&quot;
+## [1] &quot;setColAsNumeric:0NA have been created due to transformation to numeric&quot;
+## [1] &quot;findAndTransformNumerics: It took me 0.06s to transform 3 column(s) to a numeric format.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -447,140 +474,140 @@ num3
 <tbody>
 <tr>
 <td style="text-align:left;">
--0.4543
-</td>
-<td style="text-align:left;">
--0,826
-</td>
-<td style="text-align:left;">
--0,4543
-</td>
-<td style="text-align:left;">
-=&gt;
-</td>
-<td style="text-align:right;">
--0.4543
-</td>
-<td style="text-align:right;">
--0.8260
-</td>
-<td style="text-align:right;">
--0.4543
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-1.4432
+-0.06
 </td>
 <td style="text-align:left;">
 NA
 </td>
 <td style="text-align:left;">
-1,4432
+-0,06
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:right;">
-1.4432
+-0.0600
 </td>
 <td style="text-align:right;">
 NA
 </td>
 <td style="text-align:right;">
-1.4432
+-0.0600
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-1.7226
+0.2317
 </td>
 <td style="text-align:left;">
-0,7611
+-0,3231
 </td>
 <td style="text-align:left;">
-1,7226
+0,2317
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:right;">
-1.7226
+0.2317
 </td>
 <td style="text-align:right;">
-0.7611
+-0.3231
 </td>
 <td style="text-align:right;">
-1.7226
+0.2317
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-1.9542
+-1.2968
 </td>
 <td style="text-align:left;">
 NA
 </td>
 <td style="text-align:left;">
-1,9542
+-1,2968
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:right;">
-1.9542
+-1.2968
 </td>
 <td style="text-align:right;">
 NA
 </td>
 <td style="text-align:right;">
-1.9542
+-1.2968
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
--0.5645
+-0.2346
 </td>
 <td style="text-align:left;">
-0,8952
+1,241
 </td>
 <td style="text-align:left;">
--0,5645
+-0,2346
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:right;">
--0.5645
+-0.2346
 </td>
 <td style="text-align:right;">
-0.8952
+1.2410
 </td>
 <td style="text-align:right;">
--0.5645
+-0.2346
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-0.8582
+NA
 </td>
 <td style="text-align:left;">
-0,7568
+0,5682
 </td>
 <td style="text-align:left;">
-0,8582
+NA
 </td>
 <td style="text-align:left;">
 =&gt;
 </td>
 <td style="text-align:right;">
-0.8582
+NA
 </td>
 <td style="text-align:right;">
-0.7568
+0.5682
 </td>
 <td style="text-align:right;">
-0.8582
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.4093
+</td>
+<td style="text-align:left;">
+-1,4729
+</td>
+<td style="text-align:left;">
+1,4093
+</td>
+<td style="text-align:left;">
+=&gt;
+</td>
+<td style="text-align:right;">
+1.4093
+</td>
+<td style="text-align:right;">
+-1.4729
+</td>
+<td style="text-align:right;">
+1.4093
 </td>
 </tr>
 </tbody>
@@ -602,13 +629,13 @@ NA
 <h3><span class="header-section-number">3.1.1</span> Look for constant variables</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.22s to identify 1 constant column(s)&quot;</code></pre>
+## [1] &quot;whichAreConstant: it took me 0.18s to identify 1 constant column(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-in-double" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Look for columns in double</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.19s to identify 1 double(s)&quot;</code></pre>
+## [1] &quot;whichAreInDouble: it took me 0.2s to identify 1 double(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-that-are-bijections-of-one-another" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> Look for columns that are bijections of one another</h3>
@@ -616,7 +643,7 @@ NA
 <pre><code>## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: num3 is a bijection of num1. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 0.53s to identify 3 bijection(s)&quot;</code></pre>
+## [1] &quot;whichAreBijection: it took me 0.45s to identify 3 bijection(s)&quot;</code></pre>
 <p>To control this, let’s have a look to the concerned columns:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">head</span>(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %&gt;%
 <span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>, <span class="dt">font_size =</span> <span class="dv">12</span>)</code></pre></div>
@@ -653,39 +680,16 @@ education_num
 1
 </td>
 <td style="text-align:left;">
-2017-07-24
+2017-01-26
 </td>
 <td style="text-align:left;">
-2017-07-26
+2017-01-28
 </td>
 <td style="text-align:right;">
--0.4543
+-0.0600
 </td>
 <td style="text-align:right;">
--0.4543
-</td>
-<td style="text-align:left;">
-Bachelors
-</td>
-<td style="text-align:right;">
-13
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-2017-07-26
-</td>
-<td style="text-align:left;">
-2017-07-28
-</td>
-<td style="text-align:right;">
-1.4432
-</td>
-<td style="text-align:right;">
-1.4432
+-0.0600
 </td>
 <td style="text-align:left;">
 Bachelors
@@ -699,16 +703,39 @@ Bachelors
 1
 </td>
 <td style="text-align:left;">
-2017-08-20
+2017-05-22
 </td>
 <td style="text-align:left;">
-2017-08-22
+2017-05-24
 </td>
 <td style="text-align:right;">
-1.7226
+0.2317
 </td>
 <td style="text-align:right;">
-1.7226
+0.2317
+</td>
+<td style="text-align:left;">
+Bachelors
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+2017-10-24
+</td>
+<td style="text-align:left;">
+2017-10-26
+</td>
+<td style="text-align:right;">
+-1.2968
+</td>
+<td style="text-align:right;">
+-1.2968
 </td>
 <td style="text-align:left;">
 HS-grad
@@ -722,16 +749,16 @@ HS-grad
 1
 </td>
 <td style="text-align:left;">
-2017-05-14
+2017-03-09
 </td>
 <td style="text-align:left;">
-2017-05-16
+2017-03-11
 </td>
 <td style="text-align:right;">
-1.9542
+-0.2346
 </td>
 <td style="text-align:right;">
-1.9542
+-0.2346
 </td>
 <td style="text-align:left;">
 11th
@@ -745,16 +772,16 @@ HS-grad
 1
 </td>
 <td style="text-align:left;">
-2017-10-31
+2017-06-15
 </td>
 <td style="text-align:left;">
-2017-11-02
+2017-06-17
 </td>
 <td style="text-align:right;">
--0.5645
+NA
 </td>
 <td style="text-align:right;">
--0.5645
+NA
 </td>
 <td style="text-align:left;">
 Bachelors
@@ -768,16 +795,16 @@ Bachelors
 1
 </td>
 <td style="text-align:left;">
-2017-12-31
+2017-11-09
 </td>
 <td style="text-align:left;">
-2018-01-02
+2017-11-11
 </td>
 <td style="text-align:right;">
-0.8582
+1.4093
 </td>
 <td style="text-align:right;">
-0.8582
+1.4093
 </td>
 <td style="text-align:left;">
 Masters
@@ -802,19 +829,19 @@ Masters
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncols =<span class="st"> </span><span class="kw">ncol</span>(messy_adult)
 messy_adult &lt;-<span class="st"> </span><span class="kw">fastFilterVariables</span>(messy_adult)
 <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;messy_adult now have &quot;</span>, <span class="kw">ncol</span>(messy_adult), <span class="st">&quot; columns; so &quot;</span>, ncols -<span class="st"> </span><span class="kw">ncol</span>(messy_adult), <span class="st">&quot; less than before.&quot;</span>))</code></pre></div>
-<pre><code>## [1] &quot;fastFilterVariables: I check for constant columns&quot;
+<pre><code>## [1] &quot;fastFilterVariables: I check for constant columns.&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.26s to identify 1 constant column(s)&quot;
-## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet&quot;
-## [1] &quot;fastFilterVariables: I check for columns in double&quot;
+## [1] &quot;whichAreConstant: it took me 0.2s to identify 1 constant column(s)&quot;
+## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet.&quot;
+## [1] &quot;fastFilterVariables: I check for columns in double.&quot;
 ## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.25s to identify 1 double(s)&quot;
-## [1] &quot;fastFilterVariables: I delete 1 column(s) that are in double in dataSet&quot;
-## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column&quot;
+## [1] &quot;whichAreInDouble: it took me 0.19s to identify 1 double(s)&quot;
+## [1] &quot;fastFilterVariables: I delete 1 column(s) that are in double in dataSet.&quot;
+## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 0.56s to identify 2 bijection(s)&quot;
-## [1] &quot;fastFilterVariables: I delete 2 column(s) that are bijections of another column in dataSet&quot;
+## [1] &quot;whichAreBijection: it took me 0.45s to identify 2 bijection(s)&quot;
+## [1] &quot;fastFilterVariables: I delete 2 column(s) that are bijections of another column in dataSet.&quot;
 ## [1] &quot;messy_adult now have 20 columns; so 4 less than before.&quot;</code></pre>
 <p>4 useless rows have been deleted. Without those useless columns, your machine learning algorithm will at least be faster and maybe give better results.</p>
 </div>
@@ -853,22 +880,22 @@ mail
 <tbody>
 <tr>
 <td style="text-align:left;">
-2017-09-22
+2017-10-08
 </td>
 <td style="text-align:left;">
-2017-06-17
+2017-02-15
 </td>
 <td style="text-align:left;">
-2017-07-24
+2017-01-26
 </td>
 <td style="text-align:right;">
--0.45
+-0.06
 </td>
 <td style="text-align:right;">
--0.83
+NA
 </td>
 <td style="text-align:left;">
-<a href="mailto:lucas.pierre@aol.com">lucas.pierre@aol.com</a>
+<a href="mailto:cynthia.lucas@gmail.com">cynthia.lucas@gmail.com</a>
 </td>
 <td style="text-align:left;">
 …
@@ -876,22 +903,22 @@ mail
 </tr>
 <tr>
 <td style="text-align:left;">
-2017-07-18
+2017-01-24
 </td>
 <td style="text-align:left;">
-2017-07-15
-</td>
-<td style="text-align:left;">
-2017-07-26
-</td>
-<td style="text-align:right;">
-1.44
-</td>
-<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
-<a href="mailto:caroline.marie@yahoo.com">caroline.marie@yahoo.com</a>
+2017-05-22
+</td>
+<td style="text-align:right;">
+0.23
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:left;">
+<a href="mailto:pierre.caroline@protonmail.com">pierre.caroline@protonmail.com</a>
 </td>
 <td style="text-align:left;">
 …
@@ -899,19 +926,42 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-2017-01-05
+2017-11-27
 </td>
 <td style="text-align:left;">
+2017-10-22
+</td>
+<td style="text-align:left;">
+2017-10-24
+</td>
+<td style="text-align:right;">
+-1.30
+</td>
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:left;">
-2017-08-20
+<a href="mailto:cynthia.lucas@protonmail.com">cynthia.lucas@protonmail.com</a>
+</td>
+<td style="text-align:left;">
+…
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017-08-31
+</td>
+<td style="text-align:left;">
+2017-05-09
+</td>
+<td style="text-align:left;">
+2017-03-09
 </td>
 <td style="text-align:right;">
-1.72
+-0.23
 </td>
 <td style="text-align:right;">
-0.76
+1.24
 </td>
 <td style="text-align:left;">
 <a href="mailto:jake.lucas@protonmail.com">jake.lucas@protonmail.com</a>
@@ -922,22 +972,22 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-2017-11-28
+2017-06-04
 </td>
 <td style="text-align:left;">
-2017-12-19
+NA
 </td>
 <td style="text-align:left;">
-2017-05-14
-</td>
-<td style="text-align:right;">
-1.95
+2017-06-15
 </td>
 <td style="text-align:right;">
 NA
 </td>
+<td style="text-align:right;">
+0.57
+</td>
 <td style="text-align:left;">
-<a href="mailto:marie.pierre@aol.com">marie.pierre@aol.com</a>
+<a href="mailto:lucas.pierre@aol.com">lucas.pierre@aol.com</a>
 </td>
 <td style="text-align:left;">
 …
@@ -945,45 +995,22 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-2017-08-02
+2017-11-13
 </td>
 <td style="text-align:left;">
-2017-01-14
+2017-03-17
 </td>
 <td style="text-align:left;">
-2017-10-31
+2017-11-09
 </td>
 <td style="text-align:right;">
--0.56
+1.41
 </td>
 <td style="text-align:right;">
-0.90
+-1.47
 </td>
 <td style="text-align:left;">
-<a href="mailto:caroline.caroline@aol.com">caroline.caroline@aol.com</a>
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017-07-28
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-2017-12-31
-</td>
-<td style="text-align:right;">
-0.86
-</td>
-<td style="text-align:right;">
-0.76
-</td>
-<td style="text-align:left;">
-NA
+<a href="mailto:jake.pierre@yahoo.com">jake.pierre@yahoo.com</a>
 </td>
 <td style="text-align:left;">
 …
@@ -1038,22 +1065,22 @@ date3.Minus.analysisDate
 …
 </td>
 <td style="text-align:right;">
-97
+235
 </td>
 <td style="text-align:right;">
-60
+255
 </td>
 <td style="text-align:right;">
--37
+20
 </td>
 <td style="text-align:right;">
--100.95833
+-84.95833
 </td>
 <td style="text-align:right;">
--197.95833
+-319.95833
 </td>
 <td style="text-align:right;">
--160.9583333
+-339.95833
 </td>
 </tr>
 <tr>
@@ -1061,22 +1088,91 @@ date3.Minus.analysisDate
 …
 </td>
 <td style="text-align:right;">
-3
+NA
 </td>
 <td style="text-align:right;">
--8
+-118
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+-341.95833
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+-223.95833
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+-2
+</td>
+<td style="text-align:right;">
+-34.95833
+</td>
+<td style="text-align:right;">
+-70.95833
+</td>
+<td style="text-align:right;">
+-68.95833
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:right;">
+114
+</td>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:right;">
+-122.95833
+</td>
+<td style="text-align:right;">
+-236.95833
+</td>
+<td style="text-align:right;">
+-297.95833
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:right;">
+NA
 </td>
 <td style="text-align:right;">
 -11
 </td>
 <td style="text-align:right;">
--166.95833
+NA
 </td>
 <td style="text-align:right;">
--169.95833
+-210.95833
 </td>
 <td style="text-align:right;">
--158.9583333
+NA
+</td>
+<td style="text-align:right;">
+-199.95833
 </td>
 </tr>
 <tr>
@@ -1084,91 +1180,22 @@ date3.Minus.analysisDate
 …
 </td>
 <td style="text-align:right;">
-NA
+241
 </td>
 <td style="text-align:right;">
--227
+4
 </td>
 <td style="text-align:right;">
-NA
+-237
 </td>
 <td style="text-align:right;">
--360.95833
+-48.95833
 </td>
 <td style="text-align:right;">
-NA
+-289.95833
 </td>
 <td style="text-align:right;">
--133.9583333
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:right;">
--21
-</td>
-<td style="text-align:right;">
-198
-</td>
-<td style="text-align:right;">
-219
-</td>
-<td style="text-align:right;">
--33.95833
-</td>
-<td style="text-align:right;">
--12.95833
-</td>
-<td style="text-align:right;">
--231.9583333
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:right;">
-200
-</td>
-<td style="text-align:right;">
--90
-</td>
-<td style="text-align:right;">
--290
-</td>
-<td style="text-align:right;">
--151.95833
-</td>
-<td style="text-align:right;">
--351.95833
-</td>
-<td style="text-align:right;">
--61.9583333
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
--156
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
--156.95833
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
--0.9583333
+-52.95833
 </td>
 </tr>
 </tbody>
@@ -1179,7 +1206,7 @@ NA
 <p>Say in fact you want to model something by country, you would want to compute an aggregation of this table in order to have one line per country.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">agg_adult &lt;-<span class="st"> </span><span class="kw">aggregateByKey</span>(messy_adult, <span class="dt">key =</span> <span class="st">&quot;country&quot;</span>)</code></pre></div>
 <pre><code>## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.67seconds. &quot;</code></pre>
+## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.71seconds. &quot;</code></pre>
 <pre><code>## [1] &quot;117 columns have been built; for 42 countries.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1398,26 +1425,26 @@ Cuba
 <h1><span class="header-section-number">5</span> Handling NAs values</h1>
 <p>Then, let’s handle NAs</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">fastHandleNa</span>(messy_adult)</code></pre></div>
-<pre><code>##     num1  num2                      mail age   ... hr_per_week
-## 1: -0.45 -0.83      lucas.pierre@aol.com  39   ...          40
-## 2:  1.44  0.00  caroline.marie@yahoo.com  50   ...          13
-## 3:  1.72  0.76 jake.lucas@protonmail.com  38   ...          40
-## 4:  1.95  0.00      marie.pierre@aol.com  53   ...          40
+<pre><code>##     num1  num2                           mail age   ... hr_per_week
+## 1: -0.06  0.00        cynthia.lucas@gmail.com  39   ...          40
+## 2:  0.23 -0.32 pierre.caroline@protonmail.com  50   ...          13
+## 3: -1.30  0.00   cynthia.lucas@protonmail.com  38   ...          40
+## 4: -0.23  1.24      jake.lucas@protonmail.com  53   ...          40
 ##          country income date1.Minus.date2 date1.Minus.date3
-## 1: United-States  &lt;=50K                97                60
-## 2: United-States  &lt;=50K                 3                -8
-## 3: United-States  &lt;=50K                 0              -227
-## 4: United-States  &lt;=50K               -21               198
+## 1: United-States  &lt;=50K               235               255
+## 2: United-States  &lt;=50K                 0              -118
+## 3: United-States  &lt;=50K                36                34
+## 4: United-States  &lt;=50K               114               175
 ##    date2.Minus.date3 date1.Minus.analysisDate date2.Minus.analysisDate
-## 1:               -37               -100.95833               -197.95833
-## 2:               -11               -166.95833               -169.95833
-## 3:                 0               -360.95833                  0.00000
-## 4:               219                -33.95833                -12.95833
+## 1:                20                -84.95833               -319.95833
+## 2:                 0               -341.95833                  0.00000
+## 3:                -2                -34.95833                -70.95833
+## 4:                61               -122.95833               -236.95833
 ##    date3.Minus.analysisDate
-## 1:                -160.9583
-## 2:                -158.9583
-## 3:                -133.9583
-## 4:                -231.9583</code></pre>
+## 1:               -339.95833
+## 2:               -223.95833
+## 3:                -68.95833
+## 4:               -297.95833</code></pre>
 <p>It set default values in place of NA. If you want to put some specific values (constants, or even a function for example mean of values) you should go check <code>fastHandleNa</code> documentation.</p>
 </div>
 <div id="shape-functions" class="section level1">
@@ -1464,10 +1491,10 @@ type_employerFederal-gov
 <tbody>
 <tr>
 <td style="text-align:right;">
--0.45
+-0.06
 </td>
 <td style="text-align:right;">
--0.83
+0.00
 </td>
 <td style="text-align:right;">
 1
@@ -1487,10 +1514,10 @@ type_employerFederal-gov
 </tr>
 <tr>
 <td style="text-align:right;">
-1.44
+0.23
 </td>
 <td style="text-align:right;">
-0.00
+-0.32
 </td>
 <td style="text-align:right;">
 1
@@ -1510,10 +1537,10 @@ type_employerFederal-gov
 </tr>
 <tr>
 <td style="text-align:right;">
-1.72
+-1.30
 </td>
 <td style="text-align:right;">
-0.76
+0.00
 </td>
 <td style="text-align:right;">
 1
@@ -1533,10 +1560,10 @@ type_employerFederal-gov
 </tr>
 <tr>
 <td style="text-align:right;">
-1.95
+-0.23
 </td>
 <td style="text-align:right;">
-0.00
+1.24
 </td>
 <td style="text-align:right;">
 1
@@ -1556,10 +1583,10 @@ type_employerFederal-gov
 </tr>
 <tr>
 <td style="text-align:right;">
--0.56
+0.00
 </td>
 <td style="text-align:right;">
-0.90
+0.57
 </td>
 <td style="text-align:right;">
 1
@@ -1579,13 +1606,13 @@ type_employerFederal-gov
 </tr>
 <tr>
 <td style="text-align:right;">
-0.86
+1.41
 </td>
 <td style="text-align:right;">
-0.76
+-1.47
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
 37
@@ -1611,35 +1638,48 @@ type_employerFederal-gov
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;messy_adult&quot;</span>)
 agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy_adult, <span class="dt">finalForm =</span> <span class="st">&quot;data.table&quot;</span>, <span class="dt">key =</span> <span class="st">&quot;country&quot;</span>, <span class="dt">analysisDate =</span> <span class="kw">Sys.Date</span>(), <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
 <pre><code>## [1] &quot;prepareSet: step one: correcting mistakes.&quot;
-## [1] &quot;fastFilterVariables: I check for constant columns&quot;
+## [1] &quot;fastFilterVariables: I check for constant columns.&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.19s to identify 1 constant column(s)&quot;
-## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet&quot;
-## [1] &quot;fastFilterVariables: I check for columns in double&quot;
-## [1] &quot;whichAreInDouble: it took me 0.23s to identify 0 double(s)&quot;
-## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column&quot;
+## [1] &quot;whichAreConstant: it took me 0.2s to identify 1 constant column(s)&quot;
+## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet.&quot;
+## [1] &quot;fastFilterVariables: I check for columns in double.&quot;
+## [1] &quot;whichAreInDouble: it took me 0.25s to identify 0 double(s)&quot;
+## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: date3 is a bijection of date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: num1 is a bijection of num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 0.47s to identify 3 bijection(s)&quot;
-## [1] &quot;fastFilterVariables: I delete 3 column(s) that are bijections of another column in dataSet&quot;
+## [1] &quot;whichAreBijection: it took me 0.54s to identify 3 bijection(s)&quot;
+## [1] &quot;fastFilterVariables: I delete 3 column(s) that are bijections of another column in dataSet.&quot;
+## [1] &quot;findAndTransformFalseFactor: I will identify variable that are factor but shouldn't be.&quot;
+## [1] &quot;findAndTransformFalseFactor: I unfactor mail.&quot;
+## [1] &quot;findAndTransformFalseFactor: It took me 0.2s to unfactor 1 column(s).&quot;
 ## [1] &quot;findAndTransformNumerics: It took me 0.19s to identify 2 numerics column(s), i will set them as numerics&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.05s to transform 2 column(s) to a numeric format&quot;
-## [1] &quot;findAndTransformDates: It took me 0.23s to identify formats&quot;
-## [1] &quot;findAndTransformDates: It took me 0.03s to transform 3 columns to a Date format&quot;
+## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
+## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
+## [1] &quot;setColAsNumeric: I am doing the columnnum2&quot;
+## [1] &quot;setColAsNumeric:0NA have been created due to transformation to numeric&quot;
+## [1] &quot;setColAsNumeric: I am doing the columnnum3&quot;
+## [1] &quot;setColAsNumeric:0NA have been created due to transformation to numeric&quot;
+## [1] &quot;findAndTransformNumerics: It took me 0.07s to transform 2 column(s) to a numeric format.&quot;
+## [1] &quot;findAndTransformDates: It took me 0.24s to identify formats&quot;
+## [1] &quot;findAndTransformDates: It took me 0.01s to transform 3 columns to a Date format&quot;
 ## [1] &quot;prepareSet: step two: transforming dataSet.&quot;
 ## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.72seconds. &quot;
+## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 0.66seconds. &quot;
 ## [1] &quot;prepareSet: step three: filtering dataSet.&quot;
-## [1] &quot;prepareSet: I check for constant columns&quot;
+## [1] &quot;prepareSet: I check for constant columns.&quot;
+## [1] &quot;whichAreConstant: mean.num2 is constant.&quot;
+## [1] &quot;whichAreConstant: min.num2 is constant.&quot;
+## [1] &quot;whichAreConstant: max.num2 is constant.&quot;
+## [1] &quot;whichAreConstant: sd.num2 is constant.&quot;
 ## [1] &quot;whichAreConstant: min.capital_gain is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.23s to identify 1 constant column(s)&quot;
-## [1] &quot;prepareSet: I delete 1 constant column(s) in result&quot;
-## [1] &quot;prepareSet: I check for columns in double&quot;
+## [1] &quot;whichAreConstant: it took me 0.25s to identify 5 constant column(s)&quot;
+## [1] &quot;prepareSet: I delete 5 constant column(s) in result.&quot;
+## [1] &quot;prepareSet: I check for columns in double.&quot;
 ## [1] &quot;whichAreInDouble: nbr.mail is exactly equal to nbrLines. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.42s to identify 1 double(s)&quot;
-## [1] &quot;prepareSet: I delete 1 column(s) that are in double in result&quot;
-## [1] &quot;prepareSet: I check for columns that are bijections of another column&quot;
+## [1] &quot;whichAreInDouble: it took me 0.41s to identify 1 double(s)&quot;
+## [1] &quot;prepareSet: I delete 1 column(s) that are in double in result.&quot;
+## [1] &quot;prepareSet: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: mean.age is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.age is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: mean.fnlwgt is a bijection of country. I put it in drop list.&quot;
@@ -1649,8 +1689,6 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;whichAreBijection: sd.hr_per_week is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: mean.date4.Minus.analysisDate is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.date4.Minus.analysisDate is a bijection of country. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.num2 is a bijection of mean.num2. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.num2 is a bijection of mean.num2. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: min.num3 is a bijection of mean.num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: max.num3 is a bijection of mean.num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: occupation.? is a bijection of type_employer.?. I put it in drop list.&quot;
@@ -1671,28 +1709,28 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;whichAreBijection: min.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: max.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.date2.Minus.analysisDate is a bijection of sd.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 5.87s to identify 31 bijection(s)&quot;
-## [1] &quot;prepareSet: I delete 31 column(s) that are bijections of another column in result&quot;
+## [1] &quot;whichAreBijection: it took me 6.16s to identify 29 bijection(s)&quot;
+## [1] &quot;prepareSet: I delete 29 column(s) that are bijections of another column in result.&quot;
 ## [1] &quot;prepareSet: step four: handling NA.&quot;
 ## [1] &quot;prepareSet: step five: shaping result.&quot;
 ## [1] &quot;Transforming characters into factors.&quot;
 ## [1] &quot;Transforming numerical variables into factors when length(unique(col)) &lt;=10.&quot;
-## Going through 83 numerical variables to transform if necessary.
+## Going through 81 numerical variables to transform if necessary.
 ## [1] &quot;Transforming logicals into binaries.\n&quot;
 ## [1] &quot;Previous distribution of column types:&quot;
 ## col_class_init
 ##  factor numeric 
-##       1      83 
+##       1      81 
 ## [1] &quot;Current distribution of column types:&quot;
 ## col_class_end
 ##  factor numeric 
-##      32      52 
+##      31      51 
 ## [1] &quot;Quantiles for the number of factor modalities:&quot;
 ##   0%  10%  20%  30%  40%  50%  60%  70%  80%  90% 100% 
-##  2.0  2.1  3.0  4.0  5.0  7.0  8.0  9.0  9.8 10.0 42.0</code></pre>
+##    2    2    3    4    5    7    9    9   10   10   42</code></pre>
 <p>As one can see, every previously steps have been done.</p>
 <p>Let’s have a look to the result</p>
-<pre><code>## [1] &quot;84 columns have been built; for 42 countries.&quot;</code></pre>
+<pre><code>## [1] &quot;82 columns have been built; for 42 countries.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1704,12 +1742,6 @@ country
 nbrLines
 </th>
 <th style="text-align:left;">
-mean.num2
-</th>
-<th style="text-align:left;">
-sd.num2
-</th>
-<th style="text-align:left;">
 mean.num3
 </th>
 <th style="text-align:left;">
@@ -1717,6 +1749,12 @@ sd.num3
 </th>
 <th style="text-align:left;">
 min.age
+</th>
+<th style="text-align:right;">
+max.age
+</th>
+<th style="text-align:right;">
+type_employer.?
 </th>
 <th style="text-align:left;">
 …
@@ -1738,13 +1776,13 @@ min.age
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 17
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+27
 </td>
 <td style="text-align:left;">
 …
@@ -1764,13 +1802,13 @@ Cambodia
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 18
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 …
@@ -1790,13 +1828,13 @@ Canada
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 17
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+14
 </td>
 <td style="text-align:left;">
 …
@@ -1816,13 +1854,13 @@ China
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 22
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+7
 </td>
 <td style="text-align:left;">
 …
@@ -1842,13 +1880,13 @@ Columbia
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 18
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+3
 </td>
 <td style="text-align:left;">
 …
@@ -1868,13 +1906,13 @@ Cuba
 0
 </td>
 <td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
 21
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:right;">
+3
 </td>
 <td style="text-align:left;">
 …

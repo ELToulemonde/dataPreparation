@@ -45,6 +45,5 @@ whichAreIncluded(messy_adult)
 
 # But you should be carefull, if there is a column id, every column will be dropped:
 messy_adult$id = 1:nrow(messy_adult) # build id
-setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 whichAreIncluded(messy_adult)
 }

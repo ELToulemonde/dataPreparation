@@ -68,6 +68,7 @@ test_that("aggegateByKey: no aggregation",
 data("adult")	
 adult <- adult[1:5000, ]
 adult$country2 <- adult$country
+adult$boolcall <- sample(c(TRUE, FALSE), nrow(adult), replace = TRUE)
 adult_agg <- aggregateByKey(adult, key = "country", verbose = verbose)
 test_that("aggegateByKey: Column that is a copy of key	",
           {
