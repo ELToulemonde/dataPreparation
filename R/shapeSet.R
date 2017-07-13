@@ -40,13 +40,6 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   dataSet = setColAsFactorOrLogical(dataSet, carac_cols, verbose = verbose)
   
   
-  if (verbose & length(carac_cols) > 0) {
-    cat("Nota: quantiles for the number of modalities of those former character columns:\n")
-    listCardLevels <- sapply(carac_cols, function(x, dataSet)
-      length(levels(dataSet[[x]])), dataSet = dataSet)
-    print(quantile(listCardLevels, probs = seq(0, 1, .1)))
-  }
-  
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)
   # TODO : paralleliser la recherche de variables à transformer
   if (verbose) {printl("Transforming numerical variables into factors when length(unique(col)) <=",  thresh, ".")}

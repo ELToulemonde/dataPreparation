@@ -42,6 +42,12 @@ test_that("private function identifyDates :",
             expect_equal(all(identifyDates(dataSet, n_test = 5, verbose = verbose)[[2]] == c("%Y-%m-%d", "%Y_%m_%d")), TRUE)
           })
 
+## identifyDatesFormats 
+# ----------------
+test_that("Private function: identifyDatesFormats ",
+		{
+		expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
+		})
 
 
 ## dateDiffs
@@ -63,10 +69,32 @@ test_that("dateDiffs: ",
             expect_equal(ncol(dataSet), 6)
             expect_equal(sum(is.na(dataSet)), 0)
           })
-
+		  
+		  
+dataSet <- data.table(ID = 1:100, 
+                      date1 = seq(from = as.Date("2010-01-01"), 
+                                  to = as.Date("2015-01-01"), 
+                                  length.out = 100), 
+                      date2 = seq(from = as.Date("1910-01-01"), 
+                                  to = as.Date("2000-01-01"), 
+                                  length.out = 100)
+)
+test_that("dateDiffs: errors",
+		{
+		expect_error(diffDates(dataSet, analysisDate = "2017-01-01"),  "analysisDate must be a Date")
+		})
+		
 ## diffTime
 #----------
 
+test_that("diffTime: ",
+		{
+		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "days"), 1)
+		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "hours"), 24)
+		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "mins"), 1440)
+		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "years"), 1 / 365.25)
+		expect_error(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "zadtfrey"), "Sorry this unit hasn't been implemented yet")
+		})
 
 ## dateFormatUnifier
 #-------------------
@@ -79,6 +107,7 @@ dataSet <- dateFormatUnifier(dataSet, format = "Date")
 test_that("dateFormatUnifier:", 
           {
             expect_equal(all(sapply(dataSet, class) == c("Date", "Date")), TRUE)
+			expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
           })
 
 ## is.date

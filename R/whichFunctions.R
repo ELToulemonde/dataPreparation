@@ -141,8 +141,8 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
       }
       J <- J[-1] # drop handled j
     }
-    I <- I[!I %in% listOfDoubles]
     I <- I[-1] # drop handled i
+    I <- I[!I %in% listOfDoubles]
     if (verbose){
 	  setPB(pb, names(dataSet)[i])
     }
@@ -216,10 +216,10 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     
     J <- (i+1):ncol(dataSet)
     J <- J[!J %in% listOfBijection]
-    while (length(J)>0){
+    while (length(J) > 0){
       j <- J[1]
       if (fastIsBijection(dataSet[, c(i, j), with = FALSE])){
-        if (any(class(dataSet[[j]]) %in% c("character", "factor"))){
+        if (is.character(dataSet[[j]]) || is.factor(dataSet[[j]])){
           # If j is a character we keep it and drop i, we prefer to have character instead of "false" numerics.
           listOfBijection <- c(listOfBijection, i)
 		  if(verbose){
@@ -234,10 +234,10 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
 		  }
         }
       }
-      J <- J[-1] # drop handled j
+	  J <- J[-1] # drop handled j	  
     }
-    I <- I[!I %in% listOfBijection]
     I <- I[-1] # drop handled i
+	I <- I[!I %in% listOfBijection]
     if (verbose){
       setPB(pb, names(dataSet)[i])
     }
@@ -246,7 +246,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     close(pb); rm(pb); gc()
   }
   ## Wrapp up
-  listOfBijection <- unique(listOfBijection)
+  listOfBijection <- sort(unique(listOfBijection))
   if (verbose){
     printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfBijection), " bijection(s)")
   }
@@ -293,7 +293,6 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
 #' 
 #' # But you should be carefull, if there is a column id, every column will be dropped:
 #' messy_adult$id = 1:nrow(messy_adult) # build id
-#' setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 #' whichAreIncluded(messy_adult)
 #' @export
 whichAreIncluded <- function(dataSet, verbose = TRUE){
@@ -339,13 +338,13 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
 		  if(verbose){
 		    printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
 		  }
+		  break # Break loop since i will be dropped.
         }
-      }
-      
+      }  
       J <- J[-1] # drop handled j
     }
+	I <- I[-1] # drop handled i
     I <- I[!I %in% listOfIncluded]
-    I <- I[-1] # drop handled i
     if (verbose){
       setPB(pb, names(dataSet)[i])
     }
@@ -354,7 +353,7 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
     close(pb); rm(pb); gc()
   }
   ## Wrapp up
-  listOfIncluded <- unique(listOfIncluded)
+  listOfIncluded <- sort(unique(listOfIncluded))
   
   return(listOfIncluded)
 }

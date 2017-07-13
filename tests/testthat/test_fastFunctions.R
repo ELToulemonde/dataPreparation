@@ -39,6 +39,13 @@ test_that("fastHandleNa: There are no more NAs",
             expect_equal(sum(is.na(data_withoutNA)), 0)
           })
 
+data("messy_adult")
+messy_adult$mail[sample(1:nrow(messy_adult), 10)] = NA
+messy_adult <- fastHandleNa(messy_adult)
+test_that("fastHandleNa: There are no more NAs with factor", 
+          {
+            expect_equal(sum(is.na(messy_adult)), 0)
+          })
 
 ## fastIsEqual
 #--------------
@@ -65,9 +72,9 @@ test_that("private function: fastIsEqual",
 data("adult")
 setDF(adult)
 
-test_that("private function: fastIsBijection", 
+test_that("private function: fastIsBijection error if not 2 columns", 
           {
-            expect_error(fastIsBijection(adult[, 1]))
+            expect_error(fastIsBijection(adult), "fastIsBijection: dataSet should be a data.table or a data.frame with 2 columns")
           }
 )
 test_that("private function: fastIsBijection", 
