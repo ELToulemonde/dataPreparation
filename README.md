@@ -33,8 +33,8 @@ Here are the functions available in this package to tackle those issues:
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
 unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | setAsNumericMatrix
-findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              |
+findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | same_shape
+findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              | setAsNumericMatrix
 setColAsCharacter           |                          | whichAreBijection   |              |
 setColAsNumeric             |                          | fastRound           |              |
 setColAsDate                |                          |                     |              |

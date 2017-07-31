@@ -246,7 +246,9 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
     close(pb); rm(pb); gc()
   }
   ## Wrapp up
-  listOfBijection <- sort(unique(listOfBijection))
+  if (! is.null(listOfBijection)){
+	listOfBijection <- sort(unique(listOfBijection))
+  }
   if (verbose){
     printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfBijection), " bijection(s)")
   }
