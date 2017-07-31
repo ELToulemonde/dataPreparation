@@ -50,8 +50,8 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if ( !(is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])) & verbose){
-      warning(paste(function_name, ":", col, 
-                    "isn't a character a numeric or an integer, i do nothing"))
+      warning(paste(function_name, ": ", col, 
+                    " isn't a character a numeric or an integer, i do nothing."))
     }
     if (is.character(dataSet[[col]])){
       
@@ -63,8 +63,8 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
         set(dataSet, NULL, col, as.numeric(dataSet[[col]])) 
       }
       if (verbose){
-        printl(function_name, ":", sum(is.na(dataSet[[col]])) - nb_na_init, 
-               "NA have been created due to transformation to numeric")
+        printl(function_name, ": ", sum(is.na(dataSet[[col]])) - nb_na_init, 
+               " NA have been created due to transformation to numeric.")
       } 
     }
   }
@@ -116,7 +116,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
       printl(function_name, ": I am doing the column", col)
     }
     if ( (is.character(dataSet[[col]])) & verbose){
-      printl(function_name, ":", col, "is a character, i do nothing")
+      printl(function_name, ": ", col, " is a character, i do nothing.")
     }
     if (! (is.character(dataSet[[col]]))){
       set(dataSet, NULL, col, as.character(dataSet[[col]])) 
