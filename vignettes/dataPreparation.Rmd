@@ -56,7 +56,7 @@ Here are the functions available in this package to tackle those issues:
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
 unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | same_shape
+findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | sameShape
 findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              | setAsNumericMatrix
 setColAsCharacter           |                          | whichAreBijection   |              |
 setColAsNumeric             |                          | fastRound           |              |
