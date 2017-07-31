@@ -33,7 +33,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   
   ##  Initialization
   col_class <- sapply(dataSet, class)
-  col_class_init <- col_class
+  col_class_init <-  sapply(col_class, function(x){x[[1]]}) # Safety for classes with multiple values: ex: POSIXct, POSIXt
   ## Computation
   if (verbose) {printl("Transforming characters into factors.")}
   carac_cols <- names(col_class)[col_class %in% c("character")]
@@ -70,6 +70,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   # Distribution des types de colonnes
   if (verbose){
     col_class_end <- sapply(dataSet, class)
+	col_class_end <- sapply(col_class_end, function(x){x[[1]]})
     printl("Previous distribution of column types:")
     print(table(col_class_init))
     printl("Current distribution of column types:")

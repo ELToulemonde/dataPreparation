@@ -382,7 +382,7 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), hou
   if (hours){
     for (datesFormat in datesFormats){
       for (hoursFormat in hours_format){
-        formats <- c(formats, paste(datesFormat, hoursFormat))
+        formats <- c(formats, paste(datesFormat, hoursFormat), paste0(datesFormat, "T", hoursFormat), paste0(datesFormat, "T", hoursFormat, "Z"))
       }
     }
   }
