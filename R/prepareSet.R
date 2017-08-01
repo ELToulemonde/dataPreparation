@@ -6,8 +6,8 @@
 #' Full pipeline for preparing your dataSet set \cr
 #' It will perform the following steps: \cr
 #' - Correct set: unfactor factor with many values, id dates and numerics that are hiden in string \cr
-#' - Transform set: compute differences between every date, if `key` is provided, 
-#' will perform aggregate according to this key \cr
+#' - Transform set: compute differences between every date, transform dates into factors, if `key` 
+#' is provided, will perform aggregate according to this key \cr
 #' - Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
 #' will round numerics \cr
 #' - Handle NA: will perform \code{\link{fastHandleNa}}) \cr
@@ -19,14 +19,19 @@
 #' @details
 #' Aditional arguments are available to thune pipeline: 
 #' \itemize{
-#'   \item \code{key} name of a column of dataSet according to which dataSet should be aggregated (character)
+#'   \item \code{key} name of a column of dataSet according to which dataSet should be aggregated 
+#'      (character)
 #'   \item \code{analysisDate} A date at which the dataSet should be aggregated 
-#' (differences between every date and analysisDate will be computed) (Date)
-#'   \item \code{n_unfactor} number of max value in a facotr, set it to -1 to disable \code{\link{unFactor}} function.  (numeric, default to 53)
-#'   \item \code{digits} The number of digits after comma (optional, numeric, if set will perform \code{\link{fastRound}})
+#'      (differences between every date and analysisDate will be computed) (Date)
+#'   \item \code{n_unfactor} number of max value in a facotr, set it to -1 to disable 
+#'   \code{\link{unFactor}} function.  (numeric, default to 53)
+#'   \item \code{digits} The number of digits after comma (optional, numeric, if set will perform 
+#'      \code{\link{fastRound}})
 #'   \item \code{dateFormats} List of format of Dates in dataSet (list of characters)
 #'   \item \code{name_separator} string to separate parts of new column names (string)
-#'   \item \code{functions}:  aggregation functions for numeric columns (list of functions)
+#'   \item \code{functions}  aggregation functions for numeric columns (list of functions)
+#'   \item \code{factor_date_type} aggregation level to factorize date (see 
+#'      \code{\link{generateFactorFromDate}}) (character, default to "yearmonth")
 #' }
 #' @return A data.table or a numerical matrix (according to finalForm)  and 
 #' @examples 
@@ -78,7 +83,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     n_unfactor <- args[["n_unfactor"]]
   }
   else{
-	n_unfactor <- 53
+	  n_unfactor <- 53
   }
   dataSet <- unFactor(dataSet, n_unfactor = n_unfactor, verbose = verbose)
   
@@ -91,9 +96,20 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
 	printl(function_name, ": step two: transforming dataSet.")
   }
   # 2.1 Compute differences between dates
-  result <- diffDates(dataSet, analysisDate = args[["analysisDate"]], 
-                      name_separator = args[["name_separator"]])
-  # get ride of dates columns 
+  result <- generateDateDiffs(dataSet, analysisDate = args[["analysisDate"]], 
+							  name_separator = args[["name_separator"]])
+
+  # 2.2 Build factor from dates month
+  if (! is.null(args[["factor_date_type"]])){
+    factor_date_type <- args[["factor_date_type"]]
+  }
+  else{
+    factor_date_type <- "yearmonth"
+  }
+  date_cols <- names(result)[sapply(result, is.date)]
+  result <- generateFactorFromDate(dataSet, cols = date_cols, type = factor_date_type, verbose = verbose)
+  
+  # 2.3 get ride of dates columns 
   result <- result[, names(result)[!sapply(result, is.date)], with = FALSE] 
   
   # 2.2 Aggregate by key 

@@ -32,10 +32,10 @@ Here are the functions available in this package to tackle those issues:
 
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
-unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | sameShape
-findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           |                          | whichAreBijection   |              |
+unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
+findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
+findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
+setColAsCharacter           | setColAsFactorOrLogical  | whichAreBijection   |              |
 setColAsNumeric             |                          | fastRound           |              |
 setColAsDate                |                          |                     |              |
 
