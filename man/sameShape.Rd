@@ -4,25 +4,25 @@
 \alias{sameShape}
 \title{Give same shape}
 \usage{
-sameShape(transformSet, referenceSet, verbose = TRUE)
+sameShape(dataSet, referenceSet, verbose = TRUE)
 }
 \arguments{
-\item{transformSet}{Matrix, data.frame or data.table to transform}
+\item{dataSet}{Matrix, data.frame or data.table to transform}
 
 \item{referenceSet}{Matrix, data.frame or data.table}
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 }
 \value{
-Retrun \code{transformSet} transformed in order to make it have the same shape as
+Retrun \code{dataSet} transformed in order to make it have the same shape as
 \code{referenceSet}
 }
 \description{
-Transform \code{transformSet} into the same shape as \code{referenceSet}. Espacially this 
+Transform \code{dataSet} into the same shape as \code{referenceSet}. Espacially this 
 function will be usefull to make your test set have the same shape as your train set.
 }
 \details{
-This function will make sure that \code{transformSet} and \code{referenceSet} 
+This function will make sure that \code{dataSet} and \code{referenceSet} 
 \itemize{
    \item have the same class
    \item have exactly the same columns

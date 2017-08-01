@@ -37,7 +37,15 @@ test_that(paste0( function_name, ": "),
           })
 
 
+# test df
+setDF(messy_adult)
 
+test_that(paste0( function_name, ": transform to data frame"),
+		{
+		expect_equal(class(sameShape(adult, messy_adult, verbose = verbose)), "data.frame")
+		}
+		)
+		
 # Different type
 data(adult)
 adult_num <- shapeSet(adult, finalForm = "numerical_matrix", verbose = FALSE)

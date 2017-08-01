@@ -1,14 +1,14 @@
 #' Give same shape
 #' 
-#' Transform \code{transformSet} into the same shape as \code{referenceSet}. Espacially this 
+#' Transform \code{dataSet} into the same shape as \code{referenceSet}. Espacially this 
 #' function will be usefull to make your test set have the same shape as your train set.
-#' @param transformSet Matrix, data.frame or data.table to transform
+#' @param dataSet Matrix, data.frame or data.table to transform
 #' @param referenceSet Matrix, data.frame or data.table
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
-#' @return Retrun \code{transformSet} transformed in order to make it have the same shape as
+#' @return Retrun \code{dataSet} transformed in order to make it have the same shape as
 #' \code{referenceSet}
 #' @details
-#' This function will make sure that \code{transformSet} and \code{referenceSet} 
+#' This function will make sure that \code{dataSet} and \code{referenceSet} 
 #' \itemize{
 #'    \item have the same class
 #'    \item have exactly the same columns
@@ -35,12 +35,12 @@
 #' # This is an extrem case but you get the idea.
 #' @import data.table
 #' @export
-sameShape <- function(transformSet, referenceSet, verbose = TRUE){
+sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   ## Working environement
   function_name <- "sameShape"
   
   ## Sanity check
-  transformSet <- checkAndReturnDataTable(transformSet)
+  dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
   
   ## Initialization
@@ -49,6 +49,7 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
   if (! any(referenceSet_class %in% c("data.table", "data.frame", "matrix") )){
     stop(paste0(function_name, "referenceSet should be a data.table, data.frame or matrix."))
   }
+  # To-do: check if it is possible not to transform referenceSet which is expensive in RAM.
   referenceSet <- checkAndReturnDataTable(referenceSet)
   
   
@@ -58,8 +59,8 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
     printl(function_name, ": verify that every column is present.")
   }
   for (col in names(referenceSet)){
-    if (! col %in% names(transformSet)){
-      transformSet[[col]] <- NA
+    if (! col %in% names(dataSet)){
+      dataSet[[col]] <- NA
       if (verbose){
         printl(function_name, ": column ", col, " was missing, I create it.")
       }
@@ -69,22 +70,22 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
   # Drop unwanted columns
   if (verbose){
     printl(function_name, ": drop unwanted columns.")
-    drop_list <- names(transformSet)[! names(transformSet) %in% names(referenceSet)]
+    drop_list <- names(dataSet)[! names(dataSet) %in% names(referenceSet)]
     if (length(drop_list) > 0){
       if (verbose){
         printl(function_name, ": the folowing columns are in transform set but not in reference set: i drop them: ")
         print(drop_list)
       }
-      transformSet[, (drop_list) := NULL]
+      dataSet[, (drop_list) := NULL]
     }
   }
   # Class of columns
   if (verbose){
     printl(function_name, ": verify that every column is in the right type.")
-    pb <- initPB(function_name, names(transformSet))
+    pb <- initPB(function_name, names(dataSet))
   }
-  for (col in names(transformSet)){
-    trans_class <- class(transformSet[[col]])
+  for (col in names(dataSet)){
+    trans_class <- class(dataSet[[col]])
     ref_class <- class(referenceSet[[col]])
     if (! all(trans_class == ref_class)){
       transfo_function <- paste0("as.", ref_class[[1]])
@@ -93,10 +94,10 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
           printl(function_name, ": ", col, " class was ", trans_class, " i set it to ",
                  ref_class, ".")
         }
-        set(transformSet, NULL, col, get(transfo_function)(transformSet[[col]]))
+        set(dataSet, NULL, col, get(transfo_function)(dataSet[[col]]))
         
         # Control
-        if (! all(class(transformSet[[col]]) == ref_class)){
+        if (! all(class(dataSet[[col]]) == ref_class)){
            warning(paste0(function_name, ": bug in transformation please report it."))
         }
       }
@@ -116,14 +117,14 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
   # Factor levels
   if (verbose){
     printl(function_name, ": verify that every factor as the right number of levels.")
-    pb <- initPB(function_name, names(transformSet))
+    pb <- initPB(function_name, names(dataSet))
   }
-  for (col in names(transformSet)){
-    if (is.factor(transformSet[[col]])){
-      transfo_levels <- levels(transformSet[[col]])
+  for (col in names(dataSet)){
+    if (is.factor(dataSet[[col]])){
+      transfo_levels <- levels(dataSet[[col]])
       ref_levels <- levels(referenceSet[[col]])
       if (! identical(transfo_levels, ref_levels)){
-        set(transformSet, NULL, col, factor(transformSet[[col]], levels = ref_levels))
+        set(dataSet, NULL, col, factor(dataSet[[col]], levels = ref_levels))
         if (verbose){
           printl(function_name, ": ", col, " class add different levels than in referenceSet i change it.")
         }
@@ -138,19 +139,19 @@ sameShape <- function(transformSet, referenceSet, verbose = TRUE){
   }
   
   # Re-order columns
-  setcolorder(transformSet, names(referenceSet))
+  setcolorder(dataSet, names(referenceSet))
   
   # Set class
-  if (! identical(referenceSet_class, class(transformSet))){
+  if (! identical(referenceSet_class, class(dataSet))){
     if (referenceSet_class == "data.frame"){
-      setDF(transformSet)
+      setDF(dataSet)
     }
     if (referenceSet_class == "matrix"){
-      transformSet <- as.matrix(transformSet)
+      dataSet <- as.matrix(dataSet)
     }
   }
   
   ## Wrapp-up
-  return(transformSet)
+  return(dataSet)
 }
   
