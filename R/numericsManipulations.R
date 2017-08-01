@@ -134,7 +134,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
 #######################################################################################
 identifyNumericsFormats <- function(dataSet){
   if (! is.character(dataSet)){
-    stop("identifyDatesFormats: dataSet should be some characters")
+    stop("identifyNumericsFormats: dataSet should be some characters")
   }
   
   # Check for direct convertion
