@@ -37,7 +37,13 @@ test_that("private function identifyNumerics :",
             expect_equal(identifyNumerics(dataSet, n_test = 5, verbose = verbose)[[1]], "col1")
             expect_equal(identifyNumerics(dataSet, n_test = 5, verbose = verbose)[[2]], "col2")
           })
-
+	
+## identifyNumericsFormats
+# ------------------------	
+test_that("private function identifyNumericsFormats  : error",
+		   {
+            expect_error(identifyNumericsFormats(factor(c(1,2,3))), "identifyNumericsFormats: dataSet should be some characters")
+          })
 ## as.numericStrip
 # ----------------
 

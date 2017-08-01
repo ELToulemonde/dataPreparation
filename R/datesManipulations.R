@@ -105,16 +105,15 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
         # Identify potentially used separator by checking it split date in at last two elements
         date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
         
-        # Check formats with"date hours" only if there are more than 10 characters
-        hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
+        # Check formats with "date_hours" only if there are more than 10 characters
+        date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
         # Debug warning
-        if (is.na(hours) || is.infinite(hours)){ 
-          warning(paste0(function_name, ": error i shouldn\'t be there. ",  ))
-          hours <- FALSE
+        if (is.na(date_hours) || is.infinite(date_hours)){ 
+          warning(paste0(function_name, ": error i shouldn't be there.",  ))
+          date_hours <- FALSE
         }
-        
         # Build list of all formats to check
-        defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, hours = hours)
+        defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
         formats_tmp <- unique(c(defaultDateFormats, formats))
         
         # Look for the good format
@@ -351,7 +350,7 @@ is.date <- function(x){
 ########################################### getPossibleDatesFormats ####################
 ########################################################################################
 ## Ensemble of formats
-getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), hours = TRUE){
+getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), date_hours = TRUE){
   ## Initialization
   hours_format <- c("%H:%M:%S", "%H:%M", "%H")
   base_year <- c("%Y", "%y")
@@ -377,9 +376,9 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), hou
     }
   }
   
-  # Complete the list with the same formats but with a time format at the and separed by a ' '
-  formats <- c(datesFormats)
-  if (hours){
+  # Complete the list with the same formats but with a time format at the and separed by a ' ' or a "T" and optionaly with a "Z" at the end
+  formats <- c(datesFormats, hours_format)
+  if (date_hours){
     for (datesFormat in datesFormats){
       for (hoursFormat in hours_format){
         formats <- c(formats, paste(datesFormat, hoursFormat))
@@ -397,19 +396,19 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), hou
 # Code is commented and result hard written so that it's way faster. You should keep it that way
 formatForparse_date_time<- function(){
   # # Get complete liste of format
-  # listOfFastFormat = getPossibleDatesFormats()
-  # result = NULL
+  # listOfFastFormat <- getPossibleDatesFormats()
+  # result <- NULL
   # for (format in listOfFastFormat){
-  #   temp =parse_date_time(format(Sys.Date(), format), orders = format)== Sys.Date()
+  #   temp <- parse_date_time(format(Sys.Date(), format), orders = format)== Sys.Date()
   #   if (is.na(temp)){
-  #     temp = FALSE
+  #     temp <- FALSE
   #   }
   #   if (temp){
-  #     result =c(result, format)
+  #     result <- c(result, format)
   #   }
   # }
-  # result = sapply(result, function(x)str_replace_all(x, "[[:punct:]]", ""))
-  # result = unique(result)
+  # result <- sapply(result, function(x)str_replace_all(x, "[[:punct:]]", ""))
+  # result <- unique(result)
   
   result <- c("Ybd", "Ydb", "dbY", "bdY", "YBd", "YdB", "dBY", "BdY", "Ymd", "Ydm", "dmY", "mdY", "ybd", "ydb", "dby", "bdy", "yBd", "ydB", "dBy", "Bdy", "ymd", "ydm", "dmy", "mdy", "Ybd HMS", "Ybd HM", "Ybd H", "Ydb HMS", "Ydb HM", "Ydb H", "dbY HMS", "dbY HM", "dbY H", "bdY HMS", "bdY HM", "bdY H", "YBd HMS", "YBd HM", "YBd H", "YdB HMS", "YdB HM", "YdB H", "dBY HMS", "dBY HM", "dBY H", "BdY HMS", "BdY HM", "BdY H", "Ymd HMS", "Ymd HM", "Ymd H", "Ydm HMS", "Ydm HM", "Ydm H", "dmY HMS", "dmY HM", "dmY H", "mdY HMS", "mdY HM", "mdY H", "ybd HMS", "ybd HM", "ybd H", "ydb HMS", "ydb HM", "ydb H", "dby HMS", "dby HM", "dby H", "bdy HMS", "bdy HM", "bdy H", "yBd HMS", "yBd HM", "yBd H", "ydB HMS", "ydB HM", "ydB H", "dBy HMS", "dBy HM", "dBy H", "Bdy HMS", "Bdy HM", "Bdy H", "ymd HMS", "ymd HM", "ymd H", "ydm HMS", "ydm HM", "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H")
   

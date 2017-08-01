@@ -54,3 +54,32 @@ If you are proposing a feature:
 
   
   
+  
+  
+Code conventions
+-----------------
+
+## Function names
+set...      # Change into ...
+which...    # Identify ...
+fast...     # Perform in an efficient way (col by col or by exponential search on lines)
+is.XXX      # Check if is XXX
+
+## Variables
+dataSet     # Input data set 
+data_sample # A piece of data set copied for work purpuse
+result      # The result that will be returned
+..._tmp     # Partially build object
+...s        # Iteritable (list, array, ...)
+nb_...      # Number of ...
+
+cols        # A list of columns names
+col         # A column name
+I           # a list of index.
+verbose     # Boolean to handle if algorithm talk
+n_test      # Number of rows on which we perform test
+
+args        # Agruments from "..."
+
+start_time  # From proc.time() to keep track of time
+end_time    # From proc.time() to keep track of time
