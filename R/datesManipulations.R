@@ -54,7 +54,7 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose 
     dataSet <- setColAsDate(dataSet, cols = dates$dates[i], format = dates$formats[i], verbose = FALSE)
   }
   if (verbose){
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), "s to transform ", length(dates$dates), " columns to a Date format")
+    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), "s to transform ", length(dates$dates), " columns to a Date format.")
   }
   return(dataSet)
 }
@@ -152,32 +152,34 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
 # 
 # 
 identifyDatesFormats <- function(dataSet, formats){
+  ## Working environement
+  function_name <- "identifyDatesFormats"
   ## Sanity check
   if (! is.character(dataSet)){
-    stop("identifyDatesFormats: dataSet should be some characters")
+    stop(paste0(function_name, ": dataSet should be some characters."))
   }
   
   ## Initalization
   formatFound <- FALSE
-  nformat <- 1
+  n_format <- 1
   N_format <- length(formats)
   
   ## Computation
-  while (!formatFound & nformat <= N_format){
+  while (!formatFound & n_format <= N_format){
     # We try to convert and unconvert to see if we found the right format
-    converted <- as.POSIXct(dataSet, format = formats[nformat])
-    unConverted <- format(converted, format = formats[nformat])
-    if (sum(unConverted == dataSet, na.rm = TRUE) == length(dataSet)){
+    converted <- as.POSIXct(dataSet, format = formats[n_format])
+    un_converted <- format(converted, format = formats[n_format])
+    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet)){
       formatFound <- TRUE
     }
     else{ # In a "else" otherwise if we find the format we will always take the second one!
-      nformat <- nformat + 1
+      n_format <- n_format + 1
     }
   }
   
   ## Wrapp-up
   if (formatFound){
-    format <- formats[nformat]
+    format <- formats[n_format]
   }
   else{
 	# Return NULL if we didn't find format
@@ -215,19 +217,19 @@ identifyDatesFormats <- function(dataSet, formats){
 #' @export
 dateFormatUnifier <- function(dataSet, format = "Date"){
   ## Working environement
-  
+  function_name <- "dateFormatUnifier"
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (! any(format %in% c("Date", "POSIXct", "POSIXlt"))){
-    stop(paste("dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:", format))
+    stop(paste0(function_name, ": only format: Date, POSXIct, POSIXlt are implemented. You gave: ", format, "."))
   }
   
   ## Initialization
-  dates <- names(dataSet)[sapply(dataSet, is.date)]
+  date_cols <- names(dataSet)[sapply(dataSet, is.date)]
   format_function <- paste0("as.", format)
   
   ## Computation
-  for ( col in dates){
+  for ( col in date_cols){
     # Only change dates that don't have the right format
     if (! format %in% class(dataSet[[col]])){
       set(dataSet, NULL, col, get(format_function)(dataSet[[col]]))  

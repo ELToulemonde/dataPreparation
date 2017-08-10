@@ -2,6 +2,7 @@
 
 export(aggregateByKey)
 export(dateFormatUnifier)
+export(description)
 export(fastFilterVariables)
 export(fastHandleNa)
 export(fastIsEqual)

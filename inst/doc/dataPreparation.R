@@ -122,3 +122,6 @@ print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult),
 kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
+## ---- tidy=TRUE, tidy.opts=list(length.cutoff=10)------------------------
+description(agg_adult, path_to_write = "report.txt")
+

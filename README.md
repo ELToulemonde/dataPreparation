@@ -1,8 +1,12 @@
 dataPreparation
 ===============
-[![Travis-CI Build Status](https://api.travis-ci.org/ELToulemonde/dataPreparation.png?branch=master)](https://travis-ci.org/ELToulemonde/dataPreparation)   [![codecov](https://codecov.io/gh/ELToulemonde/dataPreparation/branch/master/graph/badge.svg)](https://codecov.io/gh/ELToulemonde/dataPreparation)   [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/dataPreparation)](https://cran.r-project.org/package=dataPreparation)  [![](http://cranlogs.r-pkg.org/badges/dataPreparation)](http://cran.rstudio.com/web/packages/dataPreparation/index.html)
+[![Travis-CI Build Status](https://api.travis-ci.org/ELToulemonde/dataPreparation.png?branch=master)](https://travis-ci.org/ELToulemonde/dataPreparation)   
+[![codecov](https://codecov.io/gh/ELToulemonde/dataPreparation/branch/master/graph/badge.svg)](https://codecov.io/gh/ELToulemonde/dataPreparation)   
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/dataPreparation)](https://cran.r-project.org/package=dataPreparation)  
+[![](http://cranlogs.r-pkg.org/badges/dataPreparation)](https://CRAN.R-project.org/package=dataPreparation)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/dataPreparation)](https://CRAN.R-project.org/package=dataPreparation)
 
-Data preparation accounts for about 80% of the work during a data science projet. Let's take that number down.
+Data preparation accounts for about 80% of the work during a data science project. Let's take that number down.
 __dataPreparation__ will allow you to do most of the painful data preparation for a data science project with a minimum amount of code.
 
 
@@ -54,7 +58,7 @@ Install the package from CRAN:
 install.package("dataPreparation")
 ```
 
-Install the package from github:
+To have the latest features, install the package from github:
 ```R
 library(devtools)
 install_github("ELToulemonde/dataPreparation")

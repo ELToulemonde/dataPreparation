@@ -308,6 +308,15 @@ kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
 
+# Description
+
+Finaly, to generate a description file from this data set, function `description` is available.
+
+It will discribe, the set and it's variables. Here we put the result in a txt file:
+```{r, tidy=TRUE, tidy.opts=list(length.cutoff=10)}
+description(agg_adult, path_to_write = "report.txt")
+```
+
 # Conclusion
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
 

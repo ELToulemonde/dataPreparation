@@ -16,6 +16,9 @@ generateFactorFromDate(dataSet, cols, type = "yearmonth", verbose = TRUE,
 (character, default to "yearmonth")}
 
 \item{verbose}{should the function log (logical, default to TRUE)}
+
+\item{...}{Other arguments such as \code{name_separator} to separate words in new coluimns names
+(character, default to ".")}
 }
 \description{
 Taking Date or POSIXct colums, and building factor columns from them.

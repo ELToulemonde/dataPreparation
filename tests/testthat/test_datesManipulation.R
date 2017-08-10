@@ -47,6 +47,7 @@ test_that("private function identifyDates :",
 test_that("Private function: identifyDatesFormats ",
 		{
 		expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
+		expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
 		})
 
 
@@ -55,14 +56,11 @@ test_that("Private function: identifyDatesFormats ",
 ## dateFormatUnifier
 #-------------------
 dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("2017-01-01") )
-dataSet <- dateFormatUnifier(dataSet, format = "Date")
-
-
 
 
 test_that("dateFormatUnifier:", 
           {
-            expect_equal(all(sapply(dataSet, class) == c("Date", "Date")), TRUE)
+            expect_equal(all(sapply(dateFormatUnifier(dataSet, format = "Date"), class) == c("Date", "Date")), TRUE)
 			expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
           })
 
