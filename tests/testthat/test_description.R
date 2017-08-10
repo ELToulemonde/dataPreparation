@@ -5,7 +5,7 @@ data(messy_adult)
 
 description(messy_adult, level = 1, verbose = verbose)
 description(messy_adult, level = 1, path_to_write="report.txt", verbose = verbose)
-
+if (file.exists("report.txt")) file.remove("report.txt")
 
 test_that("description: errors: ",
          {
