@@ -14,3 +14,4 @@ test_that("description: errors: ",
 
 
 toydata = data.table(col1 = 1:2, col2 = c(TRUE, FALSE), col3 = c(Sys.Date(), Sys.Date()))
+description(toydata)
