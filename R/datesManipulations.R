@@ -54,7 +54,7 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose 
     dataSet <- setColAsDate(dataSet, cols = dates$dates[i], format = dates$formats[i], verbose = FALSE)
   }
   if (verbose){
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), "s to transform ", length(dates$dates), " columns to a Date format")
+    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), "s to transform ", length(dates$dates), " columns to a Date format.")
   }
   return(dataSet)
 }
@@ -152,135 +152,40 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
 # 
 # 
 identifyDatesFormats <- function(dataSet, formats){
+  ## Working environement
+  function_name <- "identifyDatesFormats"
   ## Sanity check
   if (! is.character(dataSet)){
-    stop("identifyDatesFormats: dataSet should be some characters")
+    stop(paste0(function_name, ": dataSet should be some characters."))
   }
   
   ## Initalization
   formatFound <- FALSE
-  nformat <- 1
+  n_format <- 1
   N_format <- length(formats)
   
   ## Computation
-  while (!formatFound & nformat <= N_format){
+  while (!formatFound & n_format <= N_format){
     # We try to convert and unconvert to see if we found the right format
-    converted <- as.POSIXct(dataSet, format = formats[nformat])
-    unConverted <- format(converted, format = formats[nformat])
-    if (sum(unConverted == dataSet, na.rm = TRUE) == length(dataSet)){
+    converted <- as.POSIXct(dataSet, format = formats[n_format])
+    un_converted <- format(converted, format = formats[n_format])
+    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet)){
       formatFound <- TRUE
     }
     else{ # In a "else" otherwise if we find the format we will always take the second one!
-      nformat <- nformat + 1
+      n_format <- n_format + 1
     }
   }
   
   ## Wrapp-up
   if (formatFound){
-    format <- formats[nformat]
+    format <- formats[n_format]
   }
   else{
 	# Return NULL if we didn't find format
     format <- NULL
   }
   return(format)
-}
-
-
-###################################################################################
-############################### diffDates #########################################
-###################################################################################
-#' Date difference
-#' 
-#' Perform the differences between all dates of the dataSet set and optionally with a static date.
-#' @param dataSet Matrix, data.frame or data.table
-#' @param analysisDate Static date (Date or POSIXct, optional)
-#' @param units unit of difference between too dates (string, default to 'years') 
-#' @param name_separator Separator to put between words in new column names (default to '.')
-#' @details 
-#' \code{units} is the same as \code{\link{difftime}} unites, but with years as a unit. 
-#' @return dataSet (as a \code{\link{data.table}}) with more columns. 
-#' A numeric column has been added for every couple of Dates. The result is in years. 
-#' @examples
-#' # First build a useful dataSet set
-#' require(data.table)
-#' dataSet <- data.table(ID = 1:100, 
-#'                   date1 = seq(from = as.Date("2010-01-01"), 
-#'                               to = as.Date("2015-01-01"), 
-#'                               length.out = 100), 
-#'                   date2 = seq(from = as.Date("1910-01-01"), 
-#'                               to = as.Date("2000-01-01"), 
-#'                               length.out = 100)
-#'                   )
-#'
-#' # Now let's compute
-#' dataSet <- diffDates(dataSet, analysisDate = as.Date("2016-11-14"))
-#' @import data.table
-#' @export
-diffDates <- function(dataSet, analysisDate = NULL, units = "years", name_separator = "."){
-  ## Working environement
-  function_name = "diffDates"
-  
-  ## Sanity check
-  dataSet <- checkAndReturnDataTable(dataSet)
-  if (!is.null(analysisDate) & ! any(class(analysisDate) %in% c("Date", "POSIXct"))){
-    stop(paste0(function_name, ": analysisDate must be a Date"))
-  }
-  if (is.null(name_separator)){
-	name_separator = "."
-  }
-  ## Initialization
-  if (class(analysisDate) == "Date"){
-	analysisDate <- as.POSIXct(format(analysisDate, "%Y-%m-%d"))
-  }
-  dataSet <- dateFormatUnifier(dataSet = dataSet, format = "POSIXct")
-  
-  ## Computation
-  dates <- names(dataSet)[sapply(dataSet, is.date)]
-  if (length(dates) > 1){
-    for (i in 1:(length(dates) - 1)){
-      col_i <- dates[i]
-      for (j in (i+1):length(dates)){
-        col_j <- dates[j]
-        newColName <- paste(col_i, "Minus", col_j, sep = name_separator)
-        #set(dataSet, NULL, newColName, diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units))
-		    dataSet[, c(newColName) := diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units)]
-      }  
-    }
-    rm(i, j, col_i, col_j)
-  }
-  
-  # If there was an analysisDate
-  if (!is.null(analysisDate) & length(dates) > 0){
-    for (col in dates){
-      newColName <- paste(col, "Minus", "analysisDate", sep = name_separator)
-      # Doesn't work, issue putted on data.table
-      #set(dataSet, NULL, newColName, diffTime(dataSet[[col]], analysisDate, units = units))
-	    dataSet[, c(newColName) := diffTime(dataSet[[col]], analysisDate, units = units)]
-    }
-  }
-  
-  ## wrapp-up
-  return(dataSet)
-}
-
-
-#######################################################################################
-############################### Unify dates types #####################################
-#######################################################################################
-
-# @return a numeric
-# extension of difftime to handle years
-diffTime <- function(col1, col2, units = "days"){
-  if (units %in% c("auto", "secs", "mins", "hours", "days", "weeks")){
-    return(as.numeric(difftime(col1, col2, units = units)))
-  }
-  if (units == "years"){
-    return(as.numeric(difftime(col1, col2, units = "days")) / 365.25) # To-do: check number of days in years instead? 
-  }
-  else{
-    stop("Sorry this unit hasn't been implemented yet")
-  }
 }
 
 
@@ -312,19 +217,19 @@ diffTime <- function(col1, col2, units = "days"){
 #' @export
 dateFormatUnifier <- function(dataSet, format = "Date"){
   ## Working environement
-  
+  function_name <- "dateFormatUnifier"
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (! any(format %in% c("Date", "POSIXct", "POSIXlt"))){
-    stop(paste("dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:", format))
+    stop(paste0(function_name, ": only format: Date, POSXIct, POSIXlt are implemented. You gave: ", format, "."))
   }
   
   ## Initialization
-  dates <- names(dataSet)[sapply(dataSet, is.date)]
+  date_cols <- names(dataSet)[sapply(dataSet, is.date)]
   format_function <- paste0("as.", format)
   
   ## Computation
-  for ( col in dates){
+  for ( col in date_cols){
     # Only change dates that don't have the right format
     if (! format %in% class(dataSet[[col]])){
       set(dataSet, NULL, col, get(format_function)(dataSet[[col]]))  

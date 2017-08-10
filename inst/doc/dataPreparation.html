@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-08-01" />
+<meta name="date" content="2017-08-10" />
 
 <title>dataPreparation</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">dataPreparation</h1>
-<h4 class="date"><em>2017-08-01</em></h4>
+<h4 class="date"><em>2017-08-10</em></h4>
 
 
 
@@ -99,14 +99,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><strong>Shape</strong>: put your data set in a nice shape usable by a ML algorithm</li>
 </ul>
 <p>Here are the functions available in this package to tackle those issues:</p>
-<table style="width:69%;">
-<colgroup>
-<col width="13%"></col>
-<col width="16%"></col>
-<col width="12%"></col>
-<col width="16%"></col>
-<col width="9%"></col>
-</colgroup>
+<table>
 <thead>
 <tr class="header">
 <th>Correct</th>
@@ -119,28 +112,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <tbody>
 <tr class="odd">
 <td>unFactor</td>
-<td>diffDates</td>
+<td>generateDateDiffs</td>
 <td>fastFilterVariables</td>
 <td>fastHandleNa</td>
 <td>shapeSet</td>
 </tr>
 <tr class="even">
 <td>findAndTransformDates</td>
-<td>aggregateByKey</td>
+<td>generateFactorFromDate</td>
 <td>whichAreConstant</td>
 <td></td>
 <td>sameShape</td>
 </tr>
 <tr class="odd">
 <td>findAndTransformNumerics</td>
-<td>setColAsFactorOrLogical</td>
+<td>aggregateByKey</td>
 <td>whichAreInDouble</td>
 <td></td>
 <td>setAsNumericMatrix</td>
 </tr>
 <tr class="even">
 <td>setColAsCharacter</td>
-<td></td>
+<td>setColAsFactorOrLogical</td>
 <td>whichAreBijection</td>
 <td></td>
 <td></td>
@@ -214,7 +207,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">unFactor</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;findAndTransformFalseFactor: I will identify variable that are factor but shouldn't be.&quot;
 ## [1] &quot;findAndTransformFalseFactor: I unfactor mail.&quot;
-## [1] &quot;findAndTransformFalseFactor: It took me 0.94s to unfactor 1 column(s).&quot;</code></pre>
+## [1] &quot;findAndTransformFalseFactor: It took me 0.21s to unfactor 1 column(s).&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">class</span>(messy_adult$mail))</code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 </div>
@@ -222,8 +215,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">2.2</span> Identifing and transforming date columns</h2>
 <p>The next thing to do is to <strong>identify</strong> columns that are dates (the first 4 ones) and <strong>transform</strong> them.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformDates</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformDates: It took me 0.95s to identify formats&quot;
-## [1] &quot;findAndTransformDates: It took me 0.04s to transform 4 columns to a Date format&quot;</code></pre>
+<pre><code>## [1] &quot;findAndTransformDates: It took me 0.28s to identify formats&quot;
+## [1] &quot;findAndTransformDates: It took me 0.03s to transform 4 columns to a Date format.&quot;</code></pre>
 Let’s have a look to the transformation performed on those 4 columns:
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -441,7 +434,7 @@ NA
 <h2><span class="header-section-number">2.3</span> Identifing and transforming numeric columns</h2>
 <p>And now the same thing with numeric</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">findAndTransformNumerics</span>(messy_adult)</code></pre></div>
-<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.91s to identify 3 numerics column(s), i will set them as numerics&quot;
+<pre><code>## [1] &quot;findAndTransformNumerics: It took me 0.22s to identify 3 numerics column(s), i will set them as numerics&quot;
 ## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
 ## [1] &quot;setColAsNumeric: I am doing the columnnum1&quot;
 ## [1] &quot;setColAsNumeric: 0 NA have been created due to transformation to numeric.&quot;
@@ -450,7 +443,7 @@ NA
 ## [1] &quot;setColAsNumeric: 0 NA have been created due to transformation to numeric.&quot;
 ## [1] &quot;setColAsNumeric: I am doing the columnnum3&quot;
 ## [1] &quot;setColAsNumeric: 0 NA have been created due to transformation to numeric.&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.06s to transform 3 column(s) to a numeric format.&quot;</code></pre>
+## [1] &quot;findAndTransformNumerics: It took me 0.04s to transform 3 column(s) to a numeric format.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -636,13 +629,13 @@ NA
 <h3><span class="header-section-number">3.1.1</span> Look for constant variables</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 0.91s to identify 1 constant column(s)&quot;</code></pre>
+## [1] &quot;whichAreConstant: it took me 0.22s to identify 1 constant column(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-in-double" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Look for columns in double</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(messy_adult)</code></pre></div>
 <pre><code>## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.95s to identify 1 double(s)&quot;</code></pre>
+## [1] &quot;whichAreInDouble: it took me 0.22s to identify 1 double(s)&quot;</code></pre>
 </div>
 <div id="look-for-columns-that-are-bijections-of-one-another" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> Look for columns that are bijections of one another</h3>
@@ -650,7 +643,7 @@ NA
 <pre><code>## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: num3 is a bijection of num1. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 1.27s to identify 3 bijection(s)&quot;</code></pre>
+## [1] &quot;whichAreBijection: it took me 0.49s to identify 3 bijection(s)&quot;</code></pre>
 <p>To control this, let’s have a look to the concerned columns:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">head</span>(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %&gt;%
 <span class="st">   </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>, <span class="dt">font_size =</span> <span class="dv">12</span>)</code></pre></div>
@@ -838,16 +831,16 @@ messy_adult &lt;-<span class="st"> </span><span class="kw">fastFilterVariables</
 <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;messy_adult now have &quot;</span>, <span class="kw">ncol</span>(messy_adult), <span class="st">&quot; columns; so &quot;</span>, ncols -<span class="st"> </span><span class="kw">ncol</span>(messy_adult), <span class="st">&quot; less than before.&quot;</span>))</code></pre></div>
 <pre><code>## [1] &quot;fastFilterVariables: I check for constant columns.&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 1s to identify 1 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.2s to identify 1 constant column(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet.&quot;
 ## [1] &quot;fastFilterVariables: I check for columns in double.&quot;
 ## [1] &quot;whichAreInDouble: num3 is exactly equal to num1. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 0.98s to identify 1 double(s)&quot;
+## [1] &quot;whichAreInDouble: it took me 0.22s to identify 1 double(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 column(s) that are in double in dataSet.&quot;
 ## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: date4 is a bijection of date3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 1.32s to identify 2 bijection(s)&quot;
+## [1] &quot;whichAreBijection: it took me 0.42s to identify 2 bijection(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 2 column(s) that are bijections of another column in dataSet.&quot;
 ## [1] &quot;messy_adult now have 20 columns; so 4 less than before.&quot;</code></pre>
 <p>4 useless rows have been deleted. Without those useless columns, your machine learning algorithm will at least be faster and maybe give better results.</p>
@@ -1036,9 +1029,7 @@ NA
 <p>Since no machine learning algorithm handle Dates, one need to transform them or drop them. A way to transform dates is to perform differences between every dates.</p>
 <p>We can also add an analysis date to compare dates with the date your data is from. For example, if you have a birth-date you may want to compute age by performing today - birth-date.</p>
 <p>Once this is done, we drop <em>date</em> columns.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">diffDates</span>(messy_adult, <span class="dt">analysisDate =</span> <span class="kw">as.Date</span>(<span class="st">&quot;2018-01-01&quot;</span>), <span class="dt">units =</span> <span class="st">&quot;days&quot;</span>)
-date_cols &lt;-<span class="st"> </span><span class="kw">names</span>(messy_adult)[<span class="kw">sapply</span>(messy_adult, is.POSIXct)]
-messy_adult[, <span class="kw">c</span>(date_cols) :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult &lt;-<span class="st"> </span><span class="kw">generateDateDiffs</span>(messy_adult, <span class="dt">analysisDate =</span> <span class="kw">as.Date</span>(<span class="st">&quot;2018-01-01&quot;</span>), <span class="dt">units =</span> <span class="st">&quot;days&quot;</span>)</code></pre></div>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1208,13 +1199,127 @@ NA
 </tbody>
 </table>
 </div>
+<div id="transforming-dates-into-aggregates" class="section level2">
+<h2><span class="header-section-number">4.2</span> Transforming dates into aggregates</h2>
+<p>Another way to work around dates would be to aggregate them at some level.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">date_cols &lt;-<span class="st"> </span><span class="kw">names</span>(messy_adult)[<span class="kw">sapply</span>(messy_adult, is.POSIXct)]
+messy_adult &lt;-<span class="st"> </span><span class="kw">generateFactorFromDate</span>(messy_adult, <span class="dt">cols =</span> date_cols, <span class="dt">type =</span> <span class="st">&quot;quarter&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;generateFactorFromDate: I will generate some new columns from dates into factors.&quot;</code></pre>
+<?xml version="1.0" encoding="UTF-8" ?>
+<table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+…
+</th>
+<th style="text-align:left;">
+date1.quarter
+</th>
+<th style="text-align:left;">
+date2.quarter
+</th>
+<th style="text-align:left;">
+date3.quarter
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+<td style="text-align:left;">
+Q1
+</td>
+<td style="text-align:left;">
+Q1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q1
+</td>
+<td style="text-align:left;">
+QNA
+</td>
+<td style="text-align:left;">
+Q2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q3
+</td>
+<td style="text-align:left;">
+Q2
+</td>
+<td style="text-align:left;">
+Q1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q2
+</td>
+<td style="text-align:left;">
+QNA
+</td>
+<td style="text-align:left;">
+Q2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+…
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+<td style="text-align:left;">
+Q1
+</td>
+<td style="text-align:left;">
+Q4
+</td>
+</tr>
+</tbody>
+</table>
+<p>Now that we have built some acceptable variables from those dates, we drop them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">messy_adult[, <span class="kw">c</span>(date_cols) :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]</code></pre></div>
+</div>
 <div id="aggregate-according-to-a-key" class="section level2">
-<h2><span class="header-section-number">4.2</span> Aggregate according to a key</h2>
+<h2><span class="header-section-number">4.3</span> Aggregate according to a key</h2>
 <p>Say in fact you want to model something by country, you would want to compute an aggregation of this table in order to have one line per country.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">agg_adult &lt;-<span class="st"> </span><span class="kw">aggregateByKey</span>(messy_adult, <span class="dt">key =</span> <span class="st">&quot;country&quot;</span>)</code></pre></div>
 <pre><code>## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 1.4seconds. &quot;</code></pre>
-<pre><code>## [1] &quot;117 columns have been built; for 42 countries.&quot;</code></pre>
+## [1] &quot;aggregateByKey: 131 columns have been constructed. It took 0.6seconds. &quot;</code></pre>
+<pre><code>## [1] &quot;131 columns have been built; for 42 countries.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1447,11 +1552,11 @@ Cuba
 ## 2:                 0               -341.95833                  0.00000
 ## 3:                -2                -34.95833                -70.95833
 ## 4:                61               -122.95833               -236.95833
-##    date3.Minus.analysisDate
-## 1:               -339.95833
-## 2:               -223.95833
-## 3:                -68.95833
-## 4:               -297.95833</code></pre>
+##    date3.Minus.analysisDate date1.quarter date2.quarter date3.quarter
+## 1:               -339.95833            Q4            Q1            Q1
+## 2:               -223.95833            Q1           QNA            Q2
+## 3:                -68.95833            Q4            Q4            Q4
+## 4:               -297.95833            Q3            Q2            Q1</code></pre>
 <p>It set default values in place of NA. If you want to put some specific values (constants, or even a function for example mean of values) you should go check <code>fastHandleNa</code> documentation.</p>
 </div>
 <div id="shape-functions" class="section level1">
@@ -1464,7 +1569,7 @@ Cuba
 <span class="kw">print</span>(<span class="kw">table</span>(<span class="kw">sapply</span>(clean_adult, class)))</code></pre></div>
 <pre><code>## 
 ##  factor integer numeric 
-##       9       1      13</code></pre>
+##      12       1      13</code></pre>
 <p>As one can see, there only are, numeric and factors.</p>
 <p>Now with <em>numerical_matrix</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clean_adult &lt;-<span class="st"> </span><span class="kw">shapeSet</span>(<span class="kw">copy</span>(messy_adult), <span class="dt">finalForm =</span> <span class="st">&quot;numerical_matrix&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
@@ -1647,32 +1752,33 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 <pre><code>## [1] &quot;prepareSet: step one: correcting mistakes.&quot;
 ## [1] &quot;fastFilterVariables: I check for constant columns.&quot;
 ## [1] &quot;whichAreConstant: constant is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 1.1s to identify 1 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.2s to identify 1 constant column(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 1 constant column(s) in dataSet.&quot;
 ## [1] &quot;fastFilterVariables: I check for columns in double.&quot;
-## [1] &quot;whichAreInDouble: it took me 1s to identify 0 double(s)&quot;
+## [1] &quot;whichAreInDouble: it took me 0.19s to identify 0 double(s)&quot;
 ## [1] &quot;fastFilterVariables: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: date3 is a bijection of date4. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: num1 is a bijection of num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 1.39s to identify 3 bijection(s)&quot;
+## [1] &quot;whichAreBijection: it took me 0.45s to identify 3 bijection(s)&quot;
 ## [1] &quot;fastFilterVariables: I delete 3 column(s) that are bijections of another column in dataSet.&quot;
 ## [1] &quot;findAndTransformFalseFactor: I will identify variable that are factor but shouldn't be.&quot;
 ## [1] &quot;findAndTransformFalseFactor: I unfactor mail.&quot;
-## [1] &quot;findAndTransformFalseFactor: It took me 1.06s to unfactor 1 column(s).&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.94s to identify 2 numerics column(s), i will set them as numerics&quot;
+## [1] &quot;findAndTransformFalseFactor: It took me 0.17s to unfactor 1 column(s).&quot;
+## [1] &quot;findAndTransformNumerics: It took me 0.18s to identify 2 numerics column(s), i will set them as numerics&quot;
 ## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
 ## [1] &quot;setColAsNumeric: I will set some columns as numeric&quot;
 ## [1] &quot;setColAsNumeric: I am doing the columnnum2&quot;
 ## [1] &quot;setColAsNumeric: 0 NA have been created due to transformation to numeric.&quot;
 ## [1] &quot;setColAsNumeric: I am doing the columnnum3&quot;
 ## [1] &quot;setColAsNumeric: 0 NA have been created due to transformation to numeric.&quot;
-## [1] &quot;findAndTransformNumerics: It took me 0.06s to transform 2 column(s) to a numeric format.&quot;
-## [1] &quot;findAndTransformDates: It took me 1.06s to identify formats&quot;
-## [1] &quot;findAndTransformDates: It took me 0.03s to transform 3 columns to a Date format&quot;
+## [1] &quot;findAndTransformNumerics: It took me 0.04s to transform 2 column(s) to a numeric format.&quot;
+## [1] &quot;findAndTransformDates: It took me 0.2s to identify formats&quot;
+## [1] &quot;findAndTransformDates: It took me 0.03s to transform 3 columns to a Date format.&quot;
 ## [1] &quot;prepareSet: step two: transforming dataSet.&quot;
+## [1] &quot;generateFactorFromDate: I will generate some new columns from dates into factors.&quot;
 ## [1] &quot;aggregateByKey: I start to aggregate&quot;
-## [1] &quot;aggregateByKey: 117 columns have been constructed. It took 1.51seconds. &quot;
+## [1] &quot;aggregateByKey: 132 columns have been constructed. It took 0.46seconds. &quot;
 ## [1] &quot;prepareSet: step three: filtering dataSet.&quot;
 ## [1] &quot;prepareSet: I check for constant columns.&quot;
 ## [1] &quot;whichAreConstant: mean.num2 is constant.&quot;
@@ -1680,11 +1786,11 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;whichAreConstant: max.num2 is constant.&quot;
 ## [1] &quot;whichAreConstant: sd.num2 is constant.&quot;
 ## [1] &quot;whichAreConstant: min.capital_gain is constant.&quot;
-## [1] &quot;whichAreConstant: it took me 1.09s to identify 5 constant column(s)&quot;
+## [1] &quot;whichAreConstant: it took me 0.23s to identify 5 constant column(s)&quot;
 ## [1] &quot;prepareSet: I delete 5 constant column(s) in result.&quot;
 ## [1] &quot;prepareSet: I check for columns in double.&quot;
 ## [1] &quot;whichAreInDouble: nbr.mail is exactly equal to nbrLines. I put it in drop list.&quot;
-## [1] &quot;whichAreInDouble: it took me 1.34s to identify 1 double(s)&quot;
+## [1] &quot;whichAreInDouble: it took me 0.53s to identify 1 double(s)&quot;
 ## [1] &quot;prepareSet: I delete 1 column(s) that are in double in result.&quot;
 ## [1] &quot;prepareSet: I check for columns that are bijections of another column.&quot;
 ## [1] &quot;whichAreBijection: mean.age is a bijection of country. I put it in drop list.&quot;
@@ -1694,50 +1800,34 @@ agg_adult &lt;-<span class="st"> </span><span class="kw">prepareSet</span>(messy
 ## [1] &quot;whichAreBijection: sd.fnlwgt is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: mean.hr_per_week is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.hr_per_week is a bijection of country. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: mean.date4.Minus.analysisDate is a bijection of country. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: sd.date4.Minus.analysisDate is a bijection of country. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: min.num3 is a bijection of mean.num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: max.num3 is a bijection of mean.num3. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: occupation.? is a bijection of type_employer.?. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: marital.Married-AF-spouse is a bijection of type_employer.Never-worked. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: occupation.Armed-Forces is a bijection of type_employer.Never-worked. I put it in drop list.&quot;
 ## [1] &quot;whichAreBijection: sd.capital_gain is a bijection of mean.capital_gain. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.date1.Minus.date2 is a bijection of mean.date1.Minus.date2. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.date1.Minus.date2 is a bijection of mean.date1.Minus.date2. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.date1.Minus.date4 is a bijection of mean.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.date1.Minus.date4 is a bijection of mean.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: mean.date1.Minus.analysisDate is a bijection of mean.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.date1.Minus.analysisDate is a bijection of mean.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.date1.Minus.analysisDate is a bijection of mean.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: sd.date1.Minus.analysisDate is a bijection of sd.date1.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.date2.Minus.date4 is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.date2.Minus.date4 is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: mean.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: min.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: max.date2.Minus.analysisDate is a bijection of mean.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: sd.date2.Minus.analysisDate is a bijection of sd.date2.Minus.date4. I put it in drop list.&quot;
-## [1] &quot;whichAreBijection: it took me 8.58s to identify 29 bijection(s)&quot;
-## [1] &quot;prepareSet: I delete 29 column(s) that are bijections of another column in result.&quot;
+## [1] &quot;whichAreBijection: it took me 6.68s to identify 13 bijection(s)&quot;
+## [1] &quot;prepareSet: I delete 13 column(s) that are bijections of another column in result.&quot;
 ## [1] &quot;prepareSet: step four: handling NA.&quot;
 ## [1] &quot;prepareSet: step five: shaping result.&quot;
 ## [1] &quot;Transforming characters into factors.&quot;
 ## [1] &quot;Transforming numerical variables into factors when length(unique(col)) &lt;=10.&quot;
-## Going through 81 numerical variables to transform if necessary.
+## Going through 112 numerical variables to transform if necessary.
 ## [1] &quot;Transforming logicals into binaries.\n&quot;
 ## [1] &quot;Previous distribution of column types:&quot;
 ## col_class_init
 ##  factor numeric 
-##       1      81 
+##       1     112 
 ## [1] &quot;Current distribution of column types:&quot;
 ## col_class_end
 ##  factor numeric 
-##      30      52 
+##      24      89 
 ## [1] &quot;Quantiles for the number of factor modalities:&quot;
 ##   0%  10%  20%  30%  40%  50%  60%  70%  80%  90% 100% 
-##  2.0  2.0  3.0  4.0  5.0  7.0  8.4  9.0 10.0 10.0 42.0</code></pre>
+##  2.0  2.3  4.2  5.0  7.0  8.0  9.0  9.1 10.0 10.0 42.0</code></pre>
 <p>As one can see, every previously steps have been done.</p>
 <p>Let’s have a look to the result</p>
-<pre><code>## [1] &quot;82 columns have been built; for 42 countries.&quot;</code></pre>
+<pre><code>## [1] &quot;113 columns have been built; for 42 countries.&quot;</code></pre>
 <?xml version="1.0" encoding="UTF-8" ?>
 <table class="table table-striped table-hover" style="font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1928,8 +2018,15 @@ Cuba
 </tbody>
 </table>
 </div>
+<div id="description" class="section level1">
+<h1><span class="header-section-number">8</span> Description</h1>
+<p>Finaly, to generate a description file from this data set, function <code>description</code> is available.</p>
+<p>It will discribe, the set and it’s variables. Here we put the result in a txt file:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">description</span>(agg_adult, <span class="dt">path_to_write =</span> <span class="st">&quot;report.txt&quot;</span>)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
 <div id="conclusion" class="section level1">
-<h1><span class="header-section-number">8</span> Conclusion</h1>
+<h1><span class="header-section-number">9</span> Conclusion</h1>
 <p>We hope that this package is helpful, that it helped you prepare your data in a faster way.</p>
 <p>If you would like to add some features to this package, notice some issues, please tell us on <a href="https://github.com/ELToulemonde/dataPreparation/issues">git hub</a>. Also if you want to contribute, please don’t hesitate to contact us.</p>
 </div>

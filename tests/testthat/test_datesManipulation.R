@@ -47,66 +47,20 @@ test_that("private function identifyDates :",
 test_that("Private function: identifyDatesFormats ",
 		{
 		expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
+		expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
 		})
 
 
-## dateDiffs
-#-----------
-dataSet <- data.table(ID = 1:100, 
-                      date1 = seq(from = as.Date("2010-01-01"), 
-                                  to = as.Date("2015-01-01"), 
-                                  length.out = 100), 
-                      date2 = seq(from = as.Date("1910-01-01"), 
-                                  to = as.Date("2000-01-01"), 
-                                  length.out = 100)
-)
 
-# Now let's compute
-dataSet <- diffDates(dataSet, analysisDate = as.Date("2016-11-14"))
-
-test_that("dateDiffs: ",
-          {
-            expect_equal(ncol(dataSet), 6)
-            expect_equal(sum(is.na(dataSet)), 0)
-          })
-		  
-		  
-dataSet <- data.table(ID = 1:100, 
-                      date1 = seq(from = as.Date("2010-01-01"), 
-                                  to = as.Date("2015-01-01"), 
-                                  length.out = 100), 
-                      date2 = seq(from = as.Date("1910-01-01"), 
-                                  to = as.Date("2000-01-01"), 
-                                  length.out = 100)
-)
-test_that("dateDiffs: errors",
-		{
-		expect_error(diffDates(dataSet, analysisDate = "2017-01-01"),  "analysisDate must be a Date")
-		})
-		
-## diffTime
-#----------
-
-test_that("diffTime: ",
-		{
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "days"), 1)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "hours"), 24)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "mins"), 1440)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "years"), 1 / 365.25)
-		expect_error(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "zadtfrey"), "Sorry this unit hasn't been implemented yet")
-		})
 
 ## dateFormatUnifier
 #-------------------
 dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("2017-01-01") )
-dataSet <- dateFormatUnifier(dataSet, format = "Date")
-
-
 
 
 test_that("dateFormatUnifier:", 
           {
-            expect_equal(all(sapply(dataSet, class) == c("Date", "Date")), TRUE)
+            expect_equal(all(sapply(dateFormatUnifier(dataSet, format = "Date"), class) == c("Date", "Date")), TRUE)
 			expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
           })
 

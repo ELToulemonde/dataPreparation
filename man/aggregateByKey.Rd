@@ -33,7 +33,7 @@ give length(functions) new columns
 frequencie count of values is performed
 \item If column is character or factor with more than \code{thresh} different values, number 
 of different values for each \code{key} is performed
-\item If columbn is logical, count of number and rate of positive is performed.
+\item If column is logical, count of number and rate of positive is performed.
 }
 Be carefull using functions agrument, the function given should be an aggregation fuction, 
 meaning that for multiple values it should only return one value.

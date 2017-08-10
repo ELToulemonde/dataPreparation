@@ -55,10 +55,10 @@ Here are the functions available in this package to tackle those issues:
 
 Correct                     | Transform                | Filter              | Handle NA    | Shape
 ---------                   |-----------               |--------             |-----------   |------
-unFactor                    | diffDates                | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | aggregateByKey           | whichAreConstant    |              | sameShape
-findAndTransformNumerics    | setColAsFactorOrLogical  | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           |                          | whichAreBijection   |              |
+unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
+findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
+findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
+setColAsCharacter           | setColAsFactorOrLogical  | whichAreBijection   |              |
 setColAsNumeric             |                          | fastRound           |              |
 setColAsDate                |                          |                     |              |
 
@@ -206,13 +206,27 @@ We can also add an analysis date to compare dates with the date your data is fro
 
 Once this is done, we drop *date* columns.
 ```{r}
-messy_adult <- diffDates(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
-date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
-messy_adult[, c(date_cols) := NULL]
+messy_adult <- generateDateDiffs(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
 ```
 ```{r echo=FALSE}
 kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 5):ncol(messy_adult), with = FALSE], n = 6))) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+## Transforming dates into aggregates
+Another way to work around dates would be to aggregate them at some level. 
+```{r}
+date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
+messy_adult <- generateFactorFromDate(messy_adult, cols = date_cols, type = "quarter")
+```
+```{r echo=FALSE}
+kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 2):ncol(messy_adult), with = FALSE], n = 6))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+Now that we have built some acceptable variables from those dates, we drop them:
+```{r}
+messy_adult[, c(date_cols) := NULL]
 ```
 
 ## Aggregate according to a key
@@ -293,6 +307,19 @@ print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult),
 kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
+
+# Description
+
+Finaly, to generate a description file from this data set, function `description` is available.
+
+It will discribe, the set and it's variables. Here we put the result in a txt file:
+```{r, tidy=TRUE, tidy.opts=list(length.cutoff=10)}
+description(agg_adult, path_to_write = "report.txt")
+```
+```{r  echo=FALSE}
+if (file.exists("report.txt")) file.remove("report.txt")
+```
+
 
 # Conclusion
 We hope that this package is helpful, that it helped you prepare your data in a faster way.

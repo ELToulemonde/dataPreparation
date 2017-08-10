@@ -71,13 +71,22 @@ kable(cbind(head(messy_adult[, 1:6, with = FALSE], n = 6), data.frame("..." = re
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ------------------------------------------------------------------------
-messy_adult <- diffDates(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
-date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
-messy_adult[, c(date_cols) := NULL]
+messy_adult <- generateDateDiffs(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
 
 ## ----echo=FALSE----------------------------------------------------------
 kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 5):ncol(messy_adult), with = FALSE], n = 6))) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+## ------------------------------------------------------------------------
+date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
+messy_adult <- generateFactorFromDate(messy_adult, cols = date_cols, type = "quarter")
+
+## ----echo=FALSE----------------------------------------------------------
+kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 2):ncol(messy_adult), with = FALSE], n = 6))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+## ------------------------------------------------------------------------
+messy_adult[, c(date_cols) := NULL]
 
 ## ------------------------------------------------------------------------
 agg_adult <- aggregateByKey(messy_adult, key = "country")
@@ -112,4 +121,10 @@ agg_adult <- prepareSet(messy_adult, finalForm = "data.table", key = "country", 
 print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
 kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+## ---- tidy=TRUE, tidy.opts=list(length.cutoff=10)------------------------
+description(agg_adult, path_to_write = "report.txt")
+
+## ----echo=FALSE----------------------------------------------------------
+if (file.exists("report.txt")) file.remove("report.txt")
 
