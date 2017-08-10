@@ -316,6 +316,10 @@ It will discribe, the set and it's variables. Here we put the result in a txt fi
 ```{r, tidy=TRUE, tidy.opts=list(length.cutoff=10)}
 description(agg_adult, path_to_write = "report.txt")
 ```
+```{r  echo=FALSE}
+if (file.exists("report.txt")) file.remove("report.txt")
+```
+
 
 # Conclusion
 We hope that this package is helpful, that it helped you prepare your data in a faster way.

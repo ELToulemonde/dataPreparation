@@ -125,3 +125,6 @@ kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
 ## ---- tidy=TRUE, tidy.opts=list(length.cutoff=10)------------------------
 description(agg_adult, path_to_write = "report.txt")
 
+## ----echo=FALSE----------------------------------------------------------
+if (file.exists("report.txt")) file.remove("report.txt")
+
