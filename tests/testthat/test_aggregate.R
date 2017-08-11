@@ -1,5 +1,5 @@
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 ## aggregateByKey
 # ---------------
 
@@ -22,7 +22,7 @@ messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 test_that("aggegateByKey: testing execptions",
           {
             expect_error( aggregateByKey(adult, key = 1, verbose = verbose), ": key should be a character, you provided a ")
-			expect_error( aggregateByKey(messy_adult, key = "country", verbose = verbose), "I can only handle: numeric, integer, factor, logical, character columns. ")
+            expect_error( aggregateByKey(messy_adult, key = "country", verbose = verbose), "I can only handle: numeric, integer, factor, logical, character columns. ")
           }
 )
 ## Exmple with other functions
@@ -51,7 +51,7 @@ test_that("aggegateByKey: add function that is not an agg function",
             expect_warning(aggregateByKey(adult, key = "country", functions = c(power, sqrt = sqrt), verbose = verbose, name_separator = ".."))
           })
 
-	
+
 ## No aggragtion to perform	
 data("adult")	
 # reduce it to save time
@@ -62,7 +62,7 @@ test_that("aggegateByKey: no aggregation",
           {
             expect_equal(nrow(aggregateByKey(adult, key = "id", verbose = verbose)), store_nrow)
           })	
-		  
+
 
 ## Column that is a copy of key		  
 data("adult")	

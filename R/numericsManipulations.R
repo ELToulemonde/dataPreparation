@@ -77,7 +77,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
 ###################################################################################################
 identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   ## Working environment
-  function_name = "identifyNumerics"
+  function_name <- "identifyNumerics"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -102,17 +102,17 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
       # We check only columns that contains something (not NA, NULL, "")
       if (length(data_sample) > 0){ 
         format <- identifyNumericsFormats(dataSet = data_sample)
-		if (is.null(format)){
-		  next()
-		}
-		if (format == "notstrip"){
-		  numerics_cols_dont_strip <- c(numerics_cols_dont_strip, col)
-		  next()
-		}
-		if (format == "strip"){
-		  numerics_cols_strip <- c(numerics_cols_strip, col)
-		  next()
-		}
+        if (is.null(format)){
+          next()
+        }
+        if (format == "notstrip"){
+          numerics_cols_dont_strip <- c(numerics_cols_dont_strip, col)
+          next()
+        }
+        if (format == "strip"){
+          numerics_cols_strip <- c(numerics_cols_strip, col)
+          next()
+        }
       }
     }
     if (verbose){
@@ -142,7 +142,7 @@ identifyNumericsFormats <- function(dataSet){
   dataSet_converted <- as.numeric(dataSet)
   options(warn = 0)
   if (sum(is.na(dataSet_converted)) == sum(is.na(dataSet))){
-	return("notstrip")
+    return("notstrip")
   }
   
   ## Check for conversion with strip
@@ -150,7 +150,7 @@ identifyNumericsFormats <- function(dataSet){
   dataSet_converted <- as.numericStrip(dataSet)
   options(warn = 0)
   if (sum(is.na(dataSet_converted)) == sum(is.na(dataSet))){
-	return("strip")
+    return("strip")
   }
   
   return(NULL)

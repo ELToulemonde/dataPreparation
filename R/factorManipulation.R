@@ -36,7 +36,7 @@ unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
   }
   else{
     # To be safe
-    n_unfactor = round(n_unfactor) 
+    n_unfactor <- round(n_unfactor) 
   }
   if (n_unfactor == -1){
     return(dataSet)
@@ -68,7 +68,7 @@ unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
   }
   if (verbose){ 
     close(pb); rm(pb); gc(verbose = FALSE)
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2),
            "s to unfactor ", count, " column(s).")
   }
   

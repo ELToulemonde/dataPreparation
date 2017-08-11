@@ -73,7 +73,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   ## Computation
   ### 1. Correct dataSet set
   if(verbose){
-	printl(function_name, ": step one: correcting mistakes.")
+    printl(function_name, ": step one: correcting mistakes.")
   }
   # 1.0 Filter useless vars
   dataSet <- fastFilterVariables(dataSet, verbose = verbose)
@@ -83,7 +83,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     n_unfactor <- args[["n_unfactor"]]
   }
   else{
-	  n_unfactor <- 53
+    n_unfactor <- 53
   }
   dataSet <- unFactor(dataSet, n_unfactor = n_unfactor, verbose = verbose)
   
@@ -93,12 +93,12 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   ### 2. Transform dataSet set
   if(verbose){
-	printl(function_name, ": step two: transforming dataSet.")
+    printl(function_name, ": step two: transforming dataSet.")
   }
   # 2.1 Compute differences between dates
   result <- generateDateDiffs(dataSet, analysisDate = args[["analysisDate"]], 
-							  name_separator = args[["name_separator"]])
-
+                              name_separator = args[["name_separator"]])
+  
   # 2.2 Build factor from dates month
   if (! is.null(args[["factor_date_type"]])){
     factor_date_type <- args[["factor_date_type"]]
@@ -107,20 +107,20 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     factor_date_type <- "yearmonth"
   }
   date_cols <- names(result)[sapply(result, is.date)]
-  result <- generateFactorFromDate(dataSet, cols = date_cols, type = factor_date_type, verbose = verbose)
+  result <- generateFactorFromDate(result, cols = date_cols, type = factor_date_type, verbose = verbose)
   
   # 2.3 get ride of dates columns 
   result <- result[, names(result)[!sapply(result, is.date)], with = FALSE] 
   
   # 2.2 Aggregate by key 
   if(!is.null(args[["key"]])){
-    key = args[["key"]]
+    key <- args[["key"]]
     result <- aggregateByKey(result, key, verbose = verbose, listNames = match.call()$functions, ...)
   }
   
   ### 3 Filter
   if(verbose){
-	printl(function_name, ": step three: filtering dataSet.")
+    printl(function_name, ": step three: filtering dataSet.")
   }
   # 3.1 Get ride of useless variables
   result <- fastFilterVariables(dataSet = result, function_name = function_name, 
@@ -128,19 +128,19 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   # 3.2 Round
   if(!is.null(args[["digits"]])){
-    digits = args[["digits"]]
+    digits <- args[["digits"]]
     result <- fastRound(result, digits = digits, verbose = verbose)
   }
   
   ### 4 Handle NA
   if(verbose){
-	printl(function_name, ": step four: handling NA.")
+    printl(function_name, ": step four: handling NA.")
   }
   result <- fastHandleNa(result, verbose = verbose)
   
   ### 5 Shape set
   if(verbose){
-	printl(function_name, ": step five: shaping result.")
+    printl(function_name, ": step five: shaping result.")
   }
   result <- shapeSet(result, finalForm = finalForm, verbose = verbose)
   
@@ -148,4 +148,3 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   return(result)
   
 }
-  

@@ -1,5 +1,5 @@
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 
 ## whichAreConstant
 #------------------
@@ -82,7 +82,7 @@ test_that("whichAreIncluded: build column",
 # As one can, see this column that doesn't have additional info than age is spotted.
 
 # But you should be carefull, if there is a column id, every column will be dropped:
-messy_adult$id = 1:nrow(messy_adult) # build id
+messy_adult$id <- 1:nrow(messy_adult) # build id
 setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
 
 
@@ -95,10 +95,7 @@ test_that("whichAreIncluded: id at the beginning",
 # Same but with inverse order
 rm(messy_adult)
 data(messy_adult)
-messy_adult$id = 1:nrow(messy_adult) # build id
-print("#####################################################")
-print(names(messy_adult))
-print(whichAreIncluded(messy_adult, verbose = verbose))
+messy_adult$id <- 1:nrow(messy_adult) # build id
 test_that("whichAreIncluded: id at the end", 
           {
             expect_equal(all(whichAreIncluded(messy_adult, verbose = verbose) == 1:24), TRUE)

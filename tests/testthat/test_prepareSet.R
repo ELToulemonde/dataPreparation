@@ -1,4 +1,4 @@
-verbose = TRUE
+verbose <- TRUE
 
 ## prepareSet
 # -----------
@@ -9,6 +9,6 @@ test_that("prepareSet:",
           {
             expect_equal(length(unique(adult_agg$country)), nrow(adult_agg))
           })
-		  
-		  
+
+
 adult_agg <-  prepareSet(messy_adult, verbose = verbose)

@@ -1,5 +1,5 @@
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 ## Load data set
 data(messy_adult)
 
@@ -13,5 +13,5 @@ test_that("description: errors: ",
          })
 
 
-toydata = data.table(col1 = 1:2, col2 = c(TRUE, FALSE), col3 = c(Sys.Date(), Sys.Date()))
+toydata <- data.table(col1 = 1:2, col2 = c(TRUE, FALSE), col3 = c(Sys.Date(), Sys.Date()))
 description(toydata)

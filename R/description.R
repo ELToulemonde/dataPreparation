@@ -29,7 +29,7 @@ description <- function(dataSet, level = 1, path_to_write = NULL, verbose = TRUE
   
   ## Initialization
   if (!is.null(path_to_write)){
-    fileLog = path_to_write
+    fileLog <- path_to_write
     sink(fileLog)
   }
   ## Computation

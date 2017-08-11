@@ -162,7 +162,7 @@ date_factor <- function(dataSet, type = "yearmonth"){
 #' @export
 generateDateDiffs <- function(dataSet, analysisDate = NULL, units = "years", name_separator = "."){
   ## Working environement
-  function_name = "generateDateDiffs"
+  function_name <- "generateDateDiffs"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -170,7 +170,7 @@ generateDateDiffs <- function(dataSet, analysisDate = NULL, units = "years", nam
     stop(paste0(function_name, ": analysisDate must be a Date"))
   }
   if (is.null(name_separator)){
-    name_separator = "."
+    name_separator <- "."
   }
   ## Initialization
   if (class(analysisDate) == "Date"){
@@ -183,7 +183,7 @@ generateDateDiffs <- function(dataSet, analysisDate = NULL, units = "years", nam
   if (length(dates) > 1){
     for (i in 1:(length(dates) - 1)){
       col_i <- dates[i]
-      for (j in (i+1):length(dates)){
+      for (j in (i + 1):length(dates)){
         col_j <- dates[j]
         newColName <- paste(col_i, "Minus", col_j, sep = name_separator)
         #set(dataSet, NULL, newColName, diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units))

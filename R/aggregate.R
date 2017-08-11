@@ -36,7 +36,7 @@
 #' @import data.table
 #' @importFrom stats sd
 #' @export
-aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
+aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   ## Environement
   function_name <- "aggregateByKey"                                           # For print(s)
   args <- list(...)
@@ -44,7 +44,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (! is.character(key)){
-	stop(paste0(function_name, ": key should be a character, you provided a ", class(key), "."))
+    stop(paste0(function_name, ": key should be a character, you provided a ", class(key), "."))
   }
   is.col(dataSet, cols = key, function_name = function_name)
   if (any(! sapply(dataSet, class) %in% c("numeric", "integer", "factor", "logical", "character"))){
@@ -57,28 +57,28 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
   # Make an nice list of functions
   if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
-	# Make as vector
+    # Make as vector
     if (! is.vector(functions)){
-	  store_name <-  as.character(match.call()$functions)
+      store_name <-  as.character(match.call()$functions)
       functions <- c(functions)
-	  names(functions) <- store_name
+      names(functions) <- store_name
     }
     
     functions <- unique(functions)
-	
+    
     # If functions have no names, give one
-	if (!is.null(args[["listNames"]])){ # passed by prepareSet
-	# This is a bit ugly, but since we are retriving function name depending on how function was called, we need to get the names from first function.
-	  listNames <- as.character(args[["listNames"]])
-	}
-	else{
-	  listNames <- as.character(match.call()$functions)
-	}
-    if(is.null(names(functions))){
+    if (!is.null(args[["listNames"]])){ # passed by prepareSet
+      # This is a bit ugly, but since we are retriving function name depending on how function was called, we need to get the names from first function.
+      listNames <- as.character(args[["listNames"]])
+    }
+    else{
+      listNames <- as.character(match.call()$functions)
+    }
+    if (is.null(names(functions))){
       names(functions) <- listNames[! listNames %in% c("c", "list")]
     }
     # If some functions still have no name, put fun1, fun2...
-    if(any(names(functions) == "")){
+    if (any(names(functions) == "")){
       names(functions)[names(functions) == ""] <- paste0("fun", 1:sum(names(functions) == ""))
     }
     
@@ -102,11 +102,11 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
   # If there are more lines than unique key: we aggregate
   if (nrow(dataSet) != uniqueN_byCol[key]){ 
     result <- dataSet[, .N, by = key]
-	setnames(result, "N", "nbrLines")
+    setnames(result, "N", "nbrLines")
     if (verbose){
       printl(function_name, ": I start to aggregate")
       pb <- initPB(function_name, names(dataSet))
-      start_time = proc.time()
+      start_time <- proc.time()
     }
     for (col in colnames(dataSet)[colnames(dataSet) != key]){ # we don't aggregate the key!
       data_sample <- dataSet[, c(key, col), with = FALSE] # To save some RAM
@@ -127,7 +127,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
   else{ # If there is as many unique key as lines, there is nothing to do
     return(dataSet)
   }
-}
+  }
 
 
 
@@ -154,7 +154,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53,...){
 aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = ".", 
                              functions, thresh = 53, ...){
   ## Environement
-  function_name = "aggregateAcolumn"
+  function_name <- "aggregateAcolumn"
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.col(dataSet, cols = c(key, col), function_name = function_name)
@@ -173,7 +173,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
       for(fct in names(functions)){
         new_col <- paste(fct, col, sep = name_separator)
         set(result_tmp, NULL, new_col, dataSet[, functions[[fct]](get(col)), by = key][, - key, with = FALSE])
-
+        
         if (fct == "sd"){
           # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0
           set(result_tmp, which(is.na(result_tmp[[new_col]])), new_col, 0) 
@@ -186,10 +186,10 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
     if (is.character(dataSet[[col]]) || is.factor(dataSet[[col]])){
       if (uniqueN_byCol[col] < 53){ # 53 is finger in the nose...
         result_tmp <- dcast.data.table(dataSet[, c(key, col), with = FALSE], 
-                                      formula = paste(key, col, sep = "~"), 
-                                      fun.aggregate = length,
-                                      value.var = col
-                                      )
+                                       formula = paste(key, col, sep = "~"), 
+                                       fun.aggregate = length,
+                                       value.var = col
+        )
         setnames(result_tmp, c(key, paste(col, colnames(result_tmp)[-1], sep = name_separator)))
       }
       if (uniqueN_byCol[col] >= 53){
@@ -205,7 +205,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
     
   }
   if (maxNbValuePerKey == 1){
-	# Only one different value by key: we put the value one time by key.
+    # Only one different value by key: we put the value one time by key.
     result_tmp <- dataSet[!duplicated(dataSet), ]
   }
   

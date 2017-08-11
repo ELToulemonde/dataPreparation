@@ -11,7 +11,11 @@
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @details 
 #' This function is looking for perfect transformation. 
-#' If there are some mistakes in dataSet, consider setting them to NA before.
+#' If there are some mistakes in dataSet, consider setting them to NA before. \cr
+#' In the unlikly case where you have numerics higher than \code{as.numeric(as.POSIXct("1990-01-01"))}
+#' they will be considered as timestamps and you might have some issues. On the other side, 
+#' if you have timestamps before 1990-01-01, they won't be found, but you can use 
+#' \code{\link{setColAsDate}} to force transformation.
 #' @section Warning:
 #' All these changes will happen \strong{by reference}: please send a copy() of
 #' your data.table to prepareSet if you do not want your
@@ -27,7 +31,7 @@
 #' @export
 findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE){
   ## Working environement
-  function_name = "findAndTransformDates"
+  function_name <- "findAndTransformDates"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -78,7 +82,7 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose 
 # @export
 identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, ...){
   ## Working environement
-  function_name = "identifyDates"
+  function_name <- "identifyDates"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -89,36 +93,39 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   dates <- NULL
   formats <- NULL
   date_sep <-  c(",", "/", "-", "_", ":")
-  
   ## Computation
   if (verbose){ 
     pb <- initPB(function_name, names(dataSet))
   }
   for ( col in names(dataSet) ){ 
     # We search dates only in characters
-    if (is.character(dataSet[[col]])){
+    if (is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])){
       # Get a few lines that aren't NA, NULL nor ""
       data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
       
       # We check only columns that contains something (not NA, NULL, "")
       if (length(data_sample) > 0){ 
-        # Identify potentially used separator by checking it split date in at last two elements
-        date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
-        
-        # Check formats with "date_hours" only if there are more than 10 characters
-        date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
-        # Debug warning
-        if (is.na(date_hours) || is.infinite(date_hours)){ 
-          warning(paste0(function_name, ": error i shouldn't be there.",  ))
-          date_hours <- FALSE
+        if (is.character(data_sample)){
+          # Identify potentially used separator by checking it split date in at last two elements
+          date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
+          
+          # Check formats with "date_hours" only if there are more than 10 characters
+          date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
+          # Debug warning
+          if (is.na(date_hours) || is.infinite(date_hours)){ 
+            warning(paste0(function_name, ": error i shouldn't be there.",  ))
+            date_hours <- FALSE
+          }
+          # Build list of all formats to check
+          defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
+          formats_tmp <- unique(c(defaultDateFormats, formats))
+          
+          # Look for the good format
+          format <- identifyDatesFormats(dataSet = data_sample, formats = formats_tmp)
         }
-        # Build list of all formats to check
-        defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
-        formats_tmp <- unique(c(defaultDateFormats, formats))
-        
-        # Look for the good format
-        format <- identifyDatesFormats(dataSet = data_sample, formats = formats_tmp)
-        
+        if (is.numeric(data_sample)){
+          format <- identifyTimeStampsFormats(dataSet = data_sample)
+        }
         # If a format has been found we note it
         if (! is.null(format)){ 
           dates <- c(dates, col)
@@ -182,12 +189,40 @@ identifyDatesFormats <- function(dataSet, formats){
     format <- formats[n_format]
   }
   else{
-	# Return NULL if we didn't find format
+    # Return NULL if we didn't find format
     format <- NULL
   }
   return(format)
 }
 
+
+# identify time_stamps_formats
+identifyTimeStampsFormats <- function(dataSet){
+  ## Working environement
+  function_name <- "identifyTimeStampsFormats"
+  ## Sanity check
+  if (! is.numeric(dataSet)){
+    stop(paste0(function_name, ": dataSet should be some numerics."))
+  }
+  
+  # Expect timestamp in seconds
+  date <- as.POSIXct(dataSet, origin = "1970-01-01 00:00:00")
+  year <- as.numeric(format(date, "%Y"))
+  
+  if (all(year > 1990) & all(year < 2100)) {
+    return ("s")
+  }
+  
+  # Expect timestamp in milliseconds
+  date <- as.POSIXct(dataSet / 1000, origin = "1970-01-01 00:00:00")
+  year <- as.numeric(format(date, "%Y"))
+  
+  if (all(year > 1990) & all(year < 2100)) {
+    return ("ms")
+  }
+  # Not a date
+  return (NULL)
+}
 
 
 #######################################################################################

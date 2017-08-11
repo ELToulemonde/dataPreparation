@@ -9,9 +9,10 @@ v 0.2
 	* generate new columns from existing columns (generate functions)
 		O generate factor from dates: generateFactorFromDate
 		O diffDates becomes generateDateDiffs (from better name understanding).
-
+	* findAndTransFormDates and setColAsDates now recognize and accept timestamp.
+	
 WARNING:
-If you where using diffDates, it is now called generateDateDiffs
+If you were using diffDates, it is now called generateDateDiffs
 
 v 0.1: release on CRAN July 2017
 ================================

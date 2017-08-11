@@ -11,7 +11,8 @@ setColAsDate(dataSet, cols, format = NULL, verbose = TRUE)
 
 \item{cols}{a list of colnames of dataSet (or just one) to transform into dates}
 
-\item{format}{the format of date (function is faster if the format is provided) (default to NULL)}
+\item{format}{the format of date (function is faster if the format is provided) (default to NULL).\cr
+For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)}
 
 \item{verbose}{should the function log (logical, default to TRUE)}
 }
@@ -24,7 +25,7 @@ Set as POSIXct a character column (or a list of columns) from a data.table
 }
 \details{
 setColAsDate is way faster when format is provided. If you want to identify dates and format
-automatically, have a look to \code{\link{findAndTransformDates}}
+automatically, have a look to \code{\link{findAndTransformDates}}. \cr
 }
 \examples{
 # Lets build a dataSet set
@@ -38,4 +39,8 @@ data_transformed <- setColAsDate(dataSet,cols = "date2", format = "\%Y_\%m_\%d")
 
 # Control the results
 lapply(data_transformed,class)
+
+# It also works with timestamps
+dataSet <- data.frame( time_stamp = c(1483225200, 1485990000, 1488495600))
+setColAsDate(dataSet, cols = "time_stamp", format = "s")
 }

@@ -37,7 +37,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   ## Computation
   if (verbose) {printl("Transforming characters into factors.")}
   carac_cols <- names(col_class)[col_class %in% c("character")]
-  dataSet = setColAsFactorOrLogical(dataSet, carac_cols, verbose = verbose)
+  dataSet <- setColAsFactorOrLogical(dataSet, carac_cols, verbose = verbose)
   
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)

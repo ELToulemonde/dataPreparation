@@ -1,13 +1,13 @@
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 ## findAndTransformDates
 #-----------------------
 
 dataSet <- data.table(ID = 1:5, 
-                  date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
-                  date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"), 
-                  hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "1:22")
-                  )
+                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
+                      date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"), 
+                      hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "1:22")
+)
 
 data_transformed <- findAndTransformDates(dataSet, verbose =  verbose, n_test = 5)
 
@@ -22,7 +22,7 @@ test_that("findAndTransformDates: no dates to find",
           {
             expect_equal(all(sapply(data_transformed, function(x)class(x)[1]) == c("numeric", "numeric", "numeric", "numeric", "factor")), TRUE)
           })
-		  
+
 ## identifyDates
 #---------------
 dataSet <- data.table(ID = 1:5, 
@@ -45,10 +45,22 @@ test_that("private function identifyDates :",
 ## identifyDatesFormats 
 # ----------------
 test_that("Private function: identifyDatesFormats ",
-		{
-		expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
-		expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
-		})
+          {
+            expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
+            expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
+          })
+
+## identifyTimeStampsFormats 
+# --------------------------
+test_that("private function: identifyTimeStampsFormats ",
+          {
+            expect_equal(identifyTimeStampsFormats(1352068320), "s")
+            expect_equal(identifyTimeStampsFormats(1352068320000), "ms")
+            expect_null(identifyTimeStampsFormats(12345))
+            expect_error(identifyTimeStampsFormats("ad"), ": dataSet should be some numerics.")
+          })
+
+
 
 
 
@@ -61,7 +73,7 @@ dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("20
 test_that("dateFormatUnifier:", 
           {
             expect_equal(all(sapply(dateFormatUnifier(dataSet, format = "Date"), class) == c("Date", "Date")), TRUE)
-			expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
+            expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
           })
 
 ## is.date
