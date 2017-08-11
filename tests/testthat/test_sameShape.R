@@ -14,7 +14,7 @@ test_that(paste0( function_name, ": exeption handling "),
             expect_error(sameShape(messy_adult, "a", verbose = verbose), "referenceSet should be a data.table, data.frame or matrix.")
           })
 
-          
+
 # Correct computation
 data("messy_adult")
 messy_adult <- messy_adult[1:150, ] # reduce to save time
@@ -41,17 +41,17 @@ test_that(paste0( function_name, ": "),
 setDF(messy_adult)
 
 test_that(paste0( function_name, ": transform to data frame"),
-		{
-		expect_equal(class(sameShape(adult, messy_adult, verbose = verbose)), "data.frame")
-		}
-		)
-		
+          {
+            expect_equal(class(sameShape(adult, messy_adult, verbose = verbose)), "data.frame")
+          }
+)
+
 # Different type
 data(adult)
 adult_num <- shapeSet(adult, finalForm = "numerical_matrix", verbose = FALSE)
 
 test_that(paste0( function_name, ": transform to numerical matrix"),
-		{
-		expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
-		}
+          {
+            expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
+          }
 )

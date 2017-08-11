@@ -35,7 +35,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  cols = real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
   
   ## Initialization
@@ -55,7 +55,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
     }
     if (is.character(dataSet[[col]])){
       
-      nb_na_init = sum(is.na(dataSet[[col]]))
+      nb_na_init <- sum(is.na(dataSet[[col]]))
       if (stripString){
         set(dataSet, NULL, col, as.numericStrip(dataSet[[col]]))
       }
@@ -105,7 +105,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
   is.verbose(verbose)
   
   ## Initialization
-  cols = real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(cols, names(dataSet), function_name)
   
   ## Computation
   if (verbose){
@@ -134,11 +134,12 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #' Set as POSIXct a character column (or a list of columns) from a data.table
 #' @param dataSet Matrix, data.frame or data.table
 #' @param cols a list of colnames of dataSet (or just one) to transform into dates
-#' @param format the format of date (function is faster if the format is provided) (default to NULL)
+#' @param format the format of date (function is faster if the format is provided) (default to NULL).\cr
+#' For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)
 #' @param verbose should the function log (logical, default to TRUE)
 #' @details 
 #' setColAsDate is way faster when format is provided. If you want to identify dates and format
-#' automatically, have a look to \code{\link{findAndTransformDates}}
+#' automatically, have a look to \code{\link{findAndTransformDates}}. \cr
 #' @return dataSet (as a \code{\link{data.table}}), with specified columns set as Date. 
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
@@ -153,6 +154,10 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #' 
 #' # Control the results
 #' lapply(data_transformed,class)
+#' 
+#' # It also works with timestamps
+#' dataSet <- data.frame( time_stamp = c(1483225200, 1485990000, 1488495600))
+#' setColAsDate(dataSet, cols = "time_stamp", format = "s")
 #' @import data.table
 #' @importFrom lubridate parse_date_time 
 #' @importFrom stringr str_replace_all
@@ -170,15 +175,13 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   if (verbose){
     printl(function_name, ": I will set some columns as Date.")
   }
-  cols = real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(cols, names(dataSet), function_name)
+  n_transformed <- length(cols)
   
   ## Computation
   for (col in cols){
     if (verbose){
-      printl(function_name, ": I am doing the column", col)
-    }
-    if (! (is.character(dataSet[[col]])) & verbose){
-      warning(paste0(function_name, ": ", col, " isn't a character, i do nothing."))
+      printl(function_name, ": I am doing the column ", col, ".")
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if (is.character(dataSet[[col]])){
@@ -197,12 +200,11 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       }
       # If it isn't NULL
       if (!is.null(format)){
+        # it is faster if it's a format accepted by parse_date_time, so we check that
         format4parse_date_time <- formatForparse_date_time()
-        format_tmp = str_replace_all(format, "[[:punct:]]", "")
+        format_tmp <- str_replace_all(format, "[[:punct:]]", "")
         if (format_tmp %in% format4parse_date_time){
-		  options(warn = -1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
           set(dataSet, NULL, col, parse_date_time(dataSet[[col]], orders = format_tmp))
-		  options(warn = 0)
         }
         else{
           set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format))
@@ -221,7 +223,22 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
         dataSet[[col]] <- data_sample
       }
     }
-    if(verbose){
+    else if (is.numeric(dataSet[[col]]) & !is.null(format)){
+      if (format == "s"){
+        set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], origin = "1970-01-01 00:00:00"))
+      }
+      if (format == "ms"){
+        set(dataSet, NULL, col, as.POSIXct(dataSet[[col]] / 1000, origin = "1970-01-01 00:00:00"))
+      }
+    }
+    else{
+      options(warn = 0)
+      warning(paste0(function_name, ": I can't handle ", col, ", please see documentation."))
+      options(warn = -1)
+      n_transformed <- n_transformed - 1
+      next()
+    }
+    if (verbose){
       # reset warnings
       options(warn = 0)
     }
@@ -230,10 +247,9 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   ## Wrapp-up
   if (verbose){
     printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
-           "s to transform ", length(cols), " columns to Dates.")
+           "s to transform ", n_transformed, " columns to Dates.")
   }
   return(dataSet)
-  
 }
 
 
@@ -267,12 +283,12 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' @export
 setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   ## Working environment
-  function_name = "setColAsFactorOrLogical"
+  function_name <- "setColAsFactorOrLogical"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer"))}
-  cols = real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
   
   ## Computation

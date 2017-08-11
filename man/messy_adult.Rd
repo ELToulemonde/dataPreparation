@@ -15,7 +15,7 @@ For examples and tutorials, messy_adult has been built using UCI \code{adult}.\c
 We added 9 really ugly columns to the data set:
 
 \itemize{
-    \item 4 dates with various formats and NAs
+    \item 4 dates with various formats and time stamp, containing NAs
     \item 1 constant column
     \item 3 numeric with different decimal separator
     \item 1 email adress

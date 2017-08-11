@@ -23,7 +23,7 @@
 #' @export
 whichAreConstant <- function(dataSet, verbose = TRUE){
   ## Working environement
-  function_name = "whichAreConstant"
+  function_name <- "whichAreConstant"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -33,7 +33,7 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
   listOfConstantCols <- NULL
   start_time <- proc.time()
   if (verbose){
-	pb <- initPB(function_name, names(dataSet))
+    pb <- initPB(function_name, names(dataSet))
   }
   
   ## Computation 
@@ -42,13 +42,13 @@ whichAreConstant <- function(dataSet, verbose = TRUE){
       isConstant <- fastMaxNbElt(dataSet[[col]], 1)
       if (isConstant == TRUE){
         listOfConstantCols <- c(listOfConstantCols, col)
-		if(verbose){
-		  printl(function_name, ": ", col, " is constant.")
-		}
+        if(verbose){
+          printl(function_name, ": ", col, " is constant.")
+        }
       }
-	  if(verbose){
-		setPB(pb, col)
-	  }
+      if(verbose){
+        setPB(pb, col)
+      }
     }
   }
   if (verbose){
@@ -123,7 +123,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
   I <- 1:max(ncol(dataSet) - 1, 1) 
   start_time <- proc.time()
   if (verbose){
-	pb <- initPB(function_name, names(dataSet))
+    pb <- initPB(function_name, names(dataSet))
   }
   ## Computation # to-do dé-gorifier
   while (length(I) > 0){
@@ -135,16 +135,16 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
       j <- J[1]
       if ( fastIsEqual(dataSet[[i]], dataSet[[j]])){
         listOfDoubles <- c(listOfDoubles, j)
-		if(verbose){
-		  printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], ". I put it in drop list.")
-		}
+        if(verbose){
+          printl(function_name, ": ", names(dataSet)[j], " is exactly equal to ", names(dataSet)[i], ". I put it in drop list.")
+        }
       }
       J <- J[-1] # drop handled j
     }
     I <- I[-1] # drop handled i
     I <- I[!I %in% listOfDoubles]
     if (verbose){
-	  setPB(pb, names(dataSet)[i])
+      setPB(pb, names(dataSet)[i])
     }
   }
   if (verbose){
@@ -193,7 +193,7 @@ whichAreInDouble <- function(dataSet, verbose = TRUE){
 #' @export
 whichAreBijection <- function(dataSet, verbose = TRUE){
   ## Working environement
-  function_name = "whichAreBijection"
+  function_name <- "whichAreBijection"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -214,7 +214,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   while (length(I) > 0){
     i <- I[1]
     
-    J <- (i+1):ncol(dataSet)
+    J <- (i + 1):ncol(dataSet)
     J <- J[!J %in% listOfBijection]
     while (length(J) > 0){
       j <- J[1]
@@ -222,22 +222,22 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
         if (is.character(dataSet[[j]]) || is.factor(dataSet[[j]])){
           # If j is a character we keep it and drop i, we prefer to have character instead of "false" numerics.
           listOfBijection <- c(listOfBijection, i)
-		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], ". I put it in drop list.")
-		  }
-		  break # Break loop since i will be dropped.
+          if(verbose){
+            printl(function_name, ": ", names(dataSet)[i], " is a bijection of ", names(dataSet)[j], ". I put it in drop list.")
+          }
+          break # Break loop since i will be dropped.
         }
         else{
           listOfBijection <- c(listOfBijection, j)
-		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], ". I put it in drop list.")
-		  }
+          if(verbose){
+            printl(function_name, ": ", names(dataSet)[j], " is a bijection of ", names(dataSet)[i], ". I put it in drop list.")
+          }
         }
       }
-	  J <- J[-1] # drop handled j	  
+      J <- J[ - 1] # drop handled j	  
     }
-    I <- I[-1] # drop handled i
-	I <- I[!I %in% listOfBijection]
+    I <- I[ - 1] # drop handled i
+    I <- I[!I %in% listOfBijection]
     if (verbose){
       setPB(pb, names(dataSet)[i])
     }
@@ -247,7 +247,7 @@ whichAreBijection <- function(dataSet, verbose = TRUE){
   }
   ## Wrapp up
   if (! is.null(listOfBijection)){
-	listOfBijection <- sort(unique(listOfBijection))
+    listOfBijection <- sort(unique(listOfBijection))
   }
   if (verbose){
     printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(listOfBijection), " bijection(s)")
@@ -329,23 +329,23 @@ whichAreIncluded <- function(dataSet, verbose = TRUE){
       temp_data <- temp_data[!duplicated(temp_data)]
       
       if (nrow(temp_data) == nbr_various_val[i]){
-          listOfIncluded <- c(listOfIncluded, j)
-		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[j], " is included in column ", names(dataSet)[i], ".")
-		  }
+        listOfIncluded <- c(listOfIncluded, j)
+        if(verbose){
+          printl(function_name, ": ", names(dataSet)[j], " is included in column ", names(dataSet)[i], ".")
+        }
       }
       else{
         if (nrow(temp_data) == nbr_various_val[j]){
           listOfIncluded <- c(listOfIncluded, i)
-		  if(verbose){
-		    printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
-		  }
-		  break # Break loop since i will be dropped.
+          if(verbose){
+            printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
+          }
+          break # Break loop since i will be dropped.
         }
       }  
       J <- J[-1] # drop handled j
     }
-	I <- I[-1] # drop handled i
+    I <- I[-1] # drop handled i
     I <- I[!I %in% listOfIncluded]
     if (verbose){
       setPB(pb, names(dataSet)[i])

@@ -11,18 +11,18 @@ findNFirstNonNull <- function(dataSet, N){
   if (length(dataSet) <= N){
     return(dataSet[!is.null(dataSet) & !is.na(dataSet) & dataSet != ""])
   }
-  maxMultiple = round(log(length(dataSet)) / log(10) + 1)
-  result = NULL
+  maxMultiple <- round(log(length(dataSet)) / log(10) + 1)
+  result <- NULL
   
   ## Computation
   for ( mult in 1:maxMultiple){
-    I <- (10^(mult - 1)):min(10^mult - 1, nrow(dataSet))
+    I <- (10 ^ (mult - 1)):min(10 ^ mult - 1, nrow(dataSet))
     data_sample <- dataSet[I]
     
     data_sample <- data_sample[!is.null(data_sample) & !is.na(data_sample) & data_sample != ""]
     
     if (length(data_sample) > 0 ){
-      result <- c(result, data_sample[1:min(N-length(result), length(data_sample))])
+      result <- c(result, data_sample[1:min(N - length(result), length(data_sample))])
     }
     
     
@@ -73,7 +73,7 @@ checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
 
 is.verbose <- function(verbose, function_name = "is.verbose"){
   if (! is.logical(verbose)){
-	stop(function_name, " verbose should be logical (TRUE or FALSE).")
+    stop(function_name, " verbose should be logical (TRUE or FALSE).")
   }
 }
 
@@ -91,9 +91,9 @@ is.col <- function(dataSet, cols = NULL, ...){
   # Arguments for log
   args <- list(...)
   if (length(args) > 0){
-  	if (!is.null(args[["function_name"]])){
-  	  function_name <- args[["function_name"]]
-  	}
+    if (!is.null(args[["function_name"]])){
+      function_name <- args[["function_name"]]
+    }
   }
   else{
     function_name <- "is.col"
@@ -147,13 +147,13 @@ printl <- function(...){
 # Use when you build a progress bar for colnames
 #' @importFrom tcltk tkProgressBar setTkProgressBar
 initPB <- function(function_name, cols_names){
-	pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = length(cols_names)) # Construction d'une progress bar
-	pb$function_name = function_name
-	pb$cols_names = cols_names
-	return(pb)
+  pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = length(cols_names)) # Construction d'une progress bar
+  pb$function_name <- function_name
+  pb$cols_names <- cols_names
+  return(pb)
 }
 setPB <- function(pb, col){
-	setTkProgressBar(pb, which(pb$cols_names == col), title=paste(pb$function_name, ": ", round(which(pb$cols_names == col) / length(pb$cols_names) * 100, 0), "% done")) 
+  setTkProgressBar(pb, which(pb$cols_names == col), title=paste(pb$function_name, ": ", round(which(pb$cols_names == col) / length(pb$cols_names) * 100, 0), "% done")) 
 }
 
 ###################################################################################################
@@ -211,13 +211,13 @@ true.aggFunction <- function(functions, function_name = "true.aggFunction "){
       warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
       functions <- functions[names(functions) != fun]
     }
-	else{
-	  # check aggregation
-	  if (length(functions[[fun]](1:3)) != 1){
-		warning(paste0(function_name, ": ", fun, " is not an aggegaration function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
-		functions <- functions[names(functions) != fun]
-	  }
-	}
+    else{
+      # check aggregation
+      if (length(functions[[fun]](1:3)) != 1){
+        warning(paste0(function_name, ": ", fun, " is not an aggegaration function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
+        functions <- functions[names(functions) != fun]
+      }
+    }
   }
   # Wrapp-up
   return(functions)

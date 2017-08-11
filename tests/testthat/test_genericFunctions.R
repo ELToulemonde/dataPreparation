@@ -1,6 +1,5 @@
-
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 ## findNFirstNonNull
 #-------------------
 
@@ -20,7 +19,7 @@ test_that("findNFirstNonNull: test character",
             expect_equal(all(findNFirstNonNull(c(NA, LETTERS), 5) == c("A", "B", "C", "D", "E")), TRUE)
           })
 
-		  
+
 test_that("findNFirstNonNull: not enough not NAs values", 
           {
             expect_equal(length(findNFirstNonNull(c("A", "B", NA, NA), 3)), 2)
@@ -40,17 +39,17 @@ test_that("checkAndReturnDataTable",
             expect_error(checkAndReturnDataTable(list(1,2)))
             
             expect_error(checkAndReturnDataTable(data.table()), "should have at least have 1 line")
-			expect_error(checkAndReturnDataTable(data.frame(row.names = c(1,2))), "should have at least have 1 column")
+            expect_error(checkAndReturnDataTable(data.frame(row.names = c(1,2))), "should have at least have 1 column")
           })
 
 
-		  
+
 ## is.verbose
 # -----------
 test_that("is.verbose: control input",
-		{
-		expect_error(is.verbose("a"))
-		})
+          {
+            expect_error(is.verbose("a"))
+          })
 ## checkIfIsColumn
 #------------------
 
@@ -64,10 +63,10 @@ expect_error(is.col(1, cols = "b"), "is.col: dataSet should be a data.table, dat
 # ----------
 data("messy_adult")
 test_that("real_cols:",
-		{
-		expect_equal(length(real_cols(c("mail", "asucgzr"), names(messy_adult), function_name = "test")), 1)
-		}
-		)
+          {
+            expect_equal(length(real_cols(c("mail", "asucgzr"), names(messy_adult), function_name = "test")), 1)
+          }
+)
 ## getPossibleSeparators
 #------------------------
 result <- getPossibleSeparators()
@@ -90,46 +89,46 @@ test_that("control_nb_rows:",
             expect_equal(control_nb_rows(dataSet, 1), 1)
             expect_warning(control_nb_rows(dataSet, 10), "You want to check more rows than there are in dataSet, I set nb_rows to 3")
             expect_warning(control_nb_rows(dataSet, 0), "You want to check at least a few rows than there are in dataSet, I set nb_rows to 3")
-			expect_error(control_nb_rows(dataSet, "a"), " should be a numeric.")
+            expect_error(control_nb_rows(dataSet, "a"), " should be a numeric.")
           })
-		  
-		  
+
+
 ## true.aggFunction
 # -----------------
 test_that("true.aggFunction:", 
           {
-           expect_warning(result <- true.aggFunction(list(sum = sum, a = "a")), " is not a function, it wont be used.")
-		   expect_equal(length(result), 1)
+            expect_warning(result <- true.aggFunction(list(sum = sum, a = "a")), " is not a function, it wont be used.")
+            expect_equal(length(result), 1)
           })
 
-		  
+
 ## function.maker
 # ---------------
 test_that("function.maker: ",
-			{
-			expect_equal(class(function.maker(function(x){sum(x, na.rm = TRUE)}, type = "numeric")), "function")
-			expect_equal(class(function.maker(1, type = "numeric")), "function")
-			expect_equal(class(function.maker("a", type = "character")), "function")
-			expect_equal(class(function.maker(TRUE, type = "logical")), "function")
-			})
+          {
+            expect_equal(class(function.maker(function(x){sum(x, na.rm = TRUE)}, type = "numeric")), "function")
+            expect_equal(class(function.maker(1, type = "numeric")), "function")
+            expect_equal(class(function.maker("a", type = "character")), "function")
+            expect_equal(class(function.maker(TRUE, type = "logical")), "function")
+          })
 
 test_that("function.maker: warning not handling na",
-			{
-			expect_warning(function.maker(max, type = "numeric"))
-			expect_warning(function.maker(max, type = "character"))
-			expect_warning(function.maker(function(...){sum(...) / length(list(...)) > 0.5}, type = "logical"))
-			})			
+          {
+            expect_warning(function.maker(max, type = "numeric"))
+            expect_warning(function.maker(max, type = "character"))
+            expect_warning(function.maker(function(...){sum(...) / length(list(...)) > 0.5}, type = "logical"))
+          })			
 test_that("function.maker: stop not aggregation function",
-			{
-			expect_error(function.maker(sqrt, type = "numeric"))
-			expect_error(function.maker(function(x)paste0(x, "aaa"), type = "character"))
-			expect_error(function.maker(function(x){!x}, type = "logical"))
-			})
+          {
+            expect_error(function.maker(sqrt, type = "numeric"))
+            expect_error(function.maker(function(x)paste0(x, "aaa"), type = "character"))
+            expect_error(function.maker(function(x){!x}, type = "logical"))
+          })
 
 test_that("function.maker: error wrong type",
-			{
-			expect_error(function.maker("a", type = "numeric"))
-			expect_error(function.maker(1, type = "character"))
-			expect_error(function.maker("a", type = "logical"))
-			expect_error(function.maker(dataSet, type = "logical"), ": is in a shape that isn't handled, please provide constant or aggregation function.")
-			})
+          {
+            expect_error(function.maker("a", type = "numeric"))
+            expect_error(function.maker(1, type = "character"))
+            expect_error(function.maker("a", type = "logical"))
+            expect_error(function.maker(dataSet, type = "logical"), ": is in a shape that isn't handled, please provide constant or aggregation function.")
+          })

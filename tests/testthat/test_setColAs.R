@@ -1,5 +1,5 @@
 requireNamespace("data.table")
-verbose = TRUE
+verbose <- TRUE
 ## setColAsNumeric
 #-----------------------
 dataSet <- data.table(charCol1 = c("1", "2", "3"), charCol2 = c("4", "5", "6"))
@@ -16,7 +16,7 @@ test_that("setColAsNumeric:",
           {
             expect_warning(setColAsNumeric(dataSet, cols = c("date_col"), verbose = verbose), "isn't a character a numeric or an integer, i do nothing")
           })
-		  
+
 ## setColAsCharacter
 #-------------------
 
@@ -28,16 +28,16 @@ test_that("setColAsCharacter:",
           {
             expect_equal(all(sapply(dataSet, class) == c("character", "character", "character")), TRUE)
           }
-          )
+)
 
 ## setColAsDate
 #-----------------------
 
 
 dataSet <- data.table(ID = 1:5, 
-                  date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
-                  date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")
-                  )
+                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
+                      date2 = c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")
+)
 dataSet <- setColAsDate(dataSet, cols = "date2", format = "%Y_%m_%d", verbose = verbose)
 
 
@@ -47,41 +47,57 @@ test_that("setColAsDate:",
             expect_equal(lapply(dataSet, class)$date1, "character")
             expect_equal(all(lapply(dataSet, class)$date2 == c(c("POSIXct", "POSIXt"))), TRUE)
           })
-		  
+
 dataSet <- setColAsDate(dataSet, cols = "date1", verbose = verbose)
 test_that("setColAsDate: without giving format", 
           {
             expect_equal(lapply(dataSet, class)$ID,  "integer")
             expect_equal(all(lapply(dataSet, class)$date2 == c(c("POSIXct", "POSIXt"))), TRUE)
-			}
-			)
+          }
+)
 
 # Try to transform ID
 test_that("setColAsDate: raise warning, when column is not character", 
           {
-            expect_warning( setColAsDate(dataSet, cols = "ID", verbose = verbose),  " isn't a character, i do nothing")
-			}
-			)
-			
-			
+            expect_warning( setColAsDate(dataSet, cols = "ID", verbose = verbose),  "setColAsDate: I can't handle ID, please see documentation.")
+          }
+)
+
+
 # set id as character, and try to transform it
-dataSet$ID = as.character(dataSet$ID)
+dataSet$ID <- as.character(dataSet$ID)
 dataSet <- setColAsDate(dataSet, cols = "ID", verbose = verbose)
 test_that("setColAsDate: don't transform a column that isn't a date", 
           {
             expect_equal(lapply(dataSet, class)$ID,  "character")
-			}
-			)
+          }
+)
 
-			
+
 dataSet <- setColAsDate(dataSet, cols = "ID", format = "%Y-%m-%d", verbose = verbose)
 test_that("setColAsDate: don't transform a column that isn't a date even if format is forced", 
           {
             expect_equal(lapply(dataSet, class)$ID,  "character")
-			}
-			)
-			
-			
+          }
+)
+
+# test on time_stamp
+dataSet <- data.frame( time_stamp_s = c(1483225200, 1485990000, 1488495600),
+                       time_stamp_ms = c(1483225200000, 1485990000000, 1488495600000))
+
+dataSet <- setColAsDate(dataSet, cols = "time_stamp_s", format = "s", verbose = verbose)
+dataSet <- setColAsDate(dataSet, cols = "time_stamp_ms", format = "ms", verbose = verbose)
+test_that("setColAsDate: check time_stamp", 
+          {
+            expect_true(is.POSIXct(dataSet$time_stamp_s))
+            expect_true(is.POSIXct(dataSet$time_stamp_ms))
+          }
+)
+
+					   
+					   
+
+
 ## setColAsFactorOrLogical
 #---------------------------
 data("messy_adult")
@@ -91,5 +107,5 @@ test_that("setColAsFactorOrLogical:",
           {
             expect_equal(class(messy_adult[["mail"]]),  "logical")
             expect_equal(class(messy_adult[["education"]]),  "factor")
-			expect_error(setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), n_levels = "a", verbose = verbose))
+            expect_error(setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), n_levels = "a", verbose = verbose))
           })

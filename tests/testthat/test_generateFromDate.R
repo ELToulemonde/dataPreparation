@@ -1,6 +1,6 @@
 requireNamespace("data.table")
 Sys.setlocale("LC_TIME", "C")
-verbose = TRUE
+verbose <- TRUE
 
 ## generateFactorFromDate
 #-----------------------
@@ -21,7 +21,7 @@ test_that("Private function: date_factor",
           {
             expect_identical(date_factor(dataSet, type = "yearmonth"), factor(c("2014 Jan", "2015 Jan", "2015 Jun")))
             expect_identical(date_factor(dataSet, type = "yearquarter"), factor(c("2014 Q1", "2015 Q1", "2015 Q2")))
-			      expect_identical(date_factor(dataSet, type = "quarter"), factor(c("Q1", "Q1", "Q2")))
+            expect_identical(date_factor(dataSet, type = "quarter"), factor(c("Q1", "Q1", "Q2")))
             expect_identical(date_factor(dataSet, type = "month"), factor(c("Jan", "Jan", "Jun")))
             expect_identical(date_factor(dataSet, type = "year"), factor(c("2014", "2015", "2015")))
             expect_error(date_factor(1:5), ": dataSet should contain dates.")
@@ -46,8 +46,8 @@ test_that("generateDateDiffs: ",
             expect_equal(ncol(dataSet), 6)
             expect_equal(sum(is.na(dataSet)), 0)
           })
-		  
-		  
+
+
 dataSet <- data.table(ID = 1:100, 
                       date1 = seq(from = as.Date("2010-01-01"), 
                                   to = as.Date("2015-01-01"), 
@@ -57,18 +57,18 @@ dataSet <- data.table(ID = 1:100,
                                   length.out = 100)
 )
 test_that("generateDateDiffs: errors",
-		{
-		expect_error(generateDateDiffs(dataSet, analysisDate = "2017-01-01"),  "analysisDate must be a Date")
-		})
-		
+          {
+            expect_error(generateDateDiffs(dataSet, analysisDate = "2017-01-01"),  "analysisDate must be a Date")
+          })
+
 ## diffTime
 #----------
 
 test_that("diffTime: ",
-		{
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "days"), 1)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "hours"), 24)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "mins"), 1440)
-		expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "years"), 1 / 365.25)
-		expect_error(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "zadtfrey"), "Sorry this unit hasn't been implemented yet")
-		})
+          {
+            expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "days"), 1)
+            expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "hours"), 24)
+            expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "mins"), 1440)
+            expect_equal(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "years"), 1 / 365.25)
+            expect_error(diffTime(as.Date("2017-01-02"), as.Date("2017-01-01"), units = "zadtfrey"), "Sorry this unit hasn't been implemented yet")
+          })

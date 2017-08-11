@@ -35,7 +35,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   myArgs <- list(...)
   function_name <- "fastFilterVariables"
   dataName <- "dataSet"
-  if (length(myArgs)>0){
+  if (length(myArgs) > 0){
     if (!is.null(myArgs[["function_name"]])){
       function_name <- myArgs[["function_name"]]
     }
@@ -43,7 +43,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
       dataName <- myArgs[["dataName"]]
     }
   }
-
+  
   
   ## Computation
   # Delete constant columns
@@ -55,7 +55,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName, ".")
     }
-	dataSet[, (listOfConstantCols) := NULL]
+    dataSet[, (listOfConstantCols) := NULL]
   }
   # Delete columns in double
   if (verbose){
@@ -66,7 +66,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName, ".")
     }  
-	dataSet[, (listOfDoubles) := NULL]
+    dataSet[, (listOfDoubles) := NULL]
   }
   
   # Delete columns that are bijections
@@ -79,7 +79,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
       printl(function_name, ": I delete ", length(listOfBijections), 
              " column(s) that are bijections of another column in ", dataName, ".")
     }  
-	dataSet[, (listOfBijections) := NULL]
+    dataSet[, (listOfBijections) := NULL]
   }
   ## Wrapp up
   return(dataSet)
@@ -116,7 +116,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
 #' @export
 fastRound <- function(dataSet, digits = 2, verbose = TRUE){
   ## Working environement
-  function_name = "fastRound"
+  function_name <- "fastRound"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -190,7 +190,7 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
 fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE, 
                          set_char = "", verbose = TRUE){
   ## Working environement
-  function_name = "fastHandleNa"
+  function_name <- "fastHandleNa"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -330,13 +330,13 @@ fastIsBijection <- function(dataSet){
   nrows <- nrow(dataSet)
   maxPower <- floor(log(nrows)/log(10)) + 1
   for (i in 1:maxPower){
-    I <- (10^(i - 1)):min(10^i - 1,  nrows)
+    I <- (10 ^ (i - 1)):min(10 ^ i - 1,  nrows)
     n1 <- uniqueN(dataSet[I, 1])
     n2 <- uniqueN(dataSet[I, 2])
     if (n1 != n2){
       return(FALSE)
     }
-    temp_data <- dataSet[I,]
+    temp_data <- dataSet[I, ]
     temp_data <- temp_data[!duplicated(temp_data), ]
     
     if (nrow(temp_data) != n1){
@@ -363,11 +363,10 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   listOfUnique <- NULL
   maxPower <- floor(log(length(object)) / log(10)) + 1
   i <- 1
-  isConstant <- TRUE
   
   ## Computation
   for (i in 1:maxPower){
-    I=(10^(i - 1)):min(10^i - 1, length(object))
+    I <- (10 ^ (i - 1)):min(10 ^ i - 1, length(object))
     listOfUnique <- unique( c( listOfUnique, unique( object[I])))
     if (length(listOfUnique) > max_n_values){
       return(FALSE)
@@ -379,9 +378,5 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   # if every test passed, return TRUE
   return(TRUE)
 }
-
-
-
-
 
 
