@@ -4,10 +4,12 @@
 \alias{whichAreConstant}
 \title{Identify constant columns}
 \usage{
-whichAreConstant(dataSet, verbose = TRUE)
+whichAreConstant(dataSet, keep_cols = NULL, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }

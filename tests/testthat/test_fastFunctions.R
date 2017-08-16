@@ -5,7 +5,7 @@ verbose <- TRUE
 data("messy_adult")
 # Make it smaller to go faster
 messy_adult <- messy_adult[1:5000, ]
-
+messy_adult$age2 = messy_adult$age # add a double
 
 test_that("fastFilterVariables: ", 
           {
@@ -70,17 +70,11 @@ test_that("private function: fastIsEqual",
 ## fastIsBijection
 # -----------------
 data("adult")
-setDF(adult)
 
-test_that("private function: fastIsBijection error if not 2 columns", 
-          {
-            expect_error(fastIsBijection(adult), "fastIsBijection: dataSet should be a data.table or a data.frame with 2 columns")
-          }
-)
 test_that("private function: fastIsBijection", 
           {
-            expect_equal(fastIsBijection(adult[, c("education", "education_num")]), TRUE)
-            expect_equal(fastIsBijection(adult[, c("education", "income")]), FALSE)
+            expect_equal(fastIsBijection(adult[["education"]], adult[["education_num"]]), TRUE)
+            expect_equal(fastIsBijection(adult[["education"]], adult[["income"]]), FALSE)
           }
 )
 

@@ -10,6 +10,7 @@ verbose <- TRUE
 
 data(messy_adult)
 messy_adult <- unFactor(messy_adult, verbose = FALSE)
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop_cols = TRUE)
 adult_prep <- shapeSet(copy(messy_adult), verbose = verbose)
 
 
@@ -21,10 +22,10 @@ test_that("prepareSet: test class of results:",
           })
 
 
-
+rm(messy_adult)
 
 ## setAsNumericMatrix
-# -------------------------
+# --------------------
 data(messy_adult)
 test_that("setAsNumericMatrix: ",
           {
@@ -34,12 +35,13 @@ test_that("setAsNumericMatrix: ",
 
 data(messy_adult)
 messy_adult <- unFactor(messy_adult, n_unfactor = 53, verbose = FALSE)
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop_cols = TRUE)
 messy_adult <- shapeSet(messy_adult, verbose = FALSE, finalForm = "data.table")
 messy_adult <- fastFilterVariables(messy_adult, verbose = FALSE)
 test_that("setAsNumericMatrix: ",
           {
-            expect_equal(ncol(setAsNumericMatrix(messy_adult)), 106)
-            expect_equal(ncol(setAsNumericMatrix(messy_adult, allCols = TRUE, sparse = TRUE)), 114)
+            expect_equal(ncol(setAsNumericMatrix(messy_adult)), 126)
+            expect_equal(ncol(setAsNumericMatrix(messy_adult, allCols = TRUE, sparse = TRUE)), 137)
           }
 )
 

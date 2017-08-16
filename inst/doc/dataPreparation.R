@@ -25,7 +25,7 @@ messy_adult <- findAndTransformDates(messy_adult)
 
 ## ----echo = FALSE, results='asis'----------------------------------------
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -39,7 +39,7 @@ messy_adult <- findAndTransformNumerics(messy_adult)
 
 ## ----echo = FALSE, results='asis'----------------------------------------
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -59,7 +59,7 @@ kable(head(messy_adult[, .(constant, date3, date4, num1, num3, education, educat
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ----results = "hold"----------------------------------------------------
-ncols = ncol(messy_adult)
+ncols <- ncol(messy_adult)
 messy_adult <- fastFilterVariables(messy_adult)
 print(paste0("messy_adult now have ", ncol(messy_adult), " columns; so ", ncols - ncol(messy_adult), " less than before."))
 
@@ -74,7 +74,7 @@ kable(cbind(head(messy_adult[, 1:6, with = FALSE], n = 6), data.frame("..." = re
 messy_adult <- generateDateDiffs(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
 
 ## ----echo=FALSE----------------------------------------------------------
-kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 5):ncol(messy_adult), with = FALSE], n = 6))) %>%
+kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 4):ncol(messy_adult), with = FALSE], n = 6))) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ------------------------------------------------------------------------
@@ -89,11 +89,18 @@ kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_
 messy_adult[, c(date_cols) := NULL]
 
 ## ------------------------------------------------------------------------
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", drop_cols = TRUE)
+
+## ----echo=FALSE----------------------------------------------------------
+kable(head(messy_adult[, .(mail.notnull, mail.num, mail.order)], n = 6)) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+
+## ------------------------------------------------------------------------
 agg_adult <- aggregateByKey(messy_adult, key = "country")
 
 ## ----echo=FALSE----------------------------------------------------------
 print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
-kable(cbind(head(agg_adult[,c(1,65:71)]), data.frame("..." = rep("  ...", 6)))) %>%
+kable(cbind(head(agg_adult[,c(1,13,23,35,45)]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ------------------------------------------------------------------------

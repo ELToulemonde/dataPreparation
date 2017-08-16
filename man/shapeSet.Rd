@@ -21,7 +21,7 @@ shapeSet(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE)
 Prepare a data.table by: \cr
 - transforming numeric variables into factors whenever they take less than \code{thresh} unique 
 variables \cr
-- transforming characters into factors \cr
+- transforming characters using \code{generateFromCharacter} \cr
 - transforming logicals into binary integers \cr
 - dropping constant columns \cr
 - Sending the data.table to setAsNumericMatrix() (when finalForm == "numerical_matrix") will then allow 

@@ -7,7 +7,7 @@ verbose <- TRUE
 data("messy_adult")
 messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 store_ncol <- ncol(messy_adult)
-messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2", "num1"), name_separator = ".", type = "yearquarter")
+messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2", "num1"), type = "yearquarter")
 test_that("generateFactorFromDate ",
           {
             expect_equal(ncol(messy_adult), store_ncol + 2)

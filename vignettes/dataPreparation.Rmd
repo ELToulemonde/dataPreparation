@@ -58,9 +58,10 @@ Correct                     | Transform                | Filter              | H
 unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
 findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
 findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           | setColAsFactorOrLogical  | whichAreBijection   |              |
-setColAsNumeric             |                          | fastRound           |              |
+setColAsCharacter           | generateFromFactor       | whichAreBijection   |              |
+setColAsNumeric             | generateFromCharacter    | fastRound           |              |
 setColAsDate                |                          |                     |              |
+setColAsFactor              |                          |                     |              |
 
 All of those functions are integrated in the **full pipeline** function `prepareSet`.
 
@@ -108,7 +109,7 @@ messy_adult <- findAndTransformDates(messy_adult)
 Let's have a look to the transformation performed on those 4 columns:
 ```{r echo = FALSE, results='asis'}
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -127,7 +128,7 @@ messy_adult <- findAndTransformNumerics(messy_adult)
 ```
 ```{r echo = FALSE, results='asis'}
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -176,7 +177,7 @@ Indeed:
 ### Filter them all
 To directly filter all of them:
 ```{r results = "hold"}
-ncols = ncol(messy_adult)
+ncols <- ncol(messy_adult)
 messy_adult <- fastFilterVariables(messy_adult)
 print(paste0("messy_adult now have ", ncol(messy_adult), " columns; so ", ncols - ncol(messy_adult), " less than before."))
 ```
@@ -209,7 +210,7 @@ Once this is done, we drop *date* columns.
 messy_adult <- generateDateDiffs(messy_adult, analysisDate = as.Date("2018-01-01"), units = "days")
 ```
 ```{r echo=FALSE}
-kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 5):ncol(messy_adult), with = FALSE], n = 6))) %>%
+kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 4):ncol(messy_adult), with = FALSE], n = 6))) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
 
@@ -229,6 +230,20 @@ Now that we have built some acceptable variables from those dates, we drop them:
 messy_adult[, c(date_cols) := NULL]
 ```
 
+
+## Generate features from character columns
+
+Character columns are not handled by any machine learning algorithm, one should transform them. function `generateFromCharacter` build some new feature from them, and then drop them.
+
+```{r}
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", drop_cols = TRUE)
+```
+```{r echo=FALSE}
+kable(head(messy_adult[, .(mail.notnull, mail.num, mail.order)], n = 6)) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
+
+
 ## Aggregate according to a key
 Say in fact you want to model something by country, you would want to compute an aggregation of this table in order to have one line per country.
 
@@ -237,7 +252,7 @@ agg_adult <- aggregateByKey(messy_adult, key = "country")
 ```
 ```{r echo=FALSE}
 print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
-kable(cbind(head(agg_adult[,c(1,65:71)]), data.frame("..." = rep("  ...", 6)))) %>%
+kable(cbind(head(agg_adult[,c(1,13,23,35,45)]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
 
@@ -324,7 +339,7 @@ if (file.exists("report.txt")) file.remove("report.txt")
 # Conclusion
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
 
-If you would like to add some features to this package, notice some issues, please tell us on [git hub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
+If you would like to add some features to this package, notice some issues, please tell us on [GitHub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
 
 
 
