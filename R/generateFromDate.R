@@ -38,12 +38,7 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", verbose = 
   
   ## Initialization
   args <- list(...)
-  if (! is.null(args[["name_separator"]])){
-    name_separator <- args[["name_separator"]]
-  }
-  else{
-    name_separator <- "."
-  }
+  name_separator <- build_name_separator(args)
   start_time <- proc.time()
   n_transformed <- 0
   ## Computation

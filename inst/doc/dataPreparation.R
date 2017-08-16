@@ -25,7 +25,7 @@ messy_adult <- findAndTransformDates(messy_adult)
 
 ## ----echo = FALSE, results='asis'----------------------------------------
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(date1, date2, date3, date4)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -39,7 +39,7 @@ messy_adult <- findAndTransformNumerics(messy_adult)
 
 ## ----echo = FALSE, results='asis'----------------------------------------
 setnames(store, paste0(names(store), "_prev"))
-toPlot = cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
+toPlot <- cbind(head(store, n=6), data.frame("transfo" = rep("  =>", 6)), head(messy_adult[,.(num1, num2, num3)], n = 6))
 
 kable(toPlot) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
@@ -59,7 +59,7 @@ kable(head(messy_adult[, .(constant, date3, date4, num1, num3, education, educat
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ----results = "hold"----------------------------------------------------
-ncols = ncol(messy_adult)
+ncols <- ncol(messy_adult)
 messy_adult <- fastFilterVariables(messy_adult)
 print(paste0("messy_adult now have ", ncol(messy_adult), " columns; so ", ncols - ncol(messy_adult), " less than before."))
 

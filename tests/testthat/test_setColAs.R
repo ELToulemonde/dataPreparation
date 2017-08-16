@@ -118,7 +118,8 @@ messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALS
 #messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = 1, verbose = verbose)
 test_that("setColAsFactor: unchanged if too many factors", 
           {
-		    expect_warning(messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = 1, verbose = verbose), "setColAsFactor: education has more than 1 values, i don't transform it.")
+		    expect_error(setColAsFactor(messy_adult, cols = c("education"), n_levels = "a", verbose = verbose), ": n_levels should be an integer.")
+			expect_warning(messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = 1, verbose = verbose), "setColAsFactor: education has more than 1 values, i don't transform it.")
             expect_equal(class(messy_adult[["education"]]),  "character")
           })					   
 					   

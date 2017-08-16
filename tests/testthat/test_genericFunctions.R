@@ -132,13 +132,37 @@ test_that("function.maker: error wrong type",
             expect_error(function.maker("a", type = "logical"))
             expect_error(function.maker(dataSet, type = "logical"), ": is in a shape that isn't handled, please provide constant or aggregation function.")
           })
-		  
-		  
+
+
 ## make_new_col_name
 # -------------------
 test_that("function.maker: error wrong type",
           {
             expect_equal(make_new_col_name("a", c("a", "b")), "a1")
-			expect_equal(make_new_col_name("c", c("a", "b")), "c")
-			expect_error(make_new_col_name(1, c("a", "b")), "new_col and col_names should be character.")
-			})
+			expect_equal(make_new_col_name("a", c("a", "a1")), "a2")
+            expect_equal(make_new_col_name("c", c("a", "b")), "c")
+            expect_error(make_new_col_name(1, c("a", "b")), "new_col and col_names should be character.")
+          })
+
+
+## build_name_separator
+# --------------------
+test_that("build_name_separator: ",
+          {
+            expect_equal(build_name_separator(list()), ".")
+            expect_equal(build_name_separator(list(name_separator = ",")), ",")
+            expect_error(build_name_separator(list(name_separator = 1)), "name_separator should be a character.")
+            expect_error(build_name_separator(list(name_separator = c(".", ";"))), "name_separator should be a character.")
+            
+          })
+
+## build_factor_date_type
+# -----------------------
+test_that("build_factor_date_type: ",
+          {
+            expect_equal(build_factor_date_type(list()), "yearmonth")
+            expect_equal(build_factor_date_type(list(factor_date_type = "yearmonth")), "yearmonth")
+            expect_error(build_factor_date_type(list(factor_date_type = 1)), "factor_date_type should be a character.")
+            expect_error(build_factor_date_type(list(factor_date_type = c(".", ";"))), "factor_date_type should be a character.")
+            
+          })

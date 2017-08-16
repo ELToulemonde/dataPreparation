@@ -100,12 +100,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
                               name_separator = args[["name_separator"]])
   
   # 2.2 Build factor from dates month
-  if (! is.null(args[["factor_date_type"]])){
-    factor_date_type <- args[["factor_date_type"]]
-  }
-  else{
-    factor_date_type <- "yearmonth"
-  }
+  factor_date_type <- build_factor_date_type(args)
   date_cols <- names(result)[sapply(result, is.date)]
   if (!is.null(args[["key"]])){ # don't transform key
     date_cols <- date_cols[date_cols != args[["key"]]]

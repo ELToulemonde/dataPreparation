@@ -41,12 +41,8 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop_cols = FAL
   start_time <- proc.time()
   ## Initialization
   args <- list(...)
-  if (! is.null(args[["name_separator"]])){
-    name_separator <- args[["name_separator"]]
-  }
-  else{
-    name_separator <- "."
-  }
+  name_separator <- build_name_separator(args)
+  
   ## Computation
   for (col in cols){
     if (! is.character(dataSet[[col]])){

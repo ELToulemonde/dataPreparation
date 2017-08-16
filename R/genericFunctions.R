@@ -293,8 +293,8 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
 
 
 #################################################################################################################
-##### make new new
-
+##### make new col name #########################################################################################
+#################################################################################################################
 make_new_col_name <- function(new_col, col_names){
   ## Working environement
   function_name <- "make_new_col_name"
@@ -314,3 +314,38 @@ make_new_col_name <- function(new_col, col_names){
   }
   return(paste0(new_col, i))
 }
+
+
+#################################################################################################################
+############################# build name separator ##############################################################
+#################################################################################################################
+build_name_separator <- function(args){
+  name_separator = "."
+  if (! is.null(args[["name_separator"]])){
+    if (is.character(args[["name_separator"]]) & length(args[["name_separator"]]) == 1){
+      name_separator <- args[["name_separator"]]
+    }
+    else{
+      stop("name_separator should be a character.")
+    }
+  }
+  return(name_separator)
+}
+
+
+#################################################################################################################
+############################# build factor_date_type ############################################################
+#################################################################################################################
+build_factor_date_type <- function(args){
+  factor_date_type = "yearmonth"
+  if (! is.null(args[["factor_date_type"]])){
+    if (is.character(args[["factor_date_type"]]) & length(args[["factor_date_type"]]) == 1){
+      name_separator <- args[["factor_date_type"]]
+    }
+    else{
+      stop("factor_date_type should be a character.")
+    }
+  }
+  return(factor_date_type)
+}
+

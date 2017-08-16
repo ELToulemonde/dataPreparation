@@ -284,7 +284,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer"))}
+  if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer."))}
   cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
   
