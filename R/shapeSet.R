@@ -3,7 +3,7 @@
 #' Prepare a data.table by: \cr
 #' - transforming numeric variables into factors whenever they take less than \code{thresh} unique 
 #' variables \cr
-#' - transforming characters into factors \cr
+#' - transforming characters using \code{generateFromCharacter} \cr
 #' - transforming logicals into binary integers \cr
 #' - dropping constant columns \cr
 #' - Sending the data.table to setAsNumericMatrix() (when finalForm == "numerical_matrix") will then allow 
@@ -35,9 +35,9 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   col_class <- sapply(dataSet, class)
   col_class_init <-  sapply(col_class, function(x){x[[1]]}) # Safety for classes with multiple values: ex: POSIXct, POSIXt
   ## Computation
-  if (verbose) {printl("Transforming characters into factors.")}
+  if (verbose) {printl("Transforming characters into factor using setColAsFactor.")}
   carac_cols <- names(col_class)[col_class %in% c("character")]
-  dataSet <- setColAsFactorOrLogical(dataSet, carac_cols, verbose = verbose)
+  dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
   
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)

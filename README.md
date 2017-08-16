@@ -35,9 +35,10 @@ Correct                     | Transform                | Filter              | H
 unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
 findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
 findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           | setColAsFactorOrLogical  | whichAreBijection   |              |
+setColAsCharacter           | generateFromFactor       | whichAreBijection   |              |
 setColAsNumeric             |                          | fastRound           |              |
 setColAsDate                |                          |                     |              |
+setColAsFactor              |                          |                     |              |
 
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.

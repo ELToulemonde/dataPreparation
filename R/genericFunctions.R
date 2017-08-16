@@ -289,3 +289,63 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
     stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
   }
 }
+
+
+
+#################################################################################################################
+##### make new col name #########################################################################################
+#################################################################################################################
+make_new_col_name <- function(new_col, col_names){
+  ## Working environement
+  function_name <- "make_new_col_name"
+  
+  ## Sanit check
+  if (! is.character(new_col) || ! is.character(col_names)){
+    stop(paste0(function_name, ": new_col and col_names should be character."))
+  }  
+  
+  ## Initialization
+  if (! new_col %in% col_names){
+	return(new_col)
+  }
+  i <- 1
+  while (paste0(new_col, i) %in% col_names){
+    i <- i + 1
+  }
+  return(paste0(new_col, i))
+}
+
+
+#################################################################################################################
+############################# build name separator ##############################################################
+#################################################################################################################
+build_name_separator <- function(args){
+  name_separator = "."
+  if (! is.null(args[["name_separator"]])){
+    if (is.character(args[["name_separator"]]) & length(args[["name_separator"]]) == 1){
+      name_separator <- args[["name_separator"]]
+    }
+    else{
+      stop("name_separator should be a character.")
+    }
+  }
+  return(name_separator)
+}
+
+
+#################################################################################################################
+############################# build factor_date_type ############################################################
+#################################################################################################################
+build_factor_date_type <- function(args){
+  factor_date_type = "yearmonth"
+  if (! is.null(args[["factor_date_type"]])){
+    if (is.character(args[["factor_date_type"]]) & length(args[["factor_date_type"]]) == 1){
+      name_separator <- args[["factor_date_type"]]
+    }
+    else{
+      stop("factor_date_type should be a character.")
+    }
+  }
+  return(factor_date_type)
+}
+

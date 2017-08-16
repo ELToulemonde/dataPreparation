@@ -11,6 +11,8 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 
+coverage:
+  target: 90%
 
 r_packages:
   - covr

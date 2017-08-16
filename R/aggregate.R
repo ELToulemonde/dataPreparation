@@ -87,13 +87,8 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   else{
     functions <- c(mean = mean, min = min, max = max, sd = sd)
   }
+  name_separator <- build_name_separator(args)
   
-  if (! is.null(args[["name_separator"]])){
-    name_separator <- args[["name_separator"]]
-  }
-  else{
-    name_separator <- "."
-  }
   
   # identification of nbr of element per column
   uniqueN_byCol <- lapply(dataSet, uniqueN)
@@ -184,7 +179,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
     }
     ## aggregation of character (categorical or non-categorical)
     if (is.character(dataSet[[col]]) || is.factor(dataSet[[col]])){
-      if (uniqueN_byCol[col] < 53){ # 53 is finger in the nose...
+      if (uniqueN_byCol[col] < thresh){ 
         result_tmp <- dcast.data.table(dataSet[, c(key, col), with = FALSE], 
                                        formula = paste(key, col, sep = "~"), 
                                        fun.aggregate = length,
@@ -192,7 +187,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
         )
         setnames(result_tmp, c(key, paste(col, colnames(result_tmp)[-1], sep = name_separator)))
       }
-      if (uniqueN_byCol[col] >= 53){
+      if (uniqueN_byCol[col] >= thresh){
         result_tmp <- dataSet[, c(key, col), with = FALSE][, .N, by = key]
         setnames(result_tmp, c(key, paste("nbr", col, sep = name_separator)))
       }
@@ -206,7 +201,8 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
   }
   if (maxNbValuePerKey == 1){
     # Only one different value by key: we put the value one time by key.
-    result_tmp <- dataSet[!duplicated(dataSet), ]
+	result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
+    result_tmp <- result_tmp[!duplicated(result_tmp), ]
   }
   
   ## Wrapp up

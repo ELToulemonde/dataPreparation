@@ -38,13 +38,9 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", verbose = 
   
   ## Initialization
   args <- list(...)
-  if (! is.null(args[["name_separator"]])){
-    name_separator <- args[["name_separator"]]
-  }
-  else{
-    name_separator <- "."
-  }
-  
+  name_separator <- build_name_separator(args)
+  start_time <- proc.time()
+  n_transformed <- 0
   ## Computation
   if (verbose){ 
     printl(function_name, ": I will generate some new columns from dates into factors.")
@@ -53,10 +49,13 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", verbose = 
   for (col in cols){
     if (is.date(dataSet[[col]])){
       new_col <- paste0(col, name_separator, type)
+	  new_col <- make_new_col_name(new_col, names(dataSet))
       dataSet[, (new_col) := date_factor(dataSet[[col]], type = type)]
+	  n_transformed <- n_transformed + 1
     }
     else{
       printl(function_name, ": ", col, " isn't a date, i do nothing.")
+	  
     }
     if (verbose){
       setPB(pb, col)
@@ -64,6 +63,8 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", verbose = 
   }
   if (verbose){ 
     close(pb); rm(pb); gc()
+	printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+           "s to transform ", n_transformed, " column(s).")
   }
   
   ## Wrapp-up
@@ -185,9 +186,10 @@ generateDateDiffs <- function(dataSet, analysisDate = NULL, units = "years", nam
       col_i <- dates[i]
       for (j in (i + 1):length(dates)){
         col_j <- dates[j]
-        newColName <- paste(col_i, "Minus", col_j, sep = name_separator)
+        new_col <- paste(col_i, "Minus", col_j, sep = name_separator)
+		new_col <- make_new_col_name(new_col, names(dataSet))
         #set(dataSet, NULL, newColName, diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units))
-        dataSet[, c(newColName) := diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units)]
+        dataSet[, c(new_col) := diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units)]
       }  
     }
     rm(i, j, col_i, col_j)
@@ -196,10 +198,11 @@ generateDateDiffs <- function(dataSet, analysisDate = NULL, units = "years", nam
   # If there was an analysisDate
   if (!is.null(analysisDate) & length(dates) > 0){
     for (col in dates){
-      newColName <- paste(col, "Minus", "analysisDate", sep = name_separator)
+      new_col <- paste(col, "Minus", "analysisDate", sep = name_separator)
+	  new_col <- make_new_col_name(new_col, names(dataSet))
       # Doesn't work, issue putted on data.table
-      #set(dataSet, NULL, newColName, diffTime(dataSet[[col]], analysisDate, units = units))
-      dataSet[, c(newColName) := diffTime(dataSet[[col]], analysisDate, units = units)]
+      #set(dataSet, NULL, new_col, diffTime(dataSet[[col]], analysisDate, units = units))
+      dataSet[, c(new_col) := diffTime(dataSet[[col]], analysisDate, units = units)]
     }
   }
   

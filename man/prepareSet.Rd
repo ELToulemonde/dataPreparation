@@ -22,8 +22,8 @@ A data.table or a numerical matrix (according to finalForm)  and
 Full pipeline for preparing your dataSet set \cr
 It will perform the following steps: \cr
 - Correct set: unfactor factor with many values, id dates and numerics that are hiden in string \cr
-- Transform set: compute differences between every date, transform dates into factors, if `key` 
-is provided, will perform aggregate according to this key \cr
+- Transform set: compute differences between every date, transform dates into factors, generate 
+features from string..., if `key` is provided, will perform aggregate according to this key \cr
 - Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
 will round numerics \cr
 - Handle NA: will perform \code{\link{fastHandleNa}}) \cr

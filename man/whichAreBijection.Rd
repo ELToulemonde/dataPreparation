@@ -4,10 +4,12 @@
 \alias{whichAreBijection}
 \title{Identify bijections}
 \usage{
-whichAreBijection(dataSet, verbose = TRUE)
+whichAreBijection(dataSet, keep_cols = NULL, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
@@ -37,5 +39,5 @@ whichAreInDouble(adult)
 
 # Lets look of bijections
 whichAreBijection(adult)
-# Return education_num and education which contain the same info
+# Return education_num index because education_num and education which contain the same info
 }
