@@ -253,16 +253,16 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 }
 
 
-
 ############################################################################################################
 ########################################### charToFactorOrLogical ##########################################
 ############################################################################################################
 #' Set columns as factor
 #' 
-#' Set columns as factor, or logical if they have too many different values
+#' Set columns as factor and control number of unique element, to avoid having too large factors.
 #' @param dataSet Matrix, data.frame or data.table
 #' @param cols a list of colnames of dataSet (or just one) to transform into factor
-#' @param n_levels max number of levels for factor (integer, default to 53)
+#' @param n_levels max number of levels for factor (integer, default to 53) 
+#' set it to -1 to disable control.
 #' @param verbose should the function log (logical, default to TRUE)
 #' @details 
 #' Control number of levels will help you to distinguish true categoricals from just characters 
@@ -272,18 +272,15 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' # Load messy_adult
 #' data("messy_adult")
 #' 
-#' # we wil change mail and education
-#' head(messy_adult[, .(mail, education)])
+#' # we wil change education
+#' messy_adult <- setColAsFactor(messy_adult, cols = "education")
 #' 
-#' messy_adult <- setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"))
-#' 
-#' sapply(messy_adult[, .(mail, education)], class)
-#' head(messy_adult[, .(mail, education)])
-#' # education is now a factor and mail a logical wether there was or not an mail.
+#' sapply(messy_adult[, .(education)], class)
+#' # education is now a factor
 #' @export
-setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
+setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   ## Working environment
-  function_name <- "setColAsFactorOrLogical"
+  function_name <- "setColAsFactor"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -296,16 +293,18 @@ setColAsFactorOrLogical <- function(dataSet, cols, n_levels = 53, verbose = TRUE
     if (verbose){
       printl(function_name, ": I am doing the column ", col, ".")
     }
-    if (fastMaxNbElt(dataSet[[col]], n_levels)){
-      set(dataSet, NULL, col, as.factor(dataSet[[col]]))
+    if (n_levels != -1){
+      if (fastMaxNbElt(dataSet[[col]], n_levels)){
+        set(dataSet, NULL, col, as.factor(dataSet[[col]]))
+      }
+      else{
+        warning(paste0(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it."))
+      }  
     }
     else{
-      set(dataSet, NULL, col, !is.na(dataSet[[col]]) & dataSet[[col]] != "" )
-      
+      set(dataSet, NULL, col, as.factor(dataSet[[col]]))
     }
   }
-  
-  
   ## Wrapp up
   return(dataSet)
 }

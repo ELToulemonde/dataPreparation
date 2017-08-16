@@ -94,18 +94,33 @@ test_that("setColAsDate: check time_stamp",
           }
 )
 
-					   
-					   
-
-
-## setColAsFactorOrLogical
+## setColAsFactor
 #---------------------------
 data("messy_adult")
-messy_adult <- setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), verbose = verbose)
+messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
+messy_adult <- setColAsFactor(messy_adult, cols = c("education"), verbose = verbose)
 
-test_that("setColAsFactorOrLogical:", 
+test_that("setColAsFactor:", 
           {
-            expect_equal(class(messy_adult[["mail"]]),  "logical")
             expect_equal(class(messy_adult[["education"]]),  "factor")
-            expect_error(setColAsFactorOrLogical(messy_adult, cols = c("mail", "education"), n_levels = "a", verbose = verbose))
           })
+		  
+data("messy_adult")
+messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
+messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = -1, verbose = verbose)
+test_that("setColAsFactor:", 
+          {
+            expect_equal(class(messy_adult[["education"]]),  "factor")
+          })
+		  
+data("messy_adult")
+messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
+#messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = 1, verbose = verbose)
+test_that("setColAsFactor: unchanged if too many factors", 
+          {
+		    expect_warning(messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = 1, verbose = verbose), "setColAsFactor: education has more than 1 values, i don't transform it.")
+            expect_equal(class(messy_adult[["education"]]),  "character")
+          })					   
+					   
+
+

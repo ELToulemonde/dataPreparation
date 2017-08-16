@@ -289,3 +289,28 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
     stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
   }
 }
+
+
+
+#################################################################################################################
+##### make new new
+
+make_new_col_name <- function(new_col, col_names){
+  ## Working environement
+  function_name <- "make_new_col_name"
+  
+  ## Sanit check
+  if (! is.character(new_col) || ! is.character(col_names)){
+    stop(paste0(function_name, ": new_col and col_names should be character."))
+  }  
+  
+  ## Initialization
+  if (! new_col %in% col_names){
+	return(new_col)
+  }
+  i <- 1
+  while (paste0(new_col, i) %in% col_names){
+    i <- i + 1
+  }
+  return(paste0(new_col, i))
+}

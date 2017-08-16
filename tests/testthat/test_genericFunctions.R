@@ -132,3 +132,13 @@ test_that("function.maker: error wrong type",
             expect_error(function.maker("a", type = "logical"))
             expect_error(function.maker(dataSet, type = "logical"), ": is in a shape that isn't handled, please provide constant or aggregation function.")
           })
+		  
+		  
+## make_new_col_name
+# -------------------
+test_that("function.maker: error wrong type",
+          {
+            expect_equal(make_new_col_name("a", c("a", "b")), "a1")
+			expect_equal(make_new_col_name("c", c("a", "b")), "c")
+			expect_error(make_new_col_name(1, c("a", "b")), "new_col and col_names should be character.")
+			})

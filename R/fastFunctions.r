@@ -5,6 +5,7 @@
 #'
 #' Delete columns that are constant or in double in your dataSet set.
 #' @param dataSet Matrix, data.frame or data.table
+#' @param keep_cols list of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @param ... optional parameters to be passed to the function when called from another function
 #' @return 
@@ -23,17 +24,17 @@
 #' head(df)
 #' @import data.table
 #' @export
-fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
+fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   ## Working environement
+  function_name <- "fastFilterVariables"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
   is.verbose(verbose)
-  
+  keep_cols <- real_cols(keep_cols, names(dataSet), function_name = function_name)
   ## Initalization
   # Arguments for log
   myArgs <- list(...)
-  function_name <- "fastFilterVariables"
   dataName <- "dataSet"
   if (length(myArgs) > 0){
     if (!is.null(myArgs[["function_name"]])){
@@ -50,7 +51,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   if (verbose){
     printl(function_name, ": I check for constant columns.")
   }
-  listOfConstantCols <- whichAreConstant(dataSet, verbose = verbose)
+  listOfConstantCols <- whichAreConstant(dataSet, keep_cols = keep_cols, verbose = verbose)
   if (length(listOfConstantCols) > 0){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName, ".")
@@ -61,7 +62,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   if (verbose){
     printl(function_name, ": I check for columns in double.")
   }
-  listOfDoubles <- whichAreInDouble(dataSet, verbose = verbose)
+  listOfDoubles <- whichAreInDouble(dataSet, keep_cols = keep_cols, verbose = verbose)
   if (length(listOfDoubles) > 0){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName, ".")
@@ -73,7 +74,7 @@ fastFilterVariables <- function(dataSet, verbose = TRUE, ...){
   if (verbose){
     printl(function_name, ": I check for columns that are bijections of another column.")
   }
-  listOfBijections <- whichAreBijection(dataSet, verbose = verbose)
+  listOfBijections <- whichAreBijection(dataSet, keep_cols = keep_cols, verbose = verbose)
   if (length(listOfBijections) > 0){
     if (verbose){
       printl(function_name, ": I delete ", length(listOfBijections), 
@@ -321,11 +322,16 @@ fastIsEqual <- function(object1, object2){
 #######################################################################################
 ############################### Fast is bijection function ############################
 #######################################################################################
-fastIsBijection <- function(dataSet){
+#' @import data.table
+fastIsBijection <- function(object1, object2){
+  ## Working environement
+  function_name <- "fastIsBijection"
+  
   ## Sanity check
-  if (ncol(dataSet) != 2){
-    stop("fastIsBijection: dataSet should be a data.table or a data.frame with 2 columns")
-  }
+
+  ## Initialization
+  dataSet <- data.table(object1 = object1, object2 = object2)
+  
   # Comparaison for long object
   nrows <- nrow(dataSet)
   maxPower <- floor(log(nrows)/log(10)) + 1

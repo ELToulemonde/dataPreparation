@@ -6,8 +6,8 @@
 #' Full pipeline for preparing your dataSet set \cr
 #' It will perform the following steps: \cr
 #' - Correct set: unfactor factor with many values, id dates and numerics that are hiden in string \cr
-#' - Transform set: compute differences between every date, transform dates into factors, if `key` 
-#' is provided, will perform aggregate according to this key \cr
+#' - Transform set: compute differences between every date, transform dates into factors, generate 
+#' features from string..., if `key` is provided, will perform aggregate according to this key \cr
 #' - Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
 #' will round numerics \cr
 #' - Handle NA: will perform \code{\link{fastHandleNa}}) \cr
@@ -76,7 +76,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     printl(function_name, ": step one: correcting mistakes.")
   }
   # 1.0 Filter useless vars
-  dataSet <- fastFilterVariables(dataSet, verbose = verbose)
+  dataSet <- fastFilterVariables(dataSet, keep_cols = args[["key"]], verbose = verbose)
   
   # 1.1 Unfactor
   if (! is.null(args[["n_unfactor"]])){
@@ -107,7 +107,17 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     factor_date_type <- "yearmonth"
   }
   date_cols <- names(result)[sapply(result, is.date)]
+  if (!is.null(args[["key"]])){ # don't transform key
+    date_cols <- date_cols[date_cols != args[["key"]]]
+  }
   result <- generateFactorFromDate(result, cols = date_cols, type = factor_date_type, verbose = verbose)
+  
+  # 2.3 Generate features from character
+  character_cols <- names(result)[sapply(result, is.character)]
+  if (!is.null(args[["key"]])){ # don't transform key
+    character_cols <- character_cols[character_cols != args[["key"]]]
+  }
+  result <- generateFromCharacter(result, cols = character_cols, drop_cols = TRUE, verbose = verbose)
   
   # 2.3 get ride of dates columns 
   result <- result[, names(result)[!sapply(result, is.date)], with = FALSE] 
@@ -123,8 +133,8 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
     printl(function_name, ": step three: filtering dataSet.")
   }
   # 3.1 Get ride of useless variables
-  result <- fastFilterVariables(dataSet = result, function_name = function_name, 
-                                dataName = "result", verbose = verbose)
+  result <- fastFilterVariables(dataSet = result, keep_cols = args[["key"]], verbose = verbose,
+                                function_name = function_name, dataName = "result")
   
   # 3.2 Round
   if(!is.null(args[["digits"]])){
