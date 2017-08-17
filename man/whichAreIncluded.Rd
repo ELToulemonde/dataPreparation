@@ -18,17 +18,17 @@ A list of index of columns that have an exact duplicate in the dataSet set.
 }
 \description{
 Find all the columns that don't contain more information than another column. For example if 
-you have a column with an amount, and another with the same amount but rounded, the second 
+you have a column with an amount and another with the same amount but rounded, the second 
 column is included in the first.
 }
 \details{
 This function is performing exponential search and is looking to every couple of columns. \cr
-Be very carefull while using this function: \cr
-- if there is an id column, it will say everything is included in the id column, \cr
+Be very careful while using this function: \cr
+- if there is an id column, it will say everything is included in the id column; \cr
 - the order of columns will influence the result.\cr
 \cr
-And last but not least, sing machine learning algorithm it's not always smart to drop columns
- even if they don't give more info: the extrem example is the id example.
+And last but not least, with some machine learning algorithm it's not always smart to drop 
+columns even if they don't give more info: the extreme example is the id example.
 }
 \examples{
 # Load toy data set
@@ -45,7 +45,7 @@ whichAreIncluded(messy_adult)
 
 # As one can, see this column that doesn't have additional info than age is spotted.
 
-# But you should be carefull, if there is a column id, every column will be dropped:
+# But you should be careful, if there is a column id, every column will be dropped:
 messy_adult$id = 1:nrow(messy_adult) # build id
 whichAreIncluded(messy_adult)
 }

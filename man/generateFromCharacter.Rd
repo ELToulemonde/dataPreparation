@@ -4,19 +4,19 @@
 \alias{generateFromCharacter}
 \title{Recode character}
 \usage{
-generateFromCharacter(dataSet, cols, verbose = TRUE, drop_cols = FALSE, ...)
+generateFromCharacter(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{a list of character colnames of dataSet (or just one) to transform into dates. \cr
-To transform all characters, set it to "auto"}
+\item{cols}{list of character column(s) name(s) of dataSet to transform. To transform all 
+characters, set it to "auto"}
 
 \item{verbose}{should the function log (logical, default to TRUE)}
 
-\item{drop_cols}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
 
-\item{...}{Other arguments such as \code{name_separator} to separate words in new coluimns names
+\item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
 }
 \description{

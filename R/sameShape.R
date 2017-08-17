@@ -5,7 +5,7 @@
 #' @param dataSet Matrix, data.frame or data.table to transform
 #' @param referenceSet Matrix, data.frame or data.table
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
-#' @return Retrun \code{dataSet} transformed in order to make it have the same shape as
+#' @return Return \code{dataSet} transformed in order to make it have the same shape as
 #' \code{referenceSet}
 #' @details
 #' This function will make sure that \code{dataSet} and \code{referenceSet} 
@@ -16,7 +16,7 @@
 #'    \item have factor factor with exactly the same levels
 #' }
 #' You should always use this function before applying your model on a new data set to make sure
-#' that every thing will go smoothly. But if this function change a lot of stuff you should have a 
+#' that everything will go smoothly. But if this function change a lot of stuff you should have a 
 #' look to your preparation process, there might be something wrong. 
 #' @examples
 #' # Build a train and a test
@@ -32,7 +32,7 @@
 #' # Give them the same shape
 #' test <- sameShape(test, train)
 #' # As one can see in log, a lot of small change had to be done. 
-#' # This is an extrem case but you get the idea.
+#' # This is an extreme case but you get the idea.
 #' @import data.table
 #' @export
 sameShape <- function(dataSet, referenceSet, verbose = TRUE){

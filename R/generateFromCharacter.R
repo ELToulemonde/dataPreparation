@@ -7,11 +7,11 @@
 #' \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet)
 #' }
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols a list of character colnames of dataSet (or just one) to transform into dates. \cr
-#' To transform all characters, set it to "auto"
+#' @param cols list of character column(s) name(s) of dataSet to transform. To transform all 
+#' characters, set it to "auto"
 #' @param verbose should the function log (logical, default to TRUE)
-#' @param drop_cols should \code{cols} be dropped after generation (logical, default to FALSE)
-#' @param ... Other arguments such as \code{name_separator} to separate words in new coluimns names
+#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
+#' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
 #' @examples 
 #' # Load data set
@@ -26,7 +26,7 @@
 #' messy_adult <- generateFromCharacter(messy_adult, cols = "auto")
 #' @import data.table
 #' @export
-generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop_cols = FALSE, ...){
+generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...){
   ## Working environement 
   function_name <- "generateFromCharacter"
   
@@ -72,7 +72,7 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop_cols = FAL
     setcolorder(dataSet, c(colorder, new_col)) # reset col order
     
     # if asked drop col
-    if (isTRUE(drop_cols)){
+    if (isTRUE(drop)){
       dataSet[, c(col) := NULL]
     }
   }

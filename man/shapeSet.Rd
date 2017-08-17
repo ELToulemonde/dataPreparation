@@ -15,22 +15,20 @@ shapeSet(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE)
   a factor whenever its number of unique modalities is smaller or equal to
 \code{thresh} (default to 10)}
 
-\item{verbose}{logical}
+\item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 }
 \description{
 Prepare a data.table by: \cr
 - transforming numeric variables into factors whenever they take less than \code{thresh} unique 
 variables \cr
 - transforming characters using \code{generateFromCharacter} \cr
-- transforming logicals into binary integers \cr
+- transforming logical into binary integers \cr
 - dropping constant columns \cr
 - Sending the data.table to setAsNumericMatrix() (when finalForm == "numerical_matrix") will then allow 
 you to get a numerical matrix usable by most Machine Learning Algorithms.
 }
 \section{Warning}{
 
-All these changes will happen \strong{by reference}: please send a copy() of
-your data.table to prepareSet if you do not want your
-original dataSet to be modified.
+All these changes will happen \strong{by reference}.
 }
 

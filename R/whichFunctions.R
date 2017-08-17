@@ -9,15 +9,15 @@
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @return List of column's indexes that are constant in the dataSet set.
 #' @details
-#' Algorithm is constance equality by exponential search: it check constance on row 1 to 10, 
-#' if it's ,not constant it stops, if it's constant then on 11 to 100 ... \cr
+#' Algorithm is performing exponential search: it check constancy on row 1 to 10, 
+#' if it's not constant it stops, if it's constant then on 11 to 100 ... \cr
 #' If you have a lot of columns than aren't constant, this function is way faster than a simple 
 #' length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
 #' @examples
 #' # Let's load our dataSet
 #' data("messy_adult") 
 #'
-#' # Lets try our function
+#' # Let's try our function
 #' whichAreConstant(messy_adult)
 #' # Indeed it return constant the name of the constant column.
 #' @import data.table
@@ -33,8 +33,8 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   
   ## Initialization
   listOfConstantCols <- NULL
-  start_time <- proc.time()
   if (verbose){
+	start_time <- proc.time()
     pb <- initPB(function_name, names(dataSet))
   }
   cols <- names(dataSet)[! names(dataSet) %in% keep_cols]
@@ -42,8 +42,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Computation 
   if (nrow(dataSet) > 1 ){ # We check for constant only if there are at least two lines
     for (col in cols){
-      isConstant <- fastMaxNbElt(dataSet[[col]], 1)
-      if (isConstant == TRUE){
+      if (fastMaxNbElt(dataSet[[col]], 1)){
         listOfConstantCols <- c(listOfConstantCols, col)
         if(verbose){
           printl(function_name, ": ", col, " is constant.")
@@ -96,7 +95,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' whichAreInDouble(M)
 #' # It return 2 and 3: you should only keep column 1.
 #'
-#' # Lets change the column 2, line 1 to 0. And check again
+#' # Let's change the column 2, line 1 to 0. And check again
 #' M[1, 2] <- 0
 #' whichAreInDouble(M)
 #' # It only returns 3
@@ -146,7 +145,7 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' Bijection, meaning that there is another column containing the exact same information (but maybe
 #'  coded differently) for example col1: Men/Women, col2 M/W. \cr
 #' This function is performing search by looking to every couple of columns. 
-#' It computes numbers of unique elements in each columns, and number of unique tuples of values. \cr
+#' It computes numbers of unique elements in each column, and number of unique tuples of values. \cr
 #' Computation is made by exponential search, so that the function is faster. \cr
 #' If \code{verbose} is TRUE, the column logged will be the one returned. \cr
 #' Ex: if column i and column j (with j > i) are bijections it will return j, expect if j is a 
@@ -159,9 +158,10 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' whichAreInDouble(adult)
 #' # It doesn't give any result.
 #'
-#' # Lets look of bijections
+#' # Let's look of bijections
 #' whichAreBijection(adult)
-#' # Return education_num index because education_num and education which contain the same info
+#' # Return education_num index because education_num and education which
+#' # contain the same info
 #' @export
 whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Working environement
@@ -191,19 +191,19 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' Identify columns that are included in others
 #' 
 #' Find all the columns that don't contain more information than another column. For example if 
-#' you have a column with an amount, and another with the same amount but rounded, the second 
+#' you have a column with an amount and another with the same amount but rounded, the second 
 #' column is included in the first.
 #' @param dataSet Matrix, data.frame or data.table
 #' @param keep_cols list of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @details 
 #' This function is performing exponential search and is looking to every couple of columns. \cr
-#' Be very carefull while using this function: \cr
-#' - if there is an id column, it will say everything is included in the id column, \cr
+#' Be very careful while using this function: \cr
+#' - if there is an id column, it will say everything is included in the id column; \cr
 #' - the order of columns will influence the result.\cr
 #' \cr
-#' And last but not least, sing machine learning algorithm it's not always smart to drop columns
-#'  even if they don't give more info: the extrem example is the id example.
+#' And last but not least, with some machine learning algorithm it's not always smart to drop 
+#' columns even if they don't give more info: the extreme example is the id example.
 #' @return A list of index of columns that have an exact duplicate in the dataSet set.
 #' @examples
 #' # Load toy data set
@@ -220,7 +220,7 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' 
 #' # As one can, see this column that doesn't have additional info than age is spotted.
 #' 
-#' # But you should be carefull, if there is a column id, every column will be dropped:
+#' # But you should be careful, if there is a column id, every column will be dropped:
 #' messy_adult$id = 1:nrow(messy_adult) # build id
 #' whichAreIncluded(messy_adult)
 #' @export
@@ -283,8 +283,9 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
     close(pb); rm(pb); gc()
   }
   ## Wrapp up
-  listOfIncluded <- sort(unique(listOfIncluded))
-  
+  if (! is.null(listOfIncluded)){
+    listOfIncluded <- sort(unique(listOfIncluded))
+  }  
   return(listOfIncluded)
 }
 
@@ -312,8 +313,8 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
   }
   result_list <- NULL
   col_I <- names(dataSet)[-ncol(dataSet)]
-  start_time <- proc.time()
   if (verbose){
+	start_time <- proc.time()
     pb <- initPB(function_name, names(dataSet))
   }
   

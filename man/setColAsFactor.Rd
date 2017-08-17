@@ -9,7 +9,7 @@ setColAsFactor(dataSet, cols, n_levels = 53, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{a list of colnames of dataSet (or just one) to transform into factor}
+\item{cols}{list of column(s) name(s) of dataSet to transform into factor}
 
 \item{n_levels}{max number of levels for factor (integer, default to 53) 
 set it to -1 to disable control.}
@@ -23,8 +23,8 @@ dataSet (as a \code{\link{data.table}}), with specified columns set as factor or
 Set columns as factor and control number of unique element, to avoid having too large factors.
 }
 \details{
-Control number of levels will help you to distinguish true categoricals from just characters 
-that should be handle in another way.
+Control number of levels will help you to distinguish true categorical columns from just characters 
+that should be handled in another way.
 }
 \examples{
 # Load messy_adult

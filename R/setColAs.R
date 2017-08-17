@@ -5,8 +5,8 @@
 #' 
 #' Set as numeric a character column (or a list of columns) from a data.table
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols a list of colnames of dataSet (or just one) to transform into numerics
-#' @param stripString should i change ", " to "." in the string? (logical, default to FALSE) 
+#' @param cols list of column(s) name(s) of dataSet to transform into numerics
+#' @param stripString should I change "," to "." in the string? (logical, default to FALSE) 
 #' If set to TRUE, computation will be a bit longer
 #' @param verbose should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as numeric. 
@@ -55,7 +55,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
     }
     if (is.character(dataSet[[col]])){
       
-      nb_na_init <- sum(is.na(dataSet[[col]]))
+      n_na_init <- sum(is.na(dataSet[[col]]))
       if (stripString){
         set(dataSet, NULL, col, as.numericStrip(dataSet[[col]]))
       }
@@ -63,7 +63,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
         set(dataSet, NULL, col, as.numeric(dataSet[[col]])) 
       }
       if (verbose){
-        printl(function_name, ": ", sum(is.na(dataSet[[col]])) - nb_na_init, 
+        printl(function_name, ": ", sum(is.na(dataSet[[col]])) - n_na_init, 
                " NA have been created due to transformation to numeric.")
       } 
     }
@@ -85,7 +85,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 #'
 #' Set as character a column (or a list of columns) from a data.table
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols a list of colnames of dataSet (or just one) to transform into characters
+#' @param cols list of column(s) name(s) of dataSet to transform into characters
 #' @param verbose should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as character. 
 #' @examples
@@ -133,8 +133,9 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #'
 #' Set as POSIXct a character column (or a list of columns) from a data.table
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols a list of colnames of dataSet (or just one) to transform into dates
-#' @param format the format of date (function is faster if the format is provided) (default to NULL).\cr
+#' @param cols list of column(s) name(s) of dataSet to transform into dates
+#' @param format date's format (function will be faster if the format is provided) 
+#' (character, default to NULL).\cr
 #' For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)
 #' @param verbose should the function log (logical, default to TRUE)
 #' @details 
@@ -185,7 +186,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if (is.character(dataSet[[col]])){
-      nb_na_init <- sum(is.na(dataSet[[col]]))
+      n_na_init <- sum(is.na(dataSet[[col]]))
       data_sample <- dataSet[[col]]
       # If format is NULL, we let R determine the format
       if (is.null(format)){
@@ -211,12 +212,12 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
         }
       }
       
-      nb_na_end <- sum(is.na(dataSet[[col]]))
+      n_na_end <- sum(is.na(dataSet[[col]]))
       if (verbose){
-        printl(function_name, ":", nb_na_end - nb_na_init, "NA have been created due to transformation to Date.")
+        printl(function_name, ":", n_na_end - n_na_init, "NA have been created due to transformation to Date.")
       }
       # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
-      if (nb_na_end == nrow(dataSet) & nb_na_init < nrow(dataSet)){
+      if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){
         if (verbose){
           printl(function_name, ":", "Since i generated only NAs i set ", col, " as it was before.")
         }
@@ -247,7 +248,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   ## Wrapp-up
   if (verbose){
     printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
-           "s to transform ", n_transformed, " columns to Dates.")
+           "s to transform ", n_transformed, " column(s) to Dates.")
   }
   return(dataSet)
 }
@@ -260,13 +261,13 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' 
 #' Set columns as factor and control number of unique element, to avoid having too large factors.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols a list of colnames of dataSet (or just one) to transform into factor
+#' @param cols list of column(s) name(s) of dataSet to transform into factor
 #' @param n_levels max number of levels for factor (integer, default to 53) 
 #' set it to -1 to disable control.
 #' @param verbose should the function log (logical, default to TRUE)
 #' @details 
-#' Control number of levels will help you to distinguish true categoricals from just characters 
-#' that should be handle in another way.
+#' Control number of levels will help you to distinguish true categorical columns from just characters 
+#' that should be handled in another way.
 #' @return dataSet (as a \code{\link{data.table}}), with specified columns set as factor or logical.
 #' @examples
 #' # Load messy_adult
@@ -287,7 +288,11 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer."))}
   cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
-  
+  if (verbose){
+	printl(function_name, ": I will set some columns to factor.")
+  }
+  n_transformed <- 0
+  start_time <- proc.time()
   ## Computation
   for (col in cols){ 
     if (verbose){
@@ -296,6 +301,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
     if (n_levels != -1){
       if (fastMaxNbElt(dataSet[[col]], n_levels)){
         set(dataSet, NULL, col, as.factor(dataSet[[col]]))
+		n_transformed <- n_transformed + 1
       }
       else{
         warning(paste0(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it."))
@@ -304,6 +310,10 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
     else{
       set(dataSet, NULL, col, as.factor(dataSet[[col]]))
     }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
+           "s to transform ", n_transformed, " column(s) to factor.")
   }
   ## Wrapp up
   return(dataSet)

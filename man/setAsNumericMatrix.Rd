@@ -10,13 +10,13 @@ setAsNumericMatrix(dataSet, intercept = FALSE, allCols = FALSE,
 \arguments{
 \item{dataSet}{data.table}
 
-\item{intercept}{logical. Should a constant column be added?}
+\item{intercept}{Should a constant column be added? (logical, default to FALSE)}
 
-\item{allCols}{logical. For each factor, should we create all possible
-dummies, or should we drop a reference dummy?}
+\item{allCols}{For each factor, should we create all possible
+dummies, or should we drop a reference dummy? (logical, default to FALSE)}
 
-\item{sparse}{logical. Should the resulting matrix be of a (sparse) Matrix
-class?}
+\item{sparse}{Should the resulting matrix be of a (sparse) Matrix
+class? (logical, default to FALSE)}
 }
 \description{
 Prepare a numeric matrix from a data.table. This matrix is suitable for

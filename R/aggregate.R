@@ -4,7 +4,7 @@
 #' @param dataSet Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns).
 #' @param key The name of a column of dataSet according to which the set should be aggregated (character)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
-#' @param thresh number of max values for frequencie count (numerical, default to 53)
+#' @param thresh number of max values for frequencies count (numerical, default to 53)
 #' @param ... optional argument: \code{functions}:  aggregation functions for numeric columns (list of functions)
 #' (vector of function, optional, if not set we use: c(mean, min, max, sd))
 #' @details
@@ -13,14 +13,14 @@
 #' \item If column is numeric \code{functions} are performed on the column. So 1 numeric column 
 #' give length(functions) new columns
 #' \item If column is character or factor and have less than \code{thresh} different values, 
-#' frequencie count of values is performed
+#' frequency count of values is performed
 #' \item If column is character or factor with more than \code{thresh} different values, number 
 #' of different values for each \code{key} is performed
 #' \item If column is logical, count of number and rate of positive is performed.
 #' }
-#' Be carefull using functions agrument, the function given should be an aggregation fuction, 
+#' Be careful using functions argument, the function given should be an aggregation function, 
 #' meaning that for multiple values it should only return one value.
-#' @return A \code{\link{data.table}} with one line per \code{key} elements and mulitple new columns.
+#' @return A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
 #' @examples
 #' # Get generic dataset from R
 #' data("adult")
@@ -114,7 +114,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
     if (verbose){
       close(pb); rm(pb); gc(verbose = FALSE)
       printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
-             round((proc.time() - start_time)[[3]], 2), "seconds. ")
+             round((proc.time() - start_time)[[3]], 2), " seconds. ")
     }
     
     return(result)
@@ -143,7 +143,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
 # @param numberOfUniqueEltPerCol
 # @param name_separator
 # @param aggregation functions for numeric columns
-# @param thresh number of max distinct values for frequencie count
+# @param thresh number of max distinct values for frequencies count
 # @
 # @export # Before exporting this function should be improved!
 aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = ".", 

@@ -10,7 +10,7 @@ verbose <- TRUE
 
 data(messy_adult)
 messy_adult <- unFactor(messy_adult, verbose = FALSE)
-messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop_cols = TRUE)
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop = TRUE)
 adult_prep <- shapeSet(copy(messy_adult), verbose = verbose)
 
 
@@ -35,7 +35,7 @@ test_that("setAsNumericMatrix: ",
 
 data(messy_adult)
 messy_adult <- unFactor(messy_adult, n_unfactor = 53, verbose = FALSE)
-messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop_cols = TRUE)
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", verbose = FALSE, drop = TRUE)
 messy_adult <- shapeSet(messy_adult, verbose = FALSE, finalForm = "data.table")
 messy_adult <- fastFilterVariables(messy_adult, verbose = FALSE)
 test_that("setAsNumericMatrix: ",

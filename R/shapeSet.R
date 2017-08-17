@@ -4,7 +4,7 @@
 #' - transforming numeric variables into factors whenever they take less than \code{thresh} unique 
 #' variables \cr
 #' - transforming characters using \code{generateFromCharacter} \cr
-#' - transforming logicals into binary integers \cr
+#' - transforming logical into binary integers \cr
 #' - dropping constant columns \cr
 #' - Sending the data.table to setAsNumericMatrix() (when finalForm == "numerical_matrix") will then allow 
 #' you to get a numerical matrix usable by most Machine Learning Algorithms.
@@ -14,15 +14,11 @@
 #' @param thresh  numeric, threshold such that  a numerical column is transformed into
 #'   a factor whenever its number of unique modalities is smaller or equal to
 #' \code{thresh} (default to 10)
-#' @param verbose logical
-#'
+#' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @section Warning:
-#' All these changes will happen \strong{by reference}: please send a copy() of
-#' your data.table to prepareSet if you do not want your
-#' original dataSet to be modified.
+#' All these changes will happen \strong{by reference}.
 #' @export
 #' @importFrom tcltk tkProgressBar setTkProgressBar
-#' @importFrom stats quantile
 shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE){
   ## Working environement
   function_name <- "prepareSet"
@@ -35,38 +31,39 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   col_class <- sapply(dataSet, class)
   col_class_init <-  sapply(col_class, function(x){x[[1]]}) # Safety for classes with multiple values: ex: POSIXct, POSIXt
   ## Computation
-  if (verbose) {printl("Transforming characters into factor using setColAsFactor.")}
   carac_cols <- names(col_class)[col_class %in% c("character")]
-  dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
-  
+  if (length(carac_cols) > 0){
+	dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
+  }
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)
-  # TODO : paralleliser la recherche de variables à transformer
-  if (verbose) {printl("Transforming numerical variables into factors when length(unique(col)) <=",  thresh, ".")}
   num_cols <- names(col_class)[col_class %in% c("numeric", "integer")]
-  if (verbose) {
-    cat("Going through", length(num_cols), "numerical variables to transform if necessary.\n")
-    pb <- tkProgressBar(title=paste0(function_name, ": 0% done"), 
-                         min = 1, max = ncol(dataSet), width = 300) # Construction d'une progress bar
-  }
-  for (col in num_cols) {
-    nCat <- uniqueN(dataSet[[col]])
-    if (nCat <= thresh) set(dataSet, NULL, col, as.factor(dataSet[[col]]))
-    if (verbose){
-      setTkProgressBar(pb, which(colnames(dataSet) == col), 
-                        title=paste0(function_name, ": ", round(which(colnames(dataSet) == col)/ncol(dataSet)*100, 0), "% done"))  
+  if (length(num_cols) > 0){
+    if (verbose) {
+      printl("Transforming numerical variables into factors when length(unique(col)) <= ",  thresh, ".")
+      pb <- initPB(function_name, num_cols)
     }
-  }
-  if (verbose){
-    close(pb); rm(pb);
+    for (col in num_cols) {
+      if (fastMaxNbElt(dataSet[[col]], thresh)){
+        set(dataSet, NULL, col, as.factor(dataSet[[col]]))
+      } 
+      if (verbose){
+        setPB(pb, col)
+      }
+    }
+    if (verbose){
+      close(pb); rm(pb);
+    }
   }
   col_class <- sapply(dataSet, class)
   
   # LOGICAL INTO BINARY
-  if (verbose) {printl("Transforming logicals into binaries.\n")}
   logical_col <- names(col_class)[which(col_class %in% c("logical"))]
-  for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
-  
+  if (length(logical_col) > 0){
+	if (verbose) {printl("Transforming logical into binaries.\n")}
+	for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
+  }
+
   # Distribution des types de colonnes
   if (verbose){
     col_class_end <- sapply(dataSet, class)
@@ -78,13 +75,8 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
     # Number of levels for each factor
     col_class <- sapply(dataSet, class)
     factor_cols <- names(col_class)[which(col_class %in% c("factor"))]
-    listCardLevels <- sapply(factor_cols, function(x, dataSet)
-      length(levels(dataSet[[x]])), dataSet = dataSet)
-    printl("Quantiles for the number of factor modalities:")
-    print(quantile(listCardLevels, probs = seq(0, 1, .1)))
   }
 
-  
   ## Wrapp-up
   if (finalForm == "numerical_matrix"){
     dataSet <- setAsNumericMatrix(dataSet)
@@ -103,11 +95,11 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
 #' required (when using \code{lm()}, for instance)
 #' 
 #' @param dataSet data.table
-#' @param intercept logical. Should a constant column be added?
-#' @param allCols logical. For each factor, should we create all possible
-#' dummies, or should we drop a reference dummy?
-#' @param sparse logical. Should the resulting matrix be of a (sparse) Matrix
-#' class?
+#' @param intercept Should a constant column be added? (logical, default to FALSE)
+#' @param allCols For each factor, should we create all possible
+#' dummies, or should we drop a reference dummy? (logical, default to FALSE)
+#' @param sparse Should the resulting matrix be of a (sparse) Matrix
+#' class? (logical, default to FALSE)
 #' @export
 #' @importFrom stats as.formula model.matrix contrasts
 #' @importFrom Matrix sparse.model.matrix

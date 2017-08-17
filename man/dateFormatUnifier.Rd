@@ -31,5 +31,5 @@ dataSet = dateFormatUnifier(dataSet, format = "Date")
 
 # Control result
 sapply(dataSet, class)
-# return date for both column
+# return date for both columns
 }

@@ -9,9 +9,9 @@ setColAsNumeric(dataSet, cols, stripString = FALSE, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{a list of colnames of dataSet (or just one) to transform into numerics}
+\item{cols}{list of column(s) name(s) of dataSet to transform into numerics}
 
-\item{stripString}{should i change ", " to "." in the string? (logical, default to FALSE) 
+\item{stripString}{should I change "," to "." in the string? (logical, default to FALSE) 
 If set to TRUE, computation will be a bit longer}
 
 \item{verbose}{should the function log (logical, default to TRUE)}

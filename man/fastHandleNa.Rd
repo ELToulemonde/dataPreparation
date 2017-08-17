@@ -25,8 +25,8 @@ dataSet as a \code{\link{data.table}} with NAs handled
 Function to handle NAs values depending on the class of the column
 }
 \details{
-To preserve RAM this function edit directly the dataSet set. To keep object unchanged, please use \code{\link{copy}} \cr
-If you provide a function, it will be applyed to the full column. So this function should handle NAs. \cr
+To preserve RAM this function edits directly the dataSet set. To keep object unchanged, please use \code{\link{copy}} \cr
+If you provide a function, it will be applied to the full column. So this function should handle NAs. \cr
 For factor columns, it will add NA to list of values.
 }
 \examples{

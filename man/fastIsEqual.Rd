@@ -12,7 +12,7 @@ fastIsEqual(object1, object2)
 \item{object2}{an element, a vector, a data.frame, a data.table}
 }
 \value{
-logical (TRUE or FALSE) if the two objects are equals.
+Logical (TRUE or FALSE) if the two objects are equals.
 }
 \description{
 Performs quick check if two objects are equal

@@ -20,8 +20,8 @@ List of column's indexes that are constant in the dataSet set.
 Find all the columns that are constant.
 }
 \details{
-Algorithm is constance equality by exponential search: it check constance on row 1 to 10, 
-if it's ,not constant it stops, if it's constant then on 11 to 100 ... \cr
+Algorithm is performing exponential search: it check constancy on row 1 to 10, 
+if it's not constant it stops, if it's constant then on 11 to 100 ... \cr
 If you have a lot of columns than aren't constant, this function is way faster than a simple 
 length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
 }
@@ -29,7 +29,7 @@ length(unique())! The larger the dataSet set is, the more interesting it is to u
 # Let's load our dataSet
 data("messy_adult") 
 
-# Lets try our function
+# Let's try our function
 whichAreConstant(messy_adult)
 # Indeed it return constant the name of the constant column.
 }

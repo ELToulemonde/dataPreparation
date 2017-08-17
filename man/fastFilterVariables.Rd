@@ -11,16 +11,20 @@ fastFilterVariables(dataSet, keep_cols = NULL, verbose = TRUE, ...)
 
 \item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
 
-\item{verbose}{Should the algorithm talk (logical, default to TRUE)}
+\item{verbose}{Should the algorithm talk (logical or 1 or 2, default to TRUE)}
 
 \item{...}{optional parameters to be passed to the function when called from another function}
 }
 \value{
 The same dataSet set but with fewer columns. Columns that are constant, in double, 
-or bijection of anotger have been deleted.
+or bijection of another have been deleted.
 }
 \description{
 Delete columns that are constant or in double in your dataSet set.
+}
+\details{
+\code{verbose} can be set to 2 have full details from which functions, otherwise they 
+don't log. (\code{verbose = 1} is equivalent to \code{verbose = TRUE})
 }
 \examples{
 # First let's build a data.frame with 3 columns: a constant column, and a column in double
