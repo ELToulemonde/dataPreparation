@@ -3,4 +3,3 @@
 README.md
 CONTRIBUTING.rst
 ^\.travis\.yml$
-^\.codecov\.yml$
