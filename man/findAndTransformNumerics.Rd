@@ -25,9 +25,7 @@ If there are some mistakes in dataSet, consider setting them to NA before.
 }
 \section{Warning}{
 
-All these changes will happen \strong{by reference}: please send a copy() of
-your data.table to prepareSet if you do not want your
-original dataSet to be modified.
+All these changes will happen \strong{by reference}.
 }
 
 \examples{

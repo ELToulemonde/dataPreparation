@@ -50,6 +50,14 @@ test_that("is.verbose: control input",
           {
             expect_error(is.verbose("a"))
           })
+
+
+test_that("is.verbose_levels: control input",
+          {
+            expect_error(is.verbose_levels("a"))
+            expect_error(is.verbose_levels(3, max_level = 2))
+          })
+
 ## checkIfIsColumn
 #------------------
 

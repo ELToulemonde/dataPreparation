@@ -41,18 +41,18 @@ test_that("whichAreInDouble: exceptions",
 
 ## whichAreBijection
 # ------------------
-data("adult")
+data("messy_adult")
 
 
 test_that("whichAreBijection", 
           {
-            expect_equal(all(whichAreBijection(adult, verbose = verbose) == c(5)), TRUE)
+            expect_equal(all(whichAreBijection(messy_adult, verbose = verbose) == c(3, 5, 14)), TRUE)
           })
 
 data("messy_adult")
 test_that("whichAreInDouble: exceptions", 
           {
-            expect_equal(is.null(whichAreBijection(messy_adult[,.(date1)], verbose = verbose)), TRUE)
+            expect_null(whichAreBijection(messy_adult[,.(date1)], verbose = verbose))
           })
 
 ## whichAreIncluded

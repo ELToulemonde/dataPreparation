@@ -22,7 +22,7 @@ data("messy_adult")
 messy_adult <- unFactor(messy_adult, verbose = FALSE)
 store_ncol <- ncol(messy_adult)
 n_char <- sum(sapply(messy_adult, is.character))
-messy_adult <- generateFromCharacter(messy_adult, cols = "auto", drop_cols = TRUE)
+messy_adult <- generateFromCharacter(messy_adult, cols = "auto", drop = TRUE)
 
 test_that("generateFromCharacter: drop: ",
           {

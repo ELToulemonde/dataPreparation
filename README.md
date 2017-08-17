@@ -23,7 +23,7 @@ Before using any machine learning (ML) algorithm, one need to prepare its data. 
 
   * __Read__: load the data set (this package don't treat this point: for csv we recommend `data.table::fread`)
   * __Correct__: most of the times, there are some mistake after reading, wrong format... one have to correct them
-  * __Transform__: aggregating according to a key, computing differences between dates, ... in order to have information usable for a ML algorithm (aka: numeric or categorical)
+  * __Transform__: creating new features from date, categorical, character... in order to have information usable for a ML algorithm (aka: numeric or categorical)
   * __Filter__: get read of useless information in order to speed up computation
   * __Handle NA__: replace missing values
   * __Shape__: put your data set in a nice shape usable by a ML algorithm

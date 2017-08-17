@@ -9,9 +9,10 @@ setColAsDate(dataSet, cols, format = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{a list of colnames of dataSet (or just one) to transform into dates}
+\item{cols}{list of column(s) name(s) of dataSet to transform into dates}
 
-\item{format}{the format of date (function is faster if the format is provided) (default to NULL).\cr
+\item{format}{date's format (function will be faster if the format is provided) 
+(character, default to NULL).\cr
 For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)}
 
 \item{verbose}{should the function log (logical, default to TRUE)}

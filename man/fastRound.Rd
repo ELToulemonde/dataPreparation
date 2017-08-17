@@ -14,15 +14,15 @@ fastRound(dataSet, digits = 2, verbose = TRUE)
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 }
 \value{
-The same datasets but as a data.table and with numerics rounded
+The same datasets but as a data.table and with numeric rounded.
 }
 \description{
 Fast round of numeric in a data.table. Will only round numeric, so don't worry about characters. 
-Also, it compute it column by column so your RAM is safe too.
+Also, it computes it column by column so your RAM is safe too.
 }
 \details{
 It is performing round by reference on dataSet, column by column, only on numercial columns. 
-So that it avoid to copy dataSet in RAM.
+So that it avoid copying dataSet in RAM.
 }
 \examples{
 # First let's build a very large data.table with random numbers

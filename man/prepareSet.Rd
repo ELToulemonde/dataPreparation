@@ -13,7 +13,7 @@ prepareSet(dataSet, finalForm = "data.table", verbose = TRUE, ...)
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 
-\item{...}{additional parameters to thune pipeline (see details)}
+\item{...}{additional parameters to tune pipeline (see details)}
 }
 \value{
 A data.table or a numerical matrix (according to finalForm)  and
@@ -21,16 +21,16 @@ A data.table or a numerical matrix (according to finalForm)  and
 \description{
 Full pipeline for preparing your dataSet set \cr
 It will perform the following steps: \cr
-- Correct set: unfactor factor with many values, id dates and numerics that are hiden in string \cr
+- Correct set: unfactor factor with many values, id dates and numeric that are hiden in string \cr
 - Transform set: compute differences between every date, transform dates into factors, generate 
 features from string..., if `key` is provided, will perform aggregate according to this key \cr
 - Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
-will round numerics \cr
+will round numeric \cr
 - Handle NA: will perform \code{\link{fastHandleNa}}) \cr
 - Shape set: will put the result in asked shape (`finalForm`) with acceptable columns format.
 }
 \details{
-Aditional arguments are available to thune pipeline: 
+Additional arguments are available to tune pipeline: 
 \itemize{
   \item \code{key} name of a column of dataSet according to which dataSet should be aggregated 
      (character)

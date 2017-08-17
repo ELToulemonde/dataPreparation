@@ -20,7 +20,7 @@ test_that("generateFromFactor: warning: ",
 data("messy_adult")
 store_ncol <- ncol(messy_adult)
 n_factor <- sum(sapply(messy_adult, is.factor))
-messy_adult <- generateFromFactor(messy_adult, cols = "auto", drop_cols = TRUE)
+messy_adult <- generateFromFactor(messy_adult, cols = "auto", drop = TRUE)
 
 test_that("generateFromFactor: drop: ",
           {

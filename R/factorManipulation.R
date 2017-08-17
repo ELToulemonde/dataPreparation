@@ -28,7 +28,7 @@
 #' @export
 unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
   ## Working environement
-  function_name <- "findAndTransformFalseFactor"
+  function_name <- "unFactor"
   
   ## Sanity check
   if (! is.numeric(n_unfactor)){

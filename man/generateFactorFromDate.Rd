@@ -4,20 +4,23 @@
 \alias{generateFactorFromDate}
 \title{Generate factor from dates}
 \usage{
-generateFactorFromDate(dataSet, cols, type = "yearmonth", verbose = TRUE,
-  ...)
+generateFactorFromDate(dataSet, cols, type = "yearmonth", drop = FALSE,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{a list of colnames of dataSet (or just one) to transform into numerics}
+\item{cols}{list of date column(s) name(s) of dataSet to transform into factor. To transform all 
+dates, set it to "auto"}
 
 \item{type}{"year", "yearquarter", "yearmonth", "quarter" or "month", way to aggregate a date, 
 (character, default to "yearmonth")}
 
+\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+
 \item{verbose}{should the function log (logical, default to TRUE)}
 
-\item{...}{Other arguments such as \code{name_separator} to separate words in new coluimns names
+\item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
 }
 \description{
@@ -29,12 +32,12 @@ data(messy_adult)
 messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 
 # Generate new columns
-# Genereate year month columns
+# Generate year month columns
 messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2", "num1"))
 head(messy_adult[, .(date1.yearmonth, date2.yearmonth)])
 
 
-# Genereate quarter columns
+# Generate quarter columns
 messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2"), type = "quarter")
 head(messy_adult[, .(date1.quarter, date2.quarter)])
 }

@@ -4,17 +4,25 @@
 \alias{generateDateDiffs}
 \title{Date difference}
 \usage{
-generateDateDiffs(dataSet, analysisDate = NULL, units = "years",
-  name_separator = ".")
+generateDateDiffs(dataSet, cols, analysisDate = NULL, units = "years",
+  drop = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{cols}{list of date column(s) name(s) of dataSet to comute difference on. To transform all 
+dates, set it to "auto"}
 
 \item{analysisDate}{Static date (Date or POSIXct, optional)}
 
 \item{units}{unit of difference between too dates (string, default to 'years')}
 
-\item{name_separator}{Separator to put between words in new column names (default to '.')}
+\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+
+\item{verbose}{should the function log (logical, default to TRUE)}
+
+\item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
+(character, default to ".")}
 }
 \value{
 dataSet (as a \code{\link{data.table}}) with more columns. 
@@ -24,7 +32,7 @@ A numeric column has been added for every couple of Dates. The result is in year
 Perform the differences between all dates of the dataSet set and optionally with a static date.
 }
 \details{
-\code{units} is the same as \code{\link{difftime}} unites, but with years as a unit.
+\code{units} is the same as \code{\link{difftime}} units, but with years as a unit.
 }
 \examples{
 # First build a useful dataSet set
@@ -39,5 +47,5 @@ dataSet <- data.table(ID = 1:100,
                   )
 
 # Now let's compute
-dataSet <- generateDateDiffs(dataSet, analysisDate = as.Date("2016-11-14"))
+dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"))
 }

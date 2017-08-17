@@ -64,6 +64,7 @@ set...      # Change into ...
 which...    # Identify ...
 fast...     # Perform in an efficient way (col by col or by exponential search on lines)
 is.XXX      # Check if is XXX
+generate... # Create new columns
 
 ## Variables
 dataSet     # Input data set 
@@ -78,6 +79,7 @@ col         # A column name
 I           # a list of index.
 verbose     # Boolean to handle if algorithm talk
 n_test      # Number of rows on which we perform test
+drop        # for generate functions, should original columns be dropped
 
 args        # Agruments from "..."
 

@@ -76,6 +76,11 @@ is.verbose <- function(verbose, function_name = "is.verbose"){
     stop(function_name, " verbose should be logical (TRUE or FALSE).")
   }
 }
+is.verbose_levels <- function(verbose, function_name = "is.verbose", max_level = 2){
+  if (! is.logical(verbose) & ! verbose %in% 1:max_level){
+    stop(function_name, " verbose should be logical (TRUE or FALSE) or an integer lower than ", max_level, ".")
+  }
+}
 
 ###################################################################################################
 ########################################## check if col is in dataset #############################

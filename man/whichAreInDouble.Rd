@@ -35,7 +35,7 @@ M <- matrix(1, nrow = 1e6, ncol = 3)
 whichAreInDouble(M)
 # It return 2 and 3: you should only keep column 1.
 
-# Lets change the column 2, line 1 to 0. And check again
+# Let's change the column 2, line 1 to 0. And check again
 M[1, 2] <- 0
 whichAreInDouble(M)
 # It only returns 3
