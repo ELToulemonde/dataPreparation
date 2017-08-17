@@ -55,3 +55,15 @@ test_that(paste0( function_name, ": transform to numerical matrix"),
             expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
           }
 )
+
+# Test warnings
+rm(messy_adult)
+data("messy_adult")
+data("adult")
+setDF(adult)
+class(messy_adult[["age"]]) <- "weirdClass"
+test_that(paste0( function_name, ": warnings"),
+          {
+            expect_warning(sameShape(adult, messy_adult, verbose = verbose), " and i don't know how to transform it.")
+          }
+)

@@ -14,7 +14,7 @@ test_that("generateFactorFromDate ",
 			expect_warning(generateFactorFromDate(messy_adult, cols = c("num1"), type = "yearquarter"))
           })
 
-
+messy_adult <- generateFactorFromDate(messy_adult, cols = "auto", drop = TRUE, type = "yearquarter", verbose = verbose)
 ## date_factor
 # -----------
 dataSet <- as.Date(c("2014-01-01", "2015-01-01", "2015-06-01"))

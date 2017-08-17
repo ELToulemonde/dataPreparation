@@ -19,11 +19,12 @@
 #' that everything will go smoothly. But if this function change a lot of stuff you should have a 
 #' look to your preparation process, there might be something wrong. 
 #' @examples
+#' \dontrun{
 #' # Build a train and a test
 #' data("messy_adult")
 #' data("adult")
-#' train <- messy_adult[1:100] 
-#' test <- adult[101:150, ] # So test will have missing columns
+#' train <- messy_adult
+#' test <- adult # So test will have missing columns
 #' 
 #' # Prepare them
 #' train <- prepareSet(train, verbose = FALSE, key = "country")
@@ -33,6 +34,8 @@
 #' test <- sameShape(test, train)
 #' # As one can see in log, a lot of small change had to be done. 
 #' # This is an extreme case but you get the idea.
+#' }
+#' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @import data.table
 #' @export
 sameShape <- function(dataSet, referenceSet, verbose = TRUE){
@@ -103,7 +106,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
       }
       else {
         warning(paste0(function_name, ": ", col, " class is ", trans_class, " but should be ", ref_class,
-                       " and i don't know how to transform it. "))
+                       " and i don't know how to transform it."))
       }
     }
     if (verbose){
