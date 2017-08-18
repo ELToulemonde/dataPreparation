@@ -46,7 +46,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   }
   for (col in cols){
     if (verbose){
-      printl(function_name, ": I am doing the column", col)
+      printl(function_name, ": I am doing the column ", col, ".")
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     if ( !(is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])) & verbose){
@@ -113,7 +113,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
   }
   for (col in cols){
     if (verbose){
-      printl(function_name, ": I am doing the column", col)
+      printl(function_name, ": I am doing the column ", col, ".")
     }
     if ( (is.character(dataSet[[col]])) & verbose){
       printl(function_name, ": ", col, " is a character, i do nothing.")

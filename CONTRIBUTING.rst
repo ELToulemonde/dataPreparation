@@ -33,11 +33,14 @@ Implement Features
 Look through the GitHub issues for features. Anything tagged with "enhancement"
 and "help wanted" is open to whoever wants to implement it.
 
+If you have some new features ideas, you can also open an issue and tag it with 
+"enhancement".
+
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-MLBox could always use more documentation, whether as part of the
-official MLBox docs, in docstrings, or even on the web in blog posts,
+dataPreparation could always use more documentation, whether as part of the
+official dataPreparation docs, vignettes, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
@@ -59,29 +62,46 @@ If you are proposing a feature:
 Code conventions
 -----------------
 
-## Function names
-set...      # Change into ...
-which...    # Identify ...
-fast...     # Perform in an efficient way (col by col or by exponential search on lines)
-is.XXX      # Check if is XXX
-generate... # Create new columns
-
-## Variables
-dataSet     # Input data set 
-data_sample # A piece of data set copied for work purpuse
-result      # The result that will be returned
-..._tmp     # Partially build object
-...s        # Iteritable (list, array, ...)
-nb_...      # Number of ...
-
-cols        # A list of columns names
-col         # A column name
-I           # a list of index.
-verbose     # Boolean to handle if algorithm talk
-n_test      # Number of rows on which we perform test
-drop        # for generate functions, should original columns be dropped
-
-args        # Agruments from "..."
-
-start_time  # From proc.time() to keep track of time
-end_time    # From proc.time() to keep track of time
++---------------+-------------+----------------------------------------+
+|Use            | convention  | interpretation                         |
++===============+=============+========================================+
+|Function names | set...      | Change into ...                        |
++               +-------------+----------------------------------------+
+|               | which...    | Identify ...                           |
++               +-------------+----------------------------------------+
+|               | fast...     | Perform in an efficient way            |
++               +             + (col by col or by exponential search)  +
+|               |             |                                        |
++               +-------------+----------------------------------------+
+|               | is.XXX      | Check if is XXX                        |
++               +-------------+----------------------------------------+
+|               | generate... | Create new columns                     |
++---------------+-------------+----------------------------------------+
+|Arguments      | drop        | Should original columns be dropped     |
++               +-------------+----------------------------------------+
+|               | verbose     | Boolean to handle if algorithm talk    |
++               +-------------+----------------------------------------+
+|               | dataSet     | Input data set                         |
++               +-------------+----------------------------------------+
+|               | cols        | A list of columns names                |
++---------------+-------------+----------------------------------------+
+| Variables     | data_sample | Slice of data set copied for calcul    |
++               +-------------+----------------------------------------+
+|               | result      | The result that will be returned       |
++               +-------------+----------------------------------------+
+|               | ..._tmp     | Partially build object                 |
++               +-------------+----------------------------------------+
+|               | ...s        | Iteritable (list, array, ...)          |
++               +-------------+----------------------------------------+
+|               | n...        | Number of ...                          |
++               +-------------+----------------------------------------+
+|               | col         | A column name                          |
++               +-------------+----------------------------------------+
+|               | I           | a list of index.                       |
++               +-------------+----------------------------------------+
+|               | n_test      | Number of rows on which we perform test|
++               +-------------+----------------------------------------+
+|               | args        | Agruments from "..."                   |
++               +-------------+----------------------------------------+
+|               | start_time  | From proc.time() to keep track of time |
++---------------+-------------+----------------------------------------+ 
