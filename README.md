@@ -52,7 +52,7 @@ Getting started: 30 seconds to dataPreparation
 ### Installation
 Install the package from CRAN:
 ```R
-install.package("dataPreparation")
+install.packages("dataPreparation")
 ```
 
 To have the latest features, install the package from github:
