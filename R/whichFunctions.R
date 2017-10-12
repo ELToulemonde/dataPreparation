@@ -53,9 +53,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
       }
     }
   }
-  if (verbose){
-    close(pb); rm(pb); gc()
-  }
+  gc(verbose = FALSE)
   
   ## Wrapp-up
   listOfConstantCols <- which(names(dataSet) %in% listOfConstantCols) # To return indexes
@@ -279,9 +277,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
       setPB(pb, names(dataSet)[i])
     }
   }
-  if (verbose){
-    close(pb); rm(pb); gc()
-  }
+  gc(verbose = FALSE)
   ## Wrapp up
   if (! is.null(listOfIncluded)){
     listOfIncluded <- sort(unique(listOfIncluded))
@@ -351,9 +347,7 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
     }
     col_I <- col_I[-1]
   }
-  if (verbose){
-    close(pb); rm(pb); gc()
-  }
+  gc(verbose = FALSE)
   ## Wrapp-up
   result_list <- which(names(dataSet) %in% result_list) # To return indexes
   if (! is.null(result_list)){

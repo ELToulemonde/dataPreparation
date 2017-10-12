@@ -214,12 +214,12 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       
       n_na_end <- sum(is.na(dataSet[[col]]))
       if (verbose){
-        printl(function_name, ":", n_na_end - n_na_init, "NA have been created due to transformation to Date.")
+        printl(function_name, ":", n_na_end - n_na_init, " NA have been created due to transformation to Date.")
       }
       # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
       if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){
         if (verbose){
-          printl(function_name, ":", "Since i generated only NAs i set ", col, " as it was before.")
+          printl(function_name, ":", " Since i generated only NAs i set ", col, " as it was before.")
         }
         dataSet[[col]] <- data_sample
       }

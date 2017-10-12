@@ -53,7 +53,7 @@ knitr::knit_hooks$set( output = function(x, options) {
 knitr::opts_template$set("kill_prefix"=list(comment=NA, null_prefix=TRUE))
 ```
 
-This vignette introduces *dataPreparation*, what it offers, how simple it is to use it.
+This vignette introduces *dataPreparation* package (v0.2), what it offers, how simple it is to use it.
 
 
 
@@ -191,7 +191,7 @@ bijections_cols <- whichAreBijection(messy_adult)
 ```
 
 To control this, let's have a look to the concerned columns:
-```{r comment="#",  null_prefix=TRUE}
+```{r comment="#",  null_prefix=TRUE, echo = FALSE}
 kable(head(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 ```
@@ -227,7 +227,6 @@ Since no machine learning algorithm handle Dates, one needs to transform them or
 We can also add an analysis date to compare dates with the date your data is from. For example, if you have a birth-date you may want to compute age by performing today - birth-date. 
 
 ```{r comment="#",  null_prefix=TRUE}
-date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
 messy_adult <- generateDateDiffs(messy_adult, cols = "auto", analysisDate = as.Date("2018-01-01"), units = "days")
 ```
 ```{r echo=FALSE, comment="#",  null_prefix=TRUE}
@@ -238,7 +237,7 @@ kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_
 ## Transforming dates into aggregates
 Another way to work around dates would be to aggregate them at some level. This time `drop` is set to `TRUE` in order to drop date columns. 
 ```{r comment="#",  null_prefix=TRUE}
-messy_adult <- generateFactorFromDate(messy_adult, cols = date_cols, type = "quarter", drop = TRUE)
+messy_adult <- generateFactorFromDate(messy_adult, cols = "auto", type = "quarter", drop = TRUE)
 ```
 ```{r echo=FALSE, comment="#",  null_prefix=TRUE}
 kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 2):ncol(messy_adult), with = FALSE], n = 6))) %>%
@@ -351,21 +350,21 @@ kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
 
 Finally, to generate a description file from this data set, function `description` is available.
 
-It will describe, the set and its variables. Here we put the result in a txt file:
+It will describe, the set and its variables. Here we put `level=0` to have some global descriptions:
 ```{r, tidy=TRUE, tidy.opts=list(length.cutoff=10), comment="#",  null_prefix=TRUE}
-description(agg_adult, path_to_write = "report.txt")
+description(agg_adult, level = 0)
 ```
-```{r  results='hide', message=FALSE, warning=FALSE, echo=FALSE}
-if (file.exists("report.txt")){
-  file.remove("report.txt")
-}
-```
+
 
 
 # Conclusion
+We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN](https://cran.r-project.org/web/packages/dataPreparation/dataPreparation.pdf))
+
+
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
 
-If you would like to add some features to this package, notice some issues, please tell us on [GitHub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
+
+If you would like to give us some feedback, report some issues, add some features to this package, please tell us on [GitHub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
 
 
 

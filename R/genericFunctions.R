@@ -148,17 +148,17 @@ printl <- function(...){
 }
 
 ## Super progress bar
-# Using tkProgressBar and storing some info
+# Using progress and storing some info
 # Use when you build a progress bar for colnames
-#' @importFrom tcltk tkProgressBar setTkProgressBar
+#' @importFrom progress progress_bar
 initPB <- function(function_name, cols_names){
-  pb <- tkProgressBar(title = paste0(function_name, ": 0% done"), min = 1, max = length(cols_names)) # Construction d'une progress bar
-  pb$function_name <- function_name
-  pb$cols_names <- cols_names
+  pb <- progress_bar$new(
+	format = paste0("   ", function_name, " [:bar] :percent in :elapsed \r"),
+	total = length(cols_names), clear = FALSE, width= 60)
   return(pb)
 }
 setPB <- function(pb, col){
-  setTkProgressBar(pb, which(pb$cols_names == col), title=paste(pb$function_name, ": ", round(which(pb$cols_names == col) / length(pb$cols_names) * 100, 0), "% done")) 
+  pb$tick()
 }
 
 ###################################################################################################

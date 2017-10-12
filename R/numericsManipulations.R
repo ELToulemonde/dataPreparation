@@ -117,10 +117,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
       setPB(pb, col)
     }
   }
-  
-  if (verbose){ 
-    close(pb); rm(pb); gc(verbose = FALSE)
-  }
+  gc(verbose = FALSE)
   
   ## Wrapp-up
   return(list(notToStrip = numerics_cols_dont_strip, toStrip = numerics_cols_strip))

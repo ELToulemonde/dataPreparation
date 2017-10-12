@@ -112,7 +112,6 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
       }
     }
     if (verbose){
-      close(pb); rm(pb); gc(verbose = FALSE)
       printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
              round((proc.time() - start_time)[[3]], 2), " seconds. ")
     }
@@ -122,7 +121,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   else{ # If there is as many unique key as lines, there is nothing to do
     return(dataSet)
   }
-  }
+ }
 
 
 

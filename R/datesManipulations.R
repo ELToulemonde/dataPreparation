@@ -106,7 +106,9 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
         if (is.character(data_sample)){
           # Identify potentially used separator by checking it split date in at last two elements
           date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
-          
+          if (length(date_sep_tmp) == 0){
+            next() # No separator means no dates
+          }
           # Check formats with "date_hours" only if there are more than 10 characters
           date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
           # Debug warning
@@ -136,9 +138,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
       setPB(pb, col)
     }
   }
-  if (verbose){ 
-    close(pb); rm(pb); gc()
-  }
+  gc(verbose = FALSE)
   ## Wrapp-up
   return(list(dates = dates, formats = formats))
 }
@@ -174,7 +174,8 @@ identifyDatesFormats <- function(dataSet, formats){
     # We try to convert and unconvert to see if we found the right format
     converted <- as.POSIXct(dataSet, format = formats[n_format])
     un_converted <- format(converted, format = formats[n_format])
-    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet)){
+	un_converted_without_zeros = gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
+    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet) || sum(un_converted_without_zeros == dataSet, na.rm = TRUE)){
       formatFound <- TRUE
     }
     else{ # In a "else" otherwise if we find the format we will always take the second one!

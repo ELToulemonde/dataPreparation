@@ -18,7 +18,6 @@
 #' @section Warning:
 #' All these changes will happen \strong{by reference}.
 #' @export
-#' @importFrom tcltk tkProgressBar setTkProgressBar
 shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE){
   ## Working environement
   function_name <- "prepareSet"
@@ -50,9 +49,6 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
       if (verbose){
         setPB(pb, col)
       }
-    }
-    if (verbose){
-      close(pb); rm(pb);
     }
   }
   col_class <- sapply(dataSet, class)
