@@ -3,7 +3,7 @@ v 0.3
 - Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
 - New features:
 	- New features in existing functions:
-		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part.
+		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
 - Minor changes in log
 - Unit test evolution to be more readable
 

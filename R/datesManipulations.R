@@ -173,9 +173,11 @@ identifyDatesFormats <- function(dataSet, formats){
   while (!formatFound & n_format <= N_format){
     # We try to convert and unconvert to see if we found the right format
     converted <- as.POSIXct(dataSet, format = formats[n_format])
+	# To-do: find a better way to code that
     un_converted <- format(converted, format = formats[n_format])
 	un_converted_without_zeros = gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
-    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet) || sum(un_converted_without_zeros == dataSet, na.rm = TRUE)){
+	un_converted_tolower = tolower(un_converted)
+    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet) || sum(un_converted_without_zeros == dataSet, na.rm = TRUE)|| sum(un_converted_tolower == dataSet, na.rm = TRUE)){
       formatFound <- TRUE
     }
     else{ # In a "else" otherwise if we find the format we will always take the second one!
