@@ -61,7 +61,7 @@ test_that("whichAreInDouble: exceptions",
 data(messy_adult)
 
 # Reduce it to make it faster
-messy_adult = messy_adult[1:5000, ]
+messy_adult <- messy_adult[1:5000, ]
 
 # Check for included columns
 

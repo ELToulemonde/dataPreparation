@@ -16,11 +16,11 @@ default_output_hook <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set( output = function(x, options) {
 
   comment <- knitr::opts_current$get("comment")
-  if( is.na(comment) ) comment <- ""
+  if ( is.na(comment) ) comment <- ""
   can_null <- grepl( paste0( comment, "\\s*\\[\\d?\\]" ),
                      x, perl = TRUE)
   do_null <- isTRUE( knitr::opts_current$get("null_prefix") )
-  if( can_null && do_null ) {
+  if ( can_null && do_null ) {
     # By default R print output aligns at the right brace.
     align_index <- regexpr( "\\]", x )[1] - 1
     # Two cases: start or newline

@@ -297,7 +297,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
   if (verbose){
-	printl(function_name, ": I will set some columns to factor.")
+    printl(function_name, ": I will set some columns to factor.")
   }
   n_transformed <- 0
   start_time <- proc.time()
@@ -309,7 +309,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
     if (n_levels != -1){
       if (fastMaxNbElt(dataSet[[col]], n_levels)){
         set(dataSet, NULL, col, as.factor(dataSet[[col]]))
-		n_transformed <- n_transformed + 1
+        n_transformed <- n_transformed + 1
       }
       else{
         warning(paste0(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it."))

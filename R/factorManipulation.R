@@ -68,7 +68,7 @@ unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
   }
   if (verbose){ 
 	gc(verbose = FALSE)
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2),
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2),
            "s to unfactor ", count, " column(s).")
   }
   

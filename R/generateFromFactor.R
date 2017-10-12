@@ -72,7 +72,7 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
     }
   }
   if (verbose){
-    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", n_transformed, " factor columns into, ", 3 * n_transformed, " new columns.")
   }
   ## Wrapp-up

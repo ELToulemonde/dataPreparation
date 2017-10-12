@@ -121,7 +121,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   else{ # If there is as many unique key as lines, there is nothing to do
     return(dataSet)
   }
- }
+  }
 
 
 
@@ -200,7 +200,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
   }
   if (maxNbValuePerKey == 1){
     # Only one different value by key: we put the value one time by key.
-	result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
+    result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
     result_tmp <- result_tmp[!duplicated(result_tmp), ]
   }
   

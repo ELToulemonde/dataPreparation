@@ -153,8 +153,8 @@ printl <- function(...){
 #' @importFrom progress progress_bar
 initPB <- function(function_name, cols_names){
   pb <- progress_bar$new(
-	format = paste0("   ", function_name, " [:bar] :percent in :elapsed \r"),
-	total = length(cols_names), clear = FALSE, width= 60)
+    format = paste0("   ", function_name, " [:bar] :percent in :elapsed \r"),
+    total = length(cols_names), clear = FALSE, width= 60)
   return(pb)
 }
 setPB <- function(pb, col){
@@ -311,7 +311,7 @@ make_new_col_name <- function(new_col, col_names){
   
   ## Initialization
   if (! new_col %in% col_names){
-	return(new_col)
+    return(new_col)
   }
   i <- 1
   while (paste0(new_col, i) %in% col_names){
@@ -325,7 +325,7 @@ make_new_col_name <- function(new_col, col_names){
 ############################# build name separator ##############################################################
 #################################################################################################################
 build_name_separator <- function(args){
-  name_separator = "."
+  name_separator <- "."
   if (! is.null(args[["name_separator"]])){
     if (is.character(args[["name_separator"]]) & length(args[["name_separator"]]) == 1){
       name_separator <- args[["name_separator"]]
@@ -342,7 +342,7 @@ build_name_separator <- function(args){
 ############################# build factor_date_type ############################################################
 #################################################################################################################
 build_factor_date_type <- function(args){
-  factor_date_type = "yearmonth"
+  factor_date_type <- "yearmonth"
   if (! is.null(args[["factor_date_type"]])){
     if (is.character(args[["factor_date_type"]]) & length(args[["factor_date_type"]]) == 1){
       name_separator <- args[["factor_date_type"]]
