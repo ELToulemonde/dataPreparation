@@ -97,9 +97,14 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   }
   for ( col in names(dataSet) ){ 
     # We search dates only in characters
-    if (is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])){
+    if (is.character(dataSet[[col]]) || is.numeric(dataSet[[col]]) || (is.factor(dataSet[[col]]) & is.character(levels(dataSet[[col]])))){
       # Get a few lines that aren't NA, NULL nor ""
-      data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
+	  if (is.factor(dataSet[[col]])){ # If it's a factor, we take levels to convert
+		data_sample <- findNFirstNonNull(levels(dataSet[[col]]), n_test)
+	  }
+      else{
+		data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
+	  }
       
       # We check only columns that contains something (not NA, NULL, "")
       if (length(data_sample) > 0){ 
@@ -175,9 +180,7 @@ identifyDatesFormats <- function(dataSet, formats){
     converted <- as.POSIXct(dataSet, format = formats[n_format])
 	# To-do: find a better way to code that
     un_converted <- format(converted, format = formats[n_format])
-	un_converted_without_zeros = gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
-	un_converted_tolower = tolower(un_converted)
-    if (sum(un_converted == dataSet, na.rm = TRUE) == length(dataSet) || sum(un_converted_without_zeros == dataSet, na.rm = TRUE)|| sum(un_converted_tolower == dataSet, na.rm = TRUE)){
+    if (control_date_conversion(un_converted, dataSet)){
       formatFound <- TRUE
     }
     else{ # In a "else" otherwise if we find the format we will always take the second one!
@@ -225,6 +228,13 @@ identifyTimeStampsFormats <- function(dataSet){
   return (NULL)
 }
 
+## Control that date is the same (with more checks like: without 0 or tolower? or boths?)
+control_date_conversion <- function(un_converted, original){
+	without_0 = gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
+	tolowers = tolower(un_converted)
+	tolowers_without_0 = tolower(without_0)
+	return(identical(un_converted, original) || identical(without_0, original) || identical(tolowers, original) || identical(tolowers_without_0, original))
+}
 
 #######################################################################################
 ############################### Unify dates types #####################################

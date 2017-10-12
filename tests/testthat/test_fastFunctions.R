@@ -19,8 +19,8 @@ M[, stringColumn := "a string"]
 
 test_that("fastRound: ", 
           {
-            expect_equal(all(fastRound(M, verbose = verbose)[,1] == round(M[, 1], 2)), TRUE)
-            expect_equal(all(fastRound(M, digits = 1, verbose = verbose)[,1] == round(M[, 1], 1)), TRUE)
+            expect_true(all(fastRound(M, verbose = verbose)[,1] == round(M[, 1], 2)))
+            expect_true(all(fastRound(M, digits = 1, verbose = verbose)[,1] == round(M[, 1], 1)))
             expect_error(fastRound(M, digits = "a", verbose = verbose), ": digits should be an integer")
           })
 
@@ -53,14 +53,14 @@ data("messy_adult")
 
 test_that("private function: fastIsEqual", 
           {
-            expect_equal(fastIsEqual(1:9, 1:10), FALSE)
-            expect_equal(fastIsEqual(messy_adult[["education"]], messy_adult[["education_num"]]), FALSE)
-            expect_equal(fastIsEqual(1:10, 1:10), TRUE)
-            expect_equal(fastIsEqual(1:1001, 1:1001), TRUE)
-            expect_equal(fastIsEqual(LETTERS, LETTERS), TRUE)
-            expect_equal(fastIsEqual(1, 1), TRUE)
-            expect_equal(fastIsEqual(1, 2), FALSE)
-            expect_equal(fastIsEqual(messy_adult, messy_adult), TRUE)
+            expect_false(fastIsEqual(1:9, 1:10))
+            expect_false(fastIsEqual(messy_adult[["education"]], messy_adult[["education_num"]]))
+            expect_true(fastIsEqual(1:10, 1:10))
+            expect_true(fastIsEqual(1:1001, 1:1001))
+            expect_true(fastIsEqual(LETTERS, LETTERS))
+            expect_true(fastIsEqual(1, 1))
+            expect_false(fastIsEqual(1, 2))
+            expect_true(fastIsEqual(messy_adult, messy_adult))
           }
 )
 
@@ -73,8 +73,8 @@ data("adult")
 
 test_that("private function: fastIsBijection", 
           {
-            expect_equal(fastIsBijection(adult[["education"]], adult[["education_num"]]), TRUE)
-            expect_equal(fastIsBijection(adult[["education"]], adult[["income"]]), FALSE)
+            expect_true(fastIsBijection(adult[["education"]], adult[["education_num"]]))
+            expect_false(fastIsBijection(adult[["education"]], adult[["income"]]))
           }
 )
 
@@ -82,8 +82,8 @@ test_that("private function: fastIsBijection",
 # -------------
 test_that("private function: fastMaxNbElt", 
           {
-            expect_equal(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 1), FALSE)
-            expect_equal(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 4), FALSE)
-            expect_equal(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 5), TRUE)
+            expect_false(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 1))
+            expect_false(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 4))
+            expect_true(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 5))
           })
 

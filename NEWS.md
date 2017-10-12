@@ -4,6 +4,7 @@ v 0.3
 - New features:
 	- New features in existing functions:
 		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
+		- *findAndTransFormDates* and *setColAsDate* now work with *factors*.
 - Minor changes in log
 - Unit test evolution to be more readable
 
