@@ -16,11 +16,11 @@ default_output_hook <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set( output = function(x, options) {
 
   comment <- knitr::opts_current$get("comment")
-  if( is.na(comment) ) comment <- ""
+  if ( is.na(comment) ) comment <- ""
   can_null <- grepl( paste0( comment, "\\s*\\[\\d?\\]" ),
                      x, perl = TRUE)
   do_null <- isTRUE( knitr::opts_current$get("null_prefix") )
-  if( can_null && do_null ) {
+  if ( can_null && do_null ) {
     # By default R print output aligns at the right brace.
     align_index <- regexpr( "\\]", x )[1] - 1
     # Two cases: start or newline
@@ -85,7 +85,7 @@ double_cols <- whichAreInDouble(messy_adult)
 ## ---- results = 'hold', comment="#",  null_prefix=TRUE-------------------
 bijections_cols <- whichAreBijection(messy_adult)
 
-## ----comment="#",  null_prefix=TRUE--------------------------------------
+## ----comment="#",  null_prefix=TRUE, echo = FALSE------------------------
 kable(head(messy_adult[, .(constant, date3, date4, num1, num3, education, education_num)])) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
@@ -95,7 +95,6 @@ messy_adult <- fastFilterVariables(messy_adult)
 print(paste0("messy_adult now have ", ncol(messy_adult), " columns; so ", ncols - ncol(messy_adult), " less than before."))
 
 ## ----comment="#",  null_prefix=TRUE--------------------------------------
-date_cols <- names(messy_adult)[sapply(messy_adult, is.POSIXct)]
 messy_adult <- generateDateDiffs(messy_adult, cols = "auto", analysisDate = as.Date("2018-01-01"), units = "days")
 
 ## ----echo=FALSE, comment="#",  null_prefix=TRUE--------------------------
@@ -103,7 +102,7 @@ kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ----comment="#",  null_prefix=TRUE--------------------------------------
-messy_adult <- generateFactorFromDate(messy_adult, cols = date_cols, type = "quarter", drop = TRUE)
+messy_adult <- generateFactorFromDate(messy_adult, cols = "auto", type = "quarter", drop = TRUE)
 
 ## ----echo=FALSE, comment="#",  null_prefix=TRUE--------------------------
 kable(cbind(data.frame("..." = rep("  ...", 6)), head(messy_adult[, (ncol(messy_adult) - 2):ncol(messy_adult), with = FALSE], n = 6))) %>%
@@ -157,10 +156,5 @@ kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
 
 ## ---- tidy=TRUE, tidy.opts=list(length.cutoff=10), comment="#",  null_prefix=TRUE----
-description(agg_adult, path_to_write = "report.txt")
-
-## ----results='hide', message=FALSE, warning=FALSE, echo=FALSE------------
-if (file.exists("report.txt")){
-  file.remove("report.txt")
-}
+description(agg_adult, level = 0)
 

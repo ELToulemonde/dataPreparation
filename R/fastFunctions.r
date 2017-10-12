@@ -142,9 +142,7 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
       setPB(pb, col)
     }
   }
-  if (verbose){
-    close(pb); rm(pb)
-  }
+  gc(verbose = FALSE)
   
   ## Wrapp-up
   return(dataSet)
@@ -232,9 +230,7 @@ fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE,
       setPB(pb, col)
     }
   }
-  if (verbose){
-    close(pb); rm(pb)
-  }
+  gc(verbose = FALSE)
   ## Wrapp-up
   return(dataSet)
 }

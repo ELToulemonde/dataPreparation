@@ -27,6 +27,7 @@ Set as POSIXct a character column (or a list of columns) from a data.table
 \details{
 setColAsDate is way faster when format is provided. If you want to identify dates and format
 automatically, have a look to \code{\link{findAndTransformDates}}. \cr
+If input column is a factor, it will be returned as a POSIXct column
 }
 \examples{
 # Lets build a dataSet set

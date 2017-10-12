@@ -6,17 +6,17 @@ verbose <- TRUE
 
 test_that("findNFirstNonNull: test numerics", 
           {
-            expect_equal(all(findNFirstNonNull(1:50, 5) == 1:5), TRUE)
-            expect_equal(all(findNFirstNonNull(1:50, 10) == 1:10), TRUE)
-            expect_equal(all(findNFirstNonNull(c(NA, 1:50), 10) == 1:10), TRUE)
+            expect_identical(findNFirstNonNull(1:50, 5), 1:5)
+            expect_identical(findNFirstNonNull(1:50, 10), 1:10)
+            expect_identical(findNFirstNonNull(c(NA, 1:50), 10), 1:10)
           })
 
 
 test_that("findNFirstNonNull: test character", 
           {
-            expect_equal(all(findNFirstNonNull(LETTERS, 3) == c("A", "B", "C")), TRUE)
-            expect_equal(all(findNFirstNonNull(LETTERS, 5) == c("A", "B", "C", "D", "E")), TRUE)
-            expect_equal(all(findNFirstNonNull(c(NA, LETTERS), 5) == c("A", "B", "C", "D", "E")), TRUE)
+            expect_identical(findNFirstNonNull(LETTERS, 3), c("A", "B", "C"))
+            expect_identical(findNFirstNonNull(LETTERS, 5), c("A", "B", "C", "D", "E"))
+            expect_identical(findNFirstNonNull(c(NA, LETTERS), 5), c("A", "B", "C", "D", "E"))
           })
 
 
@@ -30,9 +30,9 @@ data("messy_adult")
 
 test_that("checkAndReturnDataTable", 
           {
-            expect_equal(all(class(checkAndReturnDataTable(messy_adult)) == c("data.table", "data.frame")), TRUE)
-            expect_equal(all(class(checkAndReturnDataTable(as.data.frame(messy_adult))) == c("data.table", "data.frame")), TRUE)
-            expect_equal(all(class(checkAndReturnDataTable(as.matrix(messy_adult))) == c("data.table", "data.frame")), TRUE)
+            expect_true(is.data.table(checkAndReturnDataTable(messy_adult)))
+            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(messy_adult))))
+            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(messy_adult))))
             
             expect_error(checkAndReturnDataTable("a"))
             expect_error(checkAndReturnDataTable(1))
@@ -114,10 +114,10 @@ test_that("true.aggFunction:",
 # ---------------
 test_that("function.maker: ",
           {
-            expect_equal(class(function.maker(function(x){sum(x, na.rm = TRUE)}, type = "numeric")), "function")
-            expect_equal(class(function.maker(1, type = "numeric")), "function")
-            expect_equal(class(function.maker("a", type = "character")), "function")
-            expect_equal(class(function.maker(TRUE, type = "logical")), "function")
+            expect_true(is.function(function.maker(function(x){sum(x, na.rm = TRUE)}, type = "numeric")))
+            expect_true(is.function(function.maker(1, type = "numeric")))
+            expect_true(is.function(function.maker("a", type = "character")))
+            expect_true(is.function(function.maker(TRUE, type = "logical")))
           })
 
 test_that("function.maker: warning not handling na",
@@ -147,7 +147,7 @@ test_that("function.maker: error wrong type",
 test_that("function.maker: error wrong type",
           {
             expect_equal(make_new_col_name("a", c("a", "b")), "a1")
-			expect_equal(make_new_col_name("a", c("a", "a1")), "a2")
+            expect_equal(make_new_col_name("a", c("a", "a1")), "a2")
             expect_equal(make_new_col_name("c", c("a", "b")), "c")
             expect_error(make_new_col_name(1, c("a", "b")), "new_col and col_names should be character.")
           })

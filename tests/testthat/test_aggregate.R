@@ -72,7 +72,7 @@ adult$boolcall <- sample(c(TRUE, FALSE), nrow(adult), replace = TRUE)
 adult_agg <- aggregateByKey(adult, key = "country", verbose = verbose)
 test_that("aggegateByKey: Column that is a copy of key	",
           {
-            expect_equal(all(adult_agg$country2 == adult_agg$country), TRUE)
+            expect_true(all(adult_agg$country2 == adult_agg$country))
           })	
 
 ## aggregateAcolumn

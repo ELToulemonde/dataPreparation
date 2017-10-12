@@ -39,7 +39,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
   # identify
   numerics <- identifyNumerics(dataSet, n_test = n_test, verbose = verbose)
   if (verbose){
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to identify ", length(numerics$notToStrip) + length(numerics$toStrip), 
            " numerics column(s), i will set them as numerics")
   }
@@ -59,7 +59,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
     dataSet <- setColAsNumeric(dataSet, cols = numerics$toStrip, stripString = TRUE, verbose = verbose)  
     
     if (verbose){
-      printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+      printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
              "s to transform ", length(numerics$notToStrip) + length(numerics$toStrip), 
              " column(s) to a numeric format.")
     }
@@ -117,10 +117,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
       setPB(pb, col)
     }
   }
-  
-  if (verbose){ 
-    close(pb); rm(pb); gc(verbose = FALSE)
-  }
+  gc(verbose = FALSE)
   
   ## Wrapp-up
   return(list(notToStrip = numerics_cols_dont_strip, toStrip = numerics_cols_strip))

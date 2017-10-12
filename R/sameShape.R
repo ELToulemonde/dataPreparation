@@ -113,9 +113,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
       setPB(pb, col)
     }    
   }
-  if (verbose){ 
-    close(pb); rm(pb)
-  }
+  gc(verbose = FALSE)
   
   # Factor levels
   if (verbose){
@@ -137,9 +135,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
       setPB(pb, col)
     }    
   }
-  if (verbose){ 
-    close(pb); rm(pb)
-  }
+  gc(verbose = FALSE)
   
   # Re-order columns
   setcolorder(dataSet, names(referenceSet))

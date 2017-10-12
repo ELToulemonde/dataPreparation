@@ -1,7 +1,15 @@
-v 0.2.1
-=======
-
+v 0.3
+=====
+- Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
+- New features:
+	- New features in existing functions:
+		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
+		- *findAndTransFormDates* and *setColAsDate* now work with *factors*.
 - Minor changes in log
+- Unit test evolution to be more readable
+
+WARNING:
+- *date1* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if "0" are not present in month or day part.
 
 
 v 0.2

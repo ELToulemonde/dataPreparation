@@ -141,6 +141,7 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
 #' @details 
 #' setColAsDate is way faster when format is provided. If you want to identify dates and format
 #' automatically, have a look to \code{\link{findAndTransformDates}}. \cr
+#' If input column is a factor, it will be returned as a POSIXct column
 #' @return dataSet (as a \code{\link{data.table}}), with specified columns set as Date. 
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
@@ -185,15 +186,22 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       printl(function_name, ": I am doing the column ", col, ".")
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
-    if (is.character(dataSet[[col]])){
-      n_na_init <- sum(is.na(dataSet[[col]]))
+    # Creating data sample to transform
+    if (is.factor(dataSet[[col]])){
+      data_sample <- levels(dataSet[[col]])[dataSet[[col]]]
+    }
+    else{
       data_sample <- dataSet[[col]]
+    }
+    n_na_init <- sum(is.na(data_sample))
+    result <- data_sample # Initialize it to no changes. To-do this shouldn't be necessay
+    if (is.character(data_sample)){
       # If format is NULL, we let R determine the format
       if (is.null(format)){
         # If format is not given, search for it. 
         format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))$formats
         if (!is.null(format_tmp)){
-          set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format_tmp))
+          result <- as.POSIXct(data_sample, format = format_tmp)
         }
         else{
           printl(function_name, ":, ", col, " doesn't seem to be a date, if it really is please provide format.")
@@ -205,31 +213,19 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
         format4parse_date_time <- formatForparse_date_time()
         format_tmp <- str_replace_all(format, "[[:punct:]]", "")
         if (format_tmp %in% format4parse_date_time){
-          set(dataSet, NULL, col, parse_date_time(dataSet[[col]], orders = format_tmp))
+          result <- parse_date_time(data_sample, orders = format_tmp)
         }
         else{
-          set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], format = format))
+          result <- as.POSIXct(data_sample, format = format)
         }
-      }
-      
-      n_na_end <- sum(is.na(dataSet[[col]]))
-      if (verbose){
-        printl(function_name, ":", n_na_end - n_na_init, "NA have been created due to transformation to Date.")
-      }
-      # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
-      if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){
-        if (verbose){
-          printl(function_name, ":", "Since i generated only NAs i set ", col, " as it was before.")
-        }
-        dataSet[[col]] <- data_sample
       }
     }
-    else if (is.numeric(dataSet[[col]]) & !is.null(format)){
+    else if (is.numeric(data_sample) & !is.null(format)){
       if (format == "s"){
-        set(dataSet, NULL, col, as.POSIXct(dataSet[[col]], origin = "1970-01-01 00:00:00"))
+        result <- as.POSIXct(dataSet[[col]], origin = "1970-01-01 00:00:00")
       }
       if (format == "ms"){
-        set(dataSet, NULL, col, as.POSIXct(dataSet[[col]] / 1000, origin = "1970-01-01 00:00:00"))
+        result <- as.POSIXct(dataSet[[col]] / 1000, origin = "1970-01-01 00:00:00")
       }
     }
     else{
@@ -239,12 +235,24 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       n_transformed <- n_transformed - 1
       next()
     }
+    n_na_end <- sum(is.na(result))
+    if (verbose){
+      printl(function_name, ":", n_na_end - n_na_init, " NA have been created due to transformation to Date.")
+    }
+    # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
+    if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){
+      if (verbose){
+        printl(function_name, ":", " Since i generated only NAs i set ", col, " as it was before.")
+      }
+      result <- data_sample
+    }
+    # Assign result
+    set(dataSet, NULL, col, result)  
     if (verbose){
       # reset warnings
       options(warn = 0)
     }
   }
-  
   ## Wrapp-up
   if (verbose){
     printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
@@ -289,7 +297,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
   cols <- real_cols(cols, names(dataSet), function_name)
   is.verbose(verbose)
   if (verbose){
-	printl(function_name, ": I will set some columns to factor.")
+    printl(function_name, ": I will set some columns to factor.")
   }
   n_transformed <- 0
   start_time <- proc.time()
@@ -301,7 +309,7 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
     if (n_levels != -1){
       if (fastMaxNbElt(dataSet[[col]], n_levels)){
         set(dataSet, NULL, col, as.factor(dataSet[[col]]))
-		n_transformed <- n_transformed + 1
+        n_transformed <- n_transformed + 1
       }
       else{
         warning(paste0(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it."))

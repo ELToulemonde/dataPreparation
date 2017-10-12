@@ -13,7 +13,7 @@ data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = verb
 
 test_that("findAndTransformNumerics:",
           {
-            expect_equal(all(sapply(data_transformed, class) == c("integer", "numeric", "numeric")), TRUE)
+            expect_true(all(sapply(data_transformed, class) == c("integer", "numeric", "numeric")))
           })
 
 
@@ -22,7 +22,7 @@ dataSet <- messy_adult[, .(date1, date3, date4)]
 data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = verbose)
 test_that("findAndTransformNumerics: no numerics",
           {
-            expect_equal(all(sapply(data_transformed, class) == "character"), TRUE)
+            expect_true(all(sapply(data_transformed, class) == "character"))
           })
 
 ## identifyNumerics

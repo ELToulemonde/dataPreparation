@@ -69,8 +69,8 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", drop = FAL
     }
   }
   if (verbose){ 
-    close(pb); rm(pb); gc()
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+	gc(verbose = FALSE)
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", n_transformed, " column(s).")
   }
   
@@ -232,8 +232,7 @@ generateDateDiffs <- function(dataSet, cols, analysisDate = NULL, units = "years
     }
   }
   if (verbose){ 
-	close(pb); rm(pb); gc()
-    printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to create ", n_transformed, " column(s).")
   }
   ## wrapp-up

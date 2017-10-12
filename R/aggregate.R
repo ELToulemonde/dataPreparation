@@ -112,7 +112,6 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
       }
     }
     if (verbose){
-      close(pb); rm(pb); gc(verbose = FALSE)
       printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
              round((proc.time() - start_time)[[3]], 2), " seconds. ")
     }
@@ -201,7 +200,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
   }
   if (maxNbValuePerKey == 1){
     # Only one different value by key: we put the value one time by key.
-	result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
+    result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
     result_tmp <- result_tmp[!duplicated(result_tmp), ]
   }
   
