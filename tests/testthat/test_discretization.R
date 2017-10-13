@@ -5,11 +5,14 @@ data(messy_adult)
 result1 <- fastDiscretization(copy(messy_adult), cols = "age", n_bins = 9, type = "equal_width", verbose = verbose)
 result2 <- fastDiscretization(copy(messy_adult), cols = "age", n_bins = 10, type = "equal_freq", verbose = verbose)
 result3 <- fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_freq", verbose = verbose)
+result4 <- fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_width", verbose = verbose)
+result5 <- fastDiscretization(copy(messy_adult), cols = "education", n_bins = 10, type = "equal_width", verbose = verbose)
 test_that("fastDiscretization: ",
           {
             expect_equal(length(unique(result1$age)), 9)
             expect_equal(length(unique(result2$age)), 10)
             expect_equal(sum(sapply(result3, is.numeric)), 0)
+			expect_error(fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "aa", verbose = verbose), ": type should either be equal_width or equal_freq")
           })
 
 
