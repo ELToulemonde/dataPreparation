@@ -36,9 +36,9 @@ unFactor                    | generateDateDiffs        | fastFilterVariables | f
 findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
 findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
 setColAsCharacter           | generateFromFactor       | whichAreBijection   |              |
-setColAsNumeric             |                          | fastRound           |              |
-setColAsDate                |                          |                     |              |
-setColAsFactor              |                          |                     |              |
+setColAsNumeric             | generateFromCharacter    |                     |              |
+setColAsDate                | fastDiscretization       |                     |              |
+setColAsFactor              | fastRound                |                     |              |
 
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.

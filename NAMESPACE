@@ -3,6 +3,7 @@
 export(aggregateByKey)
 export(dateFormatUnifier)
 export(description)
+export(fastDiscretization)
 export(fastFilterVariables)
 export(fastHandleNa)
 export(fastIsEqual)
