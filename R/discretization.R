@@ -25,9 +25,6 @@ fastDiscretization <- function(dataSet, cols = "auto", n_bins = 10, type = "equa
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  if (all(cols == "auto")){
-    cols <- colnames(dataSet)[sapply(dataSet, class) %in% c("numeric", "integer")]
-  }
   cols <- real_cols(dataSet, cols, function_name, types = c("numeric", "integer"))
   if (!type %in% c("equal_width", "equal_freq")){
     stop(paste0(function_name, ": type should either be equal_width or equal_freq"))
@@ -161,4 +158,130 @@ build_splits_names <- function(splits){
   split_names[length(split_names)] <- gsub("+Inf\\]$", "+Inf[", split_names[length(split_names)])
   
   return(split_names)
+}
+
+
+#' Get bins
+#' 
+#' Retriveve bins from a data set containing discretized columns (using function \code{\link{fastDiscretization}})
+#' @param dataSet Matrix, data.frame or data.table
+#' @return List of list where each element name is the column name and the element is a the list of bins. \cr
+#' @examples 
+#' # Build a discretized data set
+#' data(adult)
+#' adult <- fastDiscretization(adult, verbose = FALSE)
+#' 
+#' # Retrieve bins
+#' get_bins(adult)
+#' @export
+get_bins <- function(dataSet){
+  ## Working environement
+  function_name <- "get_bins"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  
+  ## Initialization
+  cols <- real_cols(dataSet, cols = "auto", function_name = function_name, types = "factor")
+  bin_list = list()
+  
+  ## Computation
+  for (col in cols){
+    level_list <- levels(dataSet[[col]])
+    if (all(sapply(level_list, is_bin))){
+      bin_list[[col]] <- level_list  
+    }
+  }
+  
+  ## Wrapp-up
+  return(bin_list)
+}
+
+## is_bin
+# -------
+# Control that it starts with a bracket and end with one
+is_bin <- function(obj){
+  return( (grepl("^\\[", obj) || grepl("^\\]", obj)) & (grepl("\\[$", obj) || grepl("\\]$", obj)))
+}
+
+
+
+#' Apply discretization
+#' 
+#' Apply discretization using pre-set bins.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param bins vector of bins for discretization. They should come from \code{\link{get_bins}} \cr
+#'  or be carefully hand written. 
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return dataSet with numerical columns discretized by \strong{reference}.
+#' @details For now, opening and closing brackets are used the same way. 
+#' @examples
+#' # Build discretized data
+#' data(adult)
+#' adult <- fastDiscretization(adult)
+#' bins <- get_bins(adult)
+#' 
+#' # Apply it to messy_adult
+#' data(messy_adult)
+#' messy_adult <- apply_bins(messy_adult, bins = bins)
+#'
+#' # To apply your own bins on column "age"
+#' data(messy_adult)
+#' messy_adult <- apply_bins(messy_adult, bins = list(age = c("[0,40[","[40, 100]")))
+#' @export
+#' @importFrom stringr str_split
+#' @import magrittr
+apply_bins <- function(dataSet, bins, verbose = TRUE){
+  ## Working environement
+  function_name <- "apply_bins"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
+  
+  ## Initialization
+  cols <- names(bins)
+  cols <- real_cols(dataSet, cols, function_name = "apply_bins", types = "numeric")
+  if (verbose){
+    pb <- initPB(function_name, cols)
+    printl(function_name, ": I will discretize ", length(cols), " numeric columns using given bins.")
+    start_time <- proc.time()
+  }
+  
+  ## Computation
+  for (col in cols){
+    # Interpret splits
+    splits <- bins[[col]] %>%
+      str_split(",") %>%
+      #unlist() %>%
+      stringr::str_extract_all("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?") %>%
+      unlist() %>%
+      unique() %>%
+      as.numeric() %>%
+      sort()
+    split_names <- bins[[col]]
+    
+    # Update column
+    find_split <- function(x){
+      if (is.na(x)){
+        return(NA)
+      }
+      res <- which(splits[-length(splits)] <= x & x < splits[-1])
+      if (length(res) == 0){
+        res <- length(splits) -1
+      }
+      return(res)
+    }
+    set(dataSet, NULL, col, as.factor(split_names[sapply(dataSet[[col]], find_split)]))
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)  
+    }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to transform ", length(cols), " numeric columns into, binarised columns.")
+  }
+  ## Wrapp-up
+  return(dataSet)  
 }
