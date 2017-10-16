@@ -12,10 +12,6 @@ test_that("setColAsNumeric:",
 
 dataSet <- data.table(date_col = seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))
 
-test_that("setColAsNumeric:", 
-          {
-            expect_warning(setColAsNumeric(dataSet, cols = c("date_col"), verbose = verbose), "isn't a character a numeric or an integer, i do nothing")
-          })
 
 ## setColAsCharacter
 #-------------------

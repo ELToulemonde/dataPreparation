@@ -28,55 +28,49 @@ fastDiscretization <- function(dataSet, cols = "auto", n_bins = 10, type = "equa
   if (all(cols == "auto")){
     cols <- colnames(dataSet)[sapply(dataSet, class) %in% c("numeric", "integer")]
   }
-  cols <- real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(dataSet, cols, function_name, types = c("numeric", "integer"))
   if (!type %in% c("equal_width", "equal_freq")){
     stop(paste0(function_name, ": type should either be equal_width or equal_freq"))
   }
   n_bins <- round(n_bins) # Just to be safe
   
   ## Initialization
-  n_transformed <- length(cols)
   if (verbose){
     pb <- initPB(function_name, cols)
-    printl(function_name, ": I will discretize ", n_transformed, " numeric columns using, ", 
+    printl(function_name, ": I will discretize ", length(cols), " numeric columns using, ", 
            type, " method.")
     start_time <- proc.time()
   }
-  
+  n_transformed <- length(cols)
   ## Computation 
   for (col in cols){
-    if (is.numeric(dataSet[[col]])){
-      # Compute splits
-      if (type == "equal_width"){
-        splits <- equal_width_splits(dataSet[[col]], n_bins = n_bins, col = col, verbose = verbose)
-      }
-      if (type == "equal_freq"){
-        splits <- equal_freq_splits(dataSet[[col]], n_bins = n_bins, col = col, verbose = verbose)
-      }
-      split_names <- build_splits_names(splits)
-      
-      # Constant columns
-      if (length(splits) == 1){
-        printl(function_name, ": column ", col, " seems to be constant, I do nothing.")
-        n_transformed <- n_transformed - 1
-        next()
-      }
-      # Update column
-      find_split <- function(x){
-        if (is.na(x)){
-          return(NA)
-        }
-        res <- which(splits[-length(splits)] <= x & x < splits[-1])
-        if (length(res) == 0){
-          res <- length(splits) -1
-        }
-        return(res)
-      }
-      set(dataSet, NULL, col, as.factor(split_names[sapply(dataSet[[col]], find_split)]))
+    # Compute splits
+    if (type == "equal_width"){
+      splits <- equal_width_splits(dataSet[[col]], n_bins = n_bins, col = col, verbose = verbose)
     }
-    else{
-      printl(function_name, ": ", col, " is not a numeric column, I do nothing.")
+    if (type == "equal_freq"){
+      splits <- equal_freq_splits(dataSet[[col]], n_bins = n_bins, col = col, verbose = verbose)
     }
+    split_names <- build_splits_names(splits)
+    
+    # Constant columns
+    if (length(splits) == 1){
+      printl(function_name, ": column ", col, " seems to be constant, I do nothing.")
+      n_transformed <- n_transformed - 1
+      next()
+    }
+    # Update column
+    find_split <- function(x){
+      if (is.na(x)){
+        return(NA)
+      }
+      res <- which(splits[-length(splits)] <= x & x < splits[-1])
+      if (length(res) == 0){
+        res <- length(splits) -1
+      }
+      return(res)
+    }
+    set(dataSet, NULL, col, as.factor(split_names[sapply(dataSet[[col]], find_split)]))
     # Update progress bar
     if (verbose){
       setPB(pb, col)  

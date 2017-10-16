@@ -32,25 +32,16 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, .
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  if (all(cols == "auto")){
-    cols = names(dataSet)[sapply(dataSet, is.character)]  
-  }
-  cols <- real_cols(cols, names(dataSet), function_name = function_name)
+  cols <- real_cols(dataSet, cols, function_name, types = "character")
   is.verbose(verbose)
-  n_transformed <- length(cols)
-  start_time <- proc.time()
+  
   ## Initialization
+  start_time <- proc.time()
   args <- list(...)
   name_separator <- build_name_separator(args)
   
   ## Computation
   for (col in cols){
-    if (! is.character(dataSet[[col]])){
-      warning(paste0(function_name, ": ", col, " isn't a character, i do nothing."))
-      n_transformed <- n_transformed - 1
-      next()
-    }
-    
     # has value 
     new_col <- paste0(col, name_separator, "notnull")
     new_col <- make_new_col_name(new_col, names(dataSet))
@@ -78,7 +69,7 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, .
   }
   if (verbose){
     printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
-           "s to transform ", n_transformed, " character columns into, ", 3 * n_transformed, " new columns.")
+           "s to transform ", length(cols), " character columns into, ", 3 * length(cols), " new columns.")
   }
   ## Wrapp-up
   return(dataSet)

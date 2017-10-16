@@ -1,5 +1,6 @@
 requireNamespace("data.table")
 verbose <- TRUE
+Sys.setlocale("LC_TIME", "C")
 ## findNFirstNonNull
 #-------------------
 
@@ -58,8 +59,8 @@ test_that("is.verbose_levels: control input",
             expect_error(is.verbose_levels(3, max_level = 2))
           })
 
-## checkIfIsColumn
-#------------------
+## dataSet
+#---------
 
 dataSet <- data.table(a = "1")
 is.col(dataSet, cols = "a")
@@ -69,12 +70,21 @@ expect_error(is.col(1, cols = "b"), "is.col: dataSet should be a data.table, dat
 
 ## real_cols 
 # ----------
+data("adult")
 data("messy_adult")
+messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 test_that("real_cols:",
           {
-            expect_equal(length(real_cols(c("mail", "asucgzr"), names(messy_adult), function_name = "test")), 1)
-          }
-)
+            expect_equal(length(real_cols(adult, c("education", "asucgzr"))), 1)
+            expect_equal(real_cols(adult, cols = "auto"), colnames(adult))
+			expect_null(real_cols(adult, cols = NULL))
+            expect_identical(real_cols(adult, cols = "auto", types = c("numeric", "integer")), c("age", "fnlwgt", "education_num", "capital_gain", "capital_loss", 
+                                                                                                 "hr_per_week"))
+            expect_identical(real_cols(adult, cols = c("education", "age"), types = c("numeric", "integer")), "age")
+            expect_identical(real_cols(adult, cols = c("education", "age"), types = c("numeric")), "age")
+            expect_identical(real_cols(messy_adult, cols = c("date1", "date2"), types = c("date")), c("date1", "date2"))
+          })
+
 ## getPossibleSeparators
 #------------------------
 result <- getPossibleSeparators()

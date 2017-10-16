@@ -34,7 +34,8 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
   is.verbose_levels(verbose, max_level = 2, function_name = function_name)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name = function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name = function_name)
+  
   ## Initalization
   # Arguments for log
   args <- list(...)
@@ -98,6 +99,8 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
 #' Fast round of numeric in a data.table. Will only round numeric, so don't worry about characters. 
 #' Also, it computes it column by column so your RAM is safe too.
 #' @param dataSet matrix, data.frame or data.table
+#' @param cols list of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' numerics columns, set it to "auto" (characters, default to "auto")
 #' @param digits The number of digits after comma (numeric, default to 2)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @details
@@ -118,7 +121,7 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
 #' # It still work :) and you don't have to worry about the string.
 #' @import data.table
 #' @export
-fastRound <- function(dataSet, digits = 2, verbose = TRUE){
+fastRound <- function(dataSet, cols = "auto", digits = 2, verbose = TRUE){
   ## Working environement
   function_name <- "fastRound"
   
@@ -126,18 +129,17 @@ fastRound <- function(dataSet, digits = 2, verbose = TRUE){
   dataSet <- checkAndReturnDataTable(dataSet)
   if (!is.numeric(digits)){stop(paste0(function_name, ": digits should be an integer."))}
   is.verbose(verbose)
+  cols <- real_cols(dataSet, cols = cols, function_name = function_name, types = c("numeric", "integer"))
   
   ## Initialization
   digits <- round(digits, 0) # just to be safe
   
   ## Computation
   if (verbose){
-    pb <- initPB(function_name, names(dataSet))
+    pb <- initPB(function_name, cols)
   }
-  for (col in names(dataSet)){
-    if (is.numeric(dataSet[[col]])){
-      set(dataSet, NULL, col, round(dataSet[[col]], digits))
-    } 
+  for (col in cols){
+    set(dataSet, NULL, col, round(dataSet[[col]], digits))
     if (verbose){
       setPB(pb, col)
     }

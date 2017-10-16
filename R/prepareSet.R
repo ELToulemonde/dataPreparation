@@ -97,7 +97,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   }
   
   # 2.1 Generate from dates
-  date_cols <- names(dataSet)[sapply(dataSet, is.date)]
+  date_cols <- real_cols(dataSet, cols = "auto", function_name, types = "date")
   if (!is.null(args[["key"]])){ # don't transform key
     date_cols <- date_cols[date_cols != args[["key"]]]
   }
@@ -111,7 +111,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
                                    name_separator = args[["name_separator"]], verbose = verbose)
   
   # 2.2 Generate features from character
-  character_cols <- names(result)[sapply(result, is.character)]
+  character_cols <- real_cols(dataSet, cols = "auto", function_name, types = "character")
   if (!is.null(args[["key"]])){ # don't transform key
     character_cols <- character_cols[character_cols != args[["key"]]]
   }

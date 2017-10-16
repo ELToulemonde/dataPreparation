@@ -35,35 +35,27 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", drop = FAL
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  cols <- real_cols(cols, names(dataSet), function_name = function_name)
+  cols <- real_cols(dataSet, cols, function_name, types = "date")
   is.verbose(verbose)
-  if (all(cols == "auto")){
-    cols = names(dataSet)[sapply(dataSet, is.date)]  
-  }
+  
   ## Initialization
   args <- list(...)
   name_separator <- build_name_separator(args)
   start_time <- proc.time()
-  n_transformed <- 0
+  
   ## Computation
   if (verbose){ 
     printl(function_name, ": I will create a factor column from each date column.")
     pb <- initPB(function_name, cols)
   }
   for (col in cols){
-    if (is.date(dataSet[[col]])){
-      new_col <- paste0(col, name_separator, type)
-      new_col <- make_new_col_name(new_col, names(dataSet))
-      dataSet[, (new_col) := date_factor(dataSet[[col]], type = type)]
-      n_transformed <- n_transformed + 1
-      if (isTRUE(drop)){
-        dataSet[, c(col) := NULL]
-      }
+    new_col <- paste0(col, name_separator, type)
+    new_col <- make_new_col_name(new_col, names(dataSet))
+    dataSet[, (new_col) := date_factor(dataSet[[col]], type = type)]
+    if (isTRUE(drop)){
+      dataSet[, c(col) := NULL]
     }
-    else{
-      warning(paste0(function_name, ": ", col, " isn't a date, i do nothing."))
-      
-    }
+  
     if (verbose){
       setPB(pb, col)
     }
@@ -71,7 +63,7 @@ generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", drop = FAL
   if (verbose){ 
 	gc(verbose = FALSE)
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
-           "s to transform ", n_transformed, " column(s).")
+           "s to transform ", length(cols), " column(s).")
   }
   
   ## Wrapp-up
@@ -182,18 +174,8 @@ generateDateDiffs <- function(dataSet, cols, analysisDate = NULL, units = "years
   if (!is.null(analysisDate) & ! is.date(analysisDate)){
     stop(paste0(function_name, ": analysisDate must be a Date"))
   }
-  if (all(cols == "auto")){
-    cols = names(dataSet)[sapply(dataSet, is.date)]  
-  }
-  else{
-    cols <- real_cols(cols, names(dataSet), function_name = function_name)
-    for (col in cols){
-      if (! is.date(dataSet[[col]])){
-        warning(paste0(function_name, ": ", col, " isn't a date column, i don't do anything with it."))
-        cols <- cols[col != cols]
-      }
-    }
-  }
+  cols <- real_cols(dataSet, cols, function_name, types = "date")
+
   ## Initialization
   args <- list(...)
   name_separator <- build_name_separator(args)

@@ -12,10 +12,6 @@ test_that("generateFromFactor: don't drop: ",
             expect_equal(ncol(messy_adult), store_ncol + 3)
           })
 
-test_that("generateFromFactor: warning: ",
-          {
-            expect_warning(generateFromFactor(messy_adult, cols = "age"), "generateFromFactor: age isn't a factor, i do nothing.")
-          })
 
 data("messy_adult")
 store_ncol <- ncol(messy_adult)
