@@ -41,14 +41,10 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   args <- list(...)
   dataName <- "dataSet"
   if (length(args) > 0){
-    if (!is.null(args[["function_name"]])){
-      function_name <- args[["function_name"]]
-    }
     if (!is.null(args[["dataName"]])){
       dataName <- args[["dataName"]]
     }
   }
-  
   
   ## Computation
   # Delete constant columns

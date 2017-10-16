@@ -360,6 +360,7 @@ make_new_col_name <- function(new_col, col_names){
   }  
   
   ## Initialization
+  new_col <- gsub("[[:punct:]]", ".", new_col) # replace special characters
   if (! new_col %in% col_names){
     return(new_col)
   }

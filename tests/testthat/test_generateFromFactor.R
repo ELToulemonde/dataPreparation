@@ -22,3 +22,13 @@ test_that("generateFromFactor: drop: ",
           {
             expect_equal(ncol(messy_adult), store_ncol + 2 * n_factor)
           })
+		  
+		  
+## one_hot_encoder
+# ----------------
+data(adult)
+res <- one_hot_encoder(adult, "auto", drop = TRUE, verbose = verbose)
+test_that("one_hot_encoder: ",
+          {
+            expect_equal(ncol(res), 110)
+          })

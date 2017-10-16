@@ -39,7 +39,7 @@ setColAsCharacter           | generateFromFactor       | whichAreBijection   |  
 setColAsNumeric             | generateFromCharacter    |                     |              |
 setColAsDate                | fastDiscretization       |                     |              |
 setColAsFactor              | fastRound                |                     |              |
-
+                            | one_hot_encoder          |                     |              |
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 

@@ -11,7 +11,7 @@ generateFactorFromDate(dataSet, cols, type = "yearmonth", drop = FALSE,
 \item{dataSet}{Matrix, data.frame or data.table}
 
 \item{cols}{list of date column(s) name(s) of dataSet to transform into factor. To transform all 
-dates, set it to "auto"}
+dates, set it to "auto", (characters, default to "auto")}
 
 \item{type}{"year", "yearquarter", "yearmonth", "quarter" or "month", way to aggregate a date, 
 (character, default to "yearmonth")}

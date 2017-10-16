@@ -93,7 +93,8 @@ setColAsCharacter           | generateFromFactor       | whichAreBijection   |  
 setColAsNumeric             | generateFromCharacter    |                     |              |
 setColAsDate                | fastDiscretization       |                     |              |
 setColAsFactor              | fastRound                |                     |              |
-
+                            | one_hot_encoder          |                     |              |
+							
 All of those functions are integrated in the **full pipeline** function `prepareSet`.
 
 In this tutorial we will detail all those steps and how to treat them with this package using an example data set.
