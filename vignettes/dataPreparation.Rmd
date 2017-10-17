@@ -80,20 +80,20 @@ Before using any machine learning (ML) algorithm, one needs to prepare its data.
   * **Transform**: creating new features from date, categorical, character... in order to have information usable for a ML algorithm (aka: numeric or categorical)
   * **Filter**: get read of useless information in order to speed up computation
   * **Handle NA**: replace missing values
+  * **Pre model transformation**: Specific manipulation for the chosen model (handling NA, discretization, one hot encoding, scaling...)
   * **Shape**: put your data set in a nice shape usable by a ML algorithm
   
 Here are the functions available in this package to tackle those issues:
 
-Correct                     | Transform                | Filter              | Handle NA    | Shape
----------                   |-----------               |--------             |-----------   |------
-unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
-findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           | generateFromFactor       | whichAreBijection   |              |
-setColAsNumeric             | generateFromCharacter    |                     |              |
-setColAsDate                | fastDiscretization       |                     |              |
-setColAsFactor              | fastRound                |                     |              |
-                            | one_hot_encoder          |                     |              |
+Correct                     | Transform                | Filter              | Pre model manipulation| Shape              
+---------                   |-----------               |--------             |---------------------- | ------------------------
+unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa          | shapeSet           
+findAndTransformDates       | generateFactorFromDate   | whichAreConstant    | fastDiscretization    | sameShape          
+findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    | fastScale             | setAsNumericMatrix 
+setColAsCharacter           | generateFromFactor       | whichAreBijection   |                       | one_hot_encoder
+setColAsNumeric             | generateFromCharacter    |                     |                       |
+setColAsDate                | fastRound                |                     |                       |
+setColAsFactor              |                          |                     |                       |
 							
 All of those functions are integrated in the **full pipeline** function `prepareSet`.
 

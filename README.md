@@ -25,21 +25,20 @@ Before using any machine learning (ML) algorithm, one need to prepare its data. 
   * __Correct__: most of the times, there are some mistake after reading, wrong format... one have to correct them
   * __Transform__: creating new features from date, categorical, character... in order to have information usable for a ML algorithm (aka: numeric or categorical)
   * __Filter__: get read of useless information in order to speed up computation
-  * __Handle NA__: replace missing values
+  * __Pre model transformation__: Specific manipulation for the chosen model (handling NA, discretization, one hot encoding, scaling...)
   * __Shape__: put your data set in a nice shape usable by a ML algorithm
   
 Here are the functions available in this package to tackle those issues:
 
-Correct                     | Transform                | Filter              | Handle NA    | Shape
----------                   |-----------               |--------             |-----------   |------
-unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa | shapeSet
-findAndTransformDates       | generateFactorFromDate   | whichAreConstant    |              | sameShape
-findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    |              | setAsNumericMatrix
-setColAsCharacter           | generateFromFactor       | whichAreBijection   |              |
-setColAsNumeric             | generateFromCharacter    |                     |              |
-setColAsDate                | fastDiscretization       |                     |              |
-setColAsFactor              | fastRound                |                     |              |
-                            | one_hot_encoder          |                     |              |
+Correct                     | Transform                | Filter              | Pre model manipulation| Shape              
+---------                   |-----------               |--------             |-----------            |------------------------
+unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa          | shapeSet           
+findAndTransformDates       | generateFactorFromDate   | whichAreConstant    | fastDiscretization    | sameShape          
+findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    | fastScale             | setAsNumericMatrix 
+setColAsCharacter           | generateFromFactor       | whichAreBijection   |                       | one_hot_encoder
+setColAsNumeric             | generateFromCharacter    |                     |                       |
+setColAsDate                | fastRound                |                     |                       |
+setColAsFactor              |                          |                     |                       |
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
