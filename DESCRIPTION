@@ -8,7 +8,8 @@ Depends:
 	lubridate,
 	stringr,
 	Matrix,
-	progress
+	progress,
+	magrittr
 License: GPL-3 | file LICENSE
 LazyData: true
 Encoding: UTF-8
