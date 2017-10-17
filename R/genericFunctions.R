@@ -136,7 +136,7 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
   # Filter cols that doesn't exist
   listOfIsError <- ! cols %in% colnames(dataSet)
   if (sum(listOfIsError) > 0){
-    printl(function_name, ": ", cols[listOfIsError], 
+    printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
            " aren\'t columns of the table, i do nothing for those variables")
     cols <- cols[!listOfIsError] # Reduce list of col
   }
@@ -155,7 +155,7 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
     }
     if (sum(listOfIsError) > 0){
       if (! was_auto){
-        printl(function_name, ": ", cols[listOfIsError], 
+        printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
                " aren\'t columns of types ", paste(types, collapse = " or ")," i do nothing for those variables.")  
       }
       cols <- cols[!listOfIsError] # Reduce list of col

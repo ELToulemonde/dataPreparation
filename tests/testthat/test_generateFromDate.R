@@ -39,11 +39,11 @@ dataSet <- data.table(ID = 1:100,
 )
 
 # Now let's compute
-dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"), verbose = verbose)
+dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"), drop = TRUE, verbose = verbose)
 
 test_that("generateDateDiffs: ",
           {
-            expect_equal(ncol(dataSet), 6)
+            expect_equal(ncol(dataSet), 4)
             expect_equal(sum(is.na(dataSet)), 0)
           })
 

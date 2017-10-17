@@ -1,21 +1,29 @@
 verbose = TRUE
-## fastDiscretization
+## build_bins
 # ---------------
 data(messy_adult)
-result1 <- fastDiscretization(copy(messy_adult), cols = "age", n_bins = 9, type = "equal_width", verbose = verbose)
-result2 <- fastDiscretization(copy(messy_adult), cols = "age", n_bins = 10, type = "equal_freq", verbose = verbose)
-result3 <- fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_freq", verbose = verbose)
-result4 <- fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_width", verbose = verbose)
-result5 <- fastDiscretization(copy(messy_adult), cols = "education", n_bins = 10, type = "equal_width", verbose = verbose)
-test_that("fastDiscretization: ",
+result1 <- build_bins(copy(messy_adult), cols = "age", n_bins = 9, type = "equal_width", verbose = verbose)
+result2 <- build_bins(copy(messy_adult), cols = "age", n_bins = 10, type = "equal_freq", verbose = verbose)
+result3 <- build_bins(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_freq", verbose = verbose)
+result4 <- build_bins(copy(messy_adult), cols = "auto", n_bins = 10, type = "equal_width", verbose = verbose)
+result5 <- build_bins(copy(messy_adult), cols = "education", n_bins = 10, type = "equal_width", verbose = verbose)
+test_that("build_bins: ",
           {
-            expect_equal(length(unique(result1$age)), 9)
-            expect_equal(length(unique(result2$age)), 10)
-            expect_equal(sum(sapply(result3, is.numeric)), 0)
-            expect_error(fastDiscretization(copy(messy_adult), cols = "auto", n_bins = 10, type = "aa", verbose = verbose), ": type should either be equal_width or equal_freq")
+            expect_equal(length(unique(result1$age)), 9 + 1)
+            expect_equal(length(unique(result2$age)), 10 + 1)
+            expect_error(build_bins(copy(messy_adult), cols = "auto", n_bins = 10, type = "aa", verbose = verbose), ": type should either be equal_width or equal_freq")
           })
 
+## fastDiscretization
+# -------------------
 
+data("adult")
+adult <- fastDiscretization(adult, bins = NULL, verbose = verbose)
+test_that("fastDiscretization: ",
+          {
+            expect_equal(sum(sapply(adult, is.numeric)), 0)
+          })
+		  
 ## equal_width_splits
 # -------------------
 test_that("Private function equal_width_split: ",
@@ -46,48 +54,4 @@ test_that("Private function build_splits_names: ",
           {
             expect_identical(build_splits_names(c(0, 1, 2)), c("[0, 1[", "[1, 2]"))
             expect_identical(build_splits_names(c(-Inf, 2, +Inf)), c("]-Inf, 2[", "[2, +Inf["))
-          })
-
-## get_bins
-# ---------
-data(adult)
-adult <- fastDiscretization(adult, verbose = FALSE)
-
-test_that("get_bins: ",
-          {
-            expect_equal(length(get_bins(adult)), 6)
-            expect_equal(length(get_bins(adult)[[1]]), 10)
-          })
-## is_bin
-# -------
-obj1 = "[1,2]"
-obj2 = "]1,2]"
-obj3 = "[1,2["
-obj4 = "]1,2["
-obj5 = "0]1,2["
-obj6 = "]1,2[a"
-
-test_that("private function is_bin",
-          {
-            expect_true(is_bin(obj1))
-            expect_true(is_bin(obj2))
-            expect_true(is_bin(obj3))
-            expect_true(is_bin(obj4))
-            expect_false(is_bin(obj5))
-            expect_false(is_bin(obj6))
-          })
-
-## apply_bins
-# -------		  
-data(adult)
-adult <- fastDiscretization(adult)
-bins <- get_bins(adult)
-
-# Apply it to messy_adult
-data(messy_adult)
-messy_adult <- apply_bins(messy_adult, bins = bins)
-
-test_that("apply_bins: ",
-          {
-            expect_equal(sum(sapply(messy_adult, is.factor)), 16)
           })

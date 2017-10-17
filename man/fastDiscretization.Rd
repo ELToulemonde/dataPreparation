@@ -4,36 +4,44 @@
 \alias{fastDiscretization}
 \title{Discretization}
 \usage{
-fastDiscretization(dataSet, cols = "auto", n_bins = 10,
-  type = "equal_width", verbose = TRUE)
+fastDiscretization(dataSet, bins = NULL, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of numeric column(s) name(s) of dataSet to transform. To transform all 
-characters, set it to "auto"}
-
-\item{n_bins}{number of group to compute (numeric, default to 10)}
-
-\item{type}{type of discretization ("equal_width" or "equal_freq")}
+\item{bins}{result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
+It is recommended to compute build_bins before so that one can apply same discretization
+ on train and test set. If it is kept to NULL, build_bins will be called.\cr
+\code{bins} could also be carefully hand written.}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-Same dataset edited by reference. With `cols` transformed into bins. \cr
+Same dataset discretized by reference. \cr
 If you don't want to edit by reference please provide set `dataSet = copy(dataSet)`.
 }
 \description{
 Discretization of numeric variable (either equal_width or equal_fred).
 }
 \details{
-NAs will be putted in an NA category. Using equal freq first bin will start at -Inf and last bin will end at +Inf.
+NAs will be putted in an NA category.
 }
 \examples{
+# Load data
 data(messy_adult)
 head(messy_adult)
 
-messy_adult <- fastDiscretization(messy_adult)
+# Compute bins
+bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 
+# Discretize
+messy_adult <- fastDiscretization(messy_adult, bins = bins)
+
+# Control
 head(messy_adult)
+
+# Example with hand written bins
+data("adult")
+adult <-  fastDiscretization(adult, bins = list(age = c(0, 40, +Inf)))
+print(table(adult$age))
 }

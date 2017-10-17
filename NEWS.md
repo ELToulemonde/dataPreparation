@@ -7,6 +7,7 @@ v 0.3
 		- *findAndTransFormDates* and *setColAsDate* now work with *factors*.
 	- New functions:
 		- *fastDiscretization*: to perform equal freq or equal width discretization on a data set using *data.table* power.
+		- *fastScale*: to perform scaling on a data set using *data.table* power.
 		- *one_hot_encoder*: to perform one_hot encoding on a data set using *data.table* power.
 - Minor changes in log (in particular regarding progress bars and typos)
 - Unit test evolution to be more readable
