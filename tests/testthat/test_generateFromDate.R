@@ -11,7 +11,6 @@ messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2"), d
 test_that("generateFactorFromDate ",
           {
             expect_equal(ncol(messy_adult), store_ncol)
-			expect_warning(generateFactorFromDate(messy_adult, cols = c("num1"), type = "yearquarter"))
           })
 
 messy_adult <- generateFactorFromDate(messy_adult, cols = "auto", drop = TRUE, type = "yearquarter", verbose = verbose)
@@ -40,11 +39,11 @@ dataSet <- data.table(ID = 1:100,
 )
 
 # Now let's compute
-dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"), verbose = verbose)
+dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"), drop = TRUE, verbose = verbose)
 
 test_that("generateDateDiffs: ",
           {
-            expect_equal(ncol(dataSet), 6)
+            expect_equal(ncol(dataSet), 4)
             expect_equal(sum(is.na(dataSet)), 0)
           })
 
@@ -60,7 +59,6 @@ dataSet <- data.table(ID = 1:100,
 test_that("generateDateDiffs: errors",
           {
             expect_error(generateDateDiffs(dataSet, cols = "auto", analysisDate = "2017-01-01", verbose = verbose),  "analysisDate must be a Date")
-			expect_warning(generateDateDiffs(dataSet, cols = c("ID", "date1"), analysisDate = as.Date("2016-11-14"), drop = TRUE, verbose = verbose))
           })
 
 

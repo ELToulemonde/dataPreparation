@@ -35,7 +35,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  cols <- real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(dataSet, cols, function_name, types = c("character"))
   is.verbose(verbose)
   
   ## Initialization
@@ -43,29 +43,26 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   ## Computation
   if (verbose){
     printl(function_name, ": I will set some columns as numeric")
+    pb <- initPB(function_name, cols)
   }
   for (col in cols){
     if (verbose){
       printl(function_name, ": I am doing the column ", col, ".")
       options(warn = -1) # if verbose, disable warning, it will  be logged
     }
-    if ( !(is.character(dataSet[[col]]) || is.numeric(dataSet[[col]])) & verbose){
-      warning(paste(function_name, ": ", col, 
-                    " isn't a character a numeric or an integer, i do nothing."))
+    n_na_init <- sum(is.na(dataSet[[col]]))
+    if (stripString){
+      set(dataSet, NULL, col, as.numericStrip(dataSet[[col]]))
     }
-    if (is.character(dataSet[[col]])){
-      
-      n_na_init <- sum(is.na(dataSet[[col]]))
-      if (stripString){
-        set(dataSet, NULL, col, as.numericStrip(dataSet[[col]]))
-      }
-      else{
-        set(dataSet, NULL, col, as.numeric(dataSet[[col]])) 
-      }
-      if (verbose){
-        printl(function_name, ": ", sum(is.na(dataSet[[col]])) - n_na_init, 
-               " NA have been created due to transformation to numeric.")
-      } 
+    else{
+      set(dataSet, NULL, col, as.numeric(dataSet[[col]])) 
+    }
+    if (verbose){
+      printl(function_name, ": ", sum(is.na(dataSet[[col]])) - n_na_init, 
+             " NA have been created due to transformation to numeric.")
+    } 
+    if (verbose){
+      setPB(pb)
     }
   }
   if(verbose){
@@ -85,7 +82,8 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 #'
 #' Set as character a column (or a list of columns) from a data.table
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into characters
+#' @param cols list of column(s) name(s) of dataSet to transform into characters. To transform 
+#' all columns, set it to "auto". (characters, default to "auto")
 #' @param verbose should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as character. 
 #' @examples
@@ -96,21 +94,22 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 #' dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol"))
 #' @import data.table
 #' @export
-setColAsCharacter <- function(dataSet, cols, verbose = TRUE){ 
+setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){ 
   ## Working environement
   function_name <- "setColAsCharacter"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
+  cols <- real_cols(dataSet, cols, function_name)
   
-  ## Initialization
-  cols <- real_cols(cols, names(dataSet), function_name)
-  
-  ## Computation
+  ## Initalization
   if (verbose){
     printl(function_name, ": I will set some columns as character")
+    pb <- initPB(function_name, cols)
   }
+  
+  ## Computation
   for (col in cols){
     if (verbose){
       printl(function_name, ": I am doing the column ", col, ".")
@@ -121,7 +120,9 @@ setColAsCharacter <- function(dataSet, cols, verbose = TRUE){
     if (! (is.character(dataSet[[col]]))){
       set(dataSet, NULL, col, as.character(dataSet[[col]])) 
     }
-    
+    if (verbose){
+      setPB(pb)
+    }
   }
   return(dataSet)
 }
@@ -171,13 +172,14 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
+  cols <- real_cols(dataSet, cols, function_name, types = c("character", "factor", "numeric", "integer"))
   
   ## Initialization
   start_time <- proc.time()
   if (verbose){
     printl(function_name, ": I will set some columns as Date.")
+    pb <- initPB(function_name, cols)
   }
-  cols <- real_cols(cols, names(dataSet), function_name)
   n_transformed <- length(cols)
   
   ## Computation
@@ -251,6 +253,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
     if (verbose){
       # reset warnings
       options(warn = 0)
+      setPB(pb)
     }
   }
   ## Wrapp-up
@@ -269,7 +272,8 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' 
 #' Set columns as factor and control number of unique element, to avoid having too large factors.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into factor
+#' @param cols list of column(s) name(s) of dataSet to transform into factor. To transform all columns
+#'  set it to "auto", (characters, default to auto).
 #' @param n_levels max number of levels for factor (integer, default to 53) 
 #' set it to -1 to disable control.
 #' @param verbose should the function log (logical, default to TRUE)
@@ -287,20 +291,24 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' sapply(messy_adult[, .(education)], class)
 #' # education is now a factor
 #' @export
-setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
+setColAsFactor <- function(dataSet, cols = "auto", n_levels = 53, verbose = TRUE){
   ## Working environment
   function_name <- "setColAsFactor"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   if (!is.numeric(n_levels)){stop(paste0(function_name, ": n_levels should be an integer."))}
-  cols <- real_cols(cols, names(dataSet), function_name)
+  cols <- real_cols(dataSet, cols, function_name)
   is.verbose(verbose)
+  
+  ## Initialization
   if (verbose){
     printl(function_name, ": I will set some columns to factor.")
+    pb <- initPB(function_name, cols)
   }
   n_transformed <- 0
   start_time <- proc.time()
+  
   ## Computation
   for (col in cols){ 
     if (verbose){
@@ -317,6 +325,9 @@ setColAsFactor <- function(dataSet, cols, n_levels = 53, verbose = TRUE){
     }
     else{
       set(dataSet, NULL, col, as.factor(dataSet[[col]]))
+    }
+    if (verbose){
+      setPB(pb)
     }
   }
   if (verbose){

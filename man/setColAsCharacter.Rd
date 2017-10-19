@@ -4,12 +4,13 @@
 \alias{setColAsCharacter}
 \title{Set columns as character}
 \usage{
-setColAsCharacter(dataSet, cols, verbose = TRUE)
+setColAsCharacter(dataSet, cols = "auto", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into characters}
+\item{cols}{list of column(s) name(s) of dataSet to transform into characters. To transform 
+all columns, set it to "auto". (characters, default to "auto")}
 
 \item{verbose}{should the function log (logical, default to TRUE)}
 }

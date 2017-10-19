@@ -31,37 +31,29 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  if (all(cols == "auto")){
-    cols = names(dataSet)[sapply(dataSet, is.factor)]  
-  }
-  cols <- real_cols(cols, names(dataSet), function_name = function_name)
+  cols <- real_cols(dataSet, cols, function_name, types = "factor")
   is.verbose(verbose)
-  n_transformed <- length(cols)
-  start_time <- proc.time()
+  
   ## Initialization
+  start_time <- proc.time()
   args <- list(...)
   name_separator <- build_name_separator(args)
   
   ## Computation
   for (col in cols){
-    if (! is.factor(dataSet[[col]])){
-      warning(paste0(function_name, ": ", col, " isn't a factor, i do nothing."))
-      next()
-    }
-    
     # has value 
     new_col <- paste0(col, name_separator, "notnull")
-	new_col <- make_new_col_name(new_col, names(dataSet))
+    new_col <- make_new_col_name(new_col, names(dataSet))
     dataSet[, c(new_col) := levels(dataSet[[col]])[col] %in% c(NA, "NA", "")]
     
     # recode with nb of occurence of value
     new_col <- paste0(col, name_separator, "num")
-	new_col <- make_new_col_name(new_col, names(dataSet))
+    new_col <- make_new_col_name(new_col, names(dataSet))
     dataSet[, c(new_col) := .N, by = col]
     
     # recode with order of value
     new_col <- paste0(col, name_separator, "order")
-	new_col <- make_new_col_name(new_col, names(dataSet))
+    new_col <- make_new_col_name(new_col, names(dataSet))
     col_levels <- levels(dataSet[[col]])
     levels_order <- order(col_levels)
     dataSet[, c(new_col) := levels_order[col] ]
@@ -73,12 +65,84 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
   }
   if (verbose){
     printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
-           "s to transform ", n_transformed, " factor columns into, ", 3 * n_transformed, " new columns.")
+           "s to transform ", length(cols), " factor columns into, ", 3 * length(cols), " new columns.")
   }
   ## Wrapp-up
   return(dataSet)
 }
 
+## one_hot_encoder
+# ----------------
+#' One hot encoder
+#' 
+#' Transform factor column into 0/1 columns with one column per values of the column.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param cols list of character or factor column(s) name(s) of dataSet to transform into factor
+#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
+#' @param verbose should the function log (logical, default to TRUE) 
+#' To transform all dates, set it to "auto", (characters, default to "auto")
+#' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
+#' (character, default to ".")
+#' @return \code{dataSet} edited by reference with new columns. 
+#' @details If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
+#' Please be carefull using this function, it will generate as many columns as there different values 
+#' in your column and might use a lot of RAM.
+#' @examples
+#' data(adult)
+#' adult <- one_hot_encoder(adult, "auto", drop = TRUE)
+#' @export
+#' @import data.table
+one_hot_encoder <- function(dataSet, cols = "auto", drop = FALSE, verbose = TRUE, ...){
+  ## Working environement
+  function_name <- "one_hot_encoder"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  cols <- real_cols(dataSet, cols, function_name, types = c("factor", "character"))
+  is.verbose(verbose)
+  
+  ## Initialization
+  # Transform char into factor
+  args <- list(...)
+  name_separator <- build_name_separator(args)
+  dataSet <- setColAsFactor(dataSet, cols = cols[sapply(dataSet[, cols, with = FALSE], is.character)], n_levels = -1, verbose = FALSE)
+  if (verbose){
+    printl(function_name, ": I will one hot encode some columns.")
+    pb <- initPB(function_name, cols)
+  }
+  start_time <- proc.time()
+  
+  ## Computation
+  for (col in cols){
+    # Log
+    if (verbose){
+      printl(function_name, ": I am doing column: ", col)
+    }
+    # one_hot _encode
+    for (level in levels(dataSet[[col]])){
+      new_col <- paste0(col, name_separator, level)
+      new_col <- make_new_col_name(new_col, names(dataSet))
+      dataSet[, (new_col) := as.integer(dataSet[[col]] == level)]
+    }
+    
+    # drop col if asked
+    if (isTRUE(drop)){
+      dataSet[, c(col) := NULL]
+    }
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)
+    }
+  }
+  
+  if (verbose){ 
+    gc(verbose = FALSE)
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to transform ", length(cols), " column(s).")
+  }
+  ## Wrapp-up
+  return(dataSet)
+}
 
 
 

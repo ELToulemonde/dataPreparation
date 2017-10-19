@@ -1,0 +1,110 @@
+#' Compute scales
+#' 
+#' Build a list of means and standard deviation for each \code{cols}.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param cols list of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' characters, set it to "auto"
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return A list where each element name is a column name of data set and each element contains means and sd
+#' @examples 
+#' # Get a data set
+#' data(adult)
+#' scales <- build_scales(adult, cols = "auto", verbose = TRUE)
+#' 
+#' print(scales)
+#' @export
+build_scales <- function(dataSet, cols = "auto", verbose = TRUE){
+  ## Working environement
+  function_name <- "build_scales"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
+  cols <- real_cols(dataSet, cols, function_name, types = "numeric")
+  
+  ## Initialization
+  if (verbose){
+    pb <- initPB(function_name, cols)
+    printl(function_name, ": I will compute scale ", length(cols), " numeric columns.")
+    start_time <- proc.time()
+  }
+  scales <- list()
+  ## Computation
+  for (col in cols){
+    scales[[col]] =  list(mean = mean(dataSet[[col]], na.rm = TRUE), sd = sd(dataSet[[col]], na.rm = TRUE))
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)  
+    }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to compute scale for ", length(cols), " numeric columns.")
+  }
+  ## Wrapp-up
+  return(scales)
+}
+#' scale
+#' 
+#' Perform efficient scaling on a data set.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param scales result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
+#' It is recommended to compute build_scales before so that one can apply same scale on train
+#'  and test set. If it is kept to NULL, build_scales will be called.
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return data set with columns scaled by \strong{reference}. Scaled means that each
+#'  column mean will be 0 and each column standard deviation will be 1.
+#' @details Scaling numeric values is usefull for some machine learning algorithm such as
+#'  logistic regression or neural networks. \cr
+#' This implementation of scale will be faster that \code{\link{scale}} for large data sets.
+#' @examples 
+#' # Load data
+#' data(adult)
+#' 
+#' # compute scales
+#' scales <- build_scales(adult, cols = "auto", verbose = TRUE)
+#' 
+#' # Scale data set
+#' adult <- fastScale(adult, scales = scales, verbose = TRUE)
+#' 
+#' # Control
+#' print(mean(adult$age)) # Almost 0
+#' print(sd(adult$age)) # 1
+#' @export
+fastScale <- function(dataSet, scales = NULL, verbose = TRUE){
+  ## Working environement
+  function_name <- "fastScale"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
+  
+  ## Initialization
+  # Build scale
+  if (is.null(scales)){
+    scales <- build_scales(dataSet, cols = "auto", verbose = verbose)
+  }
+  cols <- names(scales)
+  cols <- real_cols(dataSet, cols, function_name, types = "numeric")
+  # verbose
+  
+  if (verbose){
+    pb <- initPB(function_name, cols)
+    printl(function_name, ": I will scale ", length(cols), " numeric columns.")
+    start_time <- proc.time()
+  }
+  ## Computation
+  for (col in cols){
+    set(dataSet, NULL, col, (dataSet[[col]] - scales[[col]][["mean"]]) / scales[[col]][["sd"]])
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)  
+    }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to scale ", length(cols), " numeric columns.")
+  }
+  ## Wrapp-up
+  return(dataSet)
+}

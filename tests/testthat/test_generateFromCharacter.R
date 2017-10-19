@@ -13,10 +13,6 @@ test_that("generateFromCharacter: don't drop: ",
             expect_equal(ncol(messy_adult), store_ncol + 3)
           })
 
-test_that("generateFromCharacter: warning: ",
-          {
-            expect_warning(generateFromCharacter(messy_adult, cols = "age"), "generateFromCharacter: age isn't a character, i do nothing.")
-          })
 
 data("messy_adult")
 messy_adult <- unFactor(messy_adult, verbose = FALSE)

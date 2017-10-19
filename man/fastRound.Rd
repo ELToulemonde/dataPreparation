@@ -4,10 +4,13 @@
 \alias{fastRound}
 \title{Fast round}
 \usage{
-fastRound(dataSet, digits = 2, verbose = TRUE)
+fastRound(dataSet, cols = "auto", digits = 2, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{matrix, data.frame or data.table}
+
+\item{cols}{list of numeric column(s) name(s) of dataSet to transform. To transform all 
+numerics columns, set it to "auto" (characters, default to "auto")}
 
 \item{digits}{The number of digits after comma (numeric, default to 2)}
 

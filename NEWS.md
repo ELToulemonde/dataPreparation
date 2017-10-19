@@ -5,8 +5,14 @@ v 0.3
 	- New features in existing functions:
 		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
 		- *findAndTransFormDates* and *setColAsDate* now work with *factors*.
-- Minor changes in log
+	- New functions:
+		- *fastDiscretization*: to perform equal freq or equal width discretization on a data set using *data.table* power.
+		- *fastScale*: to perform scaling on a data set using *data.table* power.
+		- *one_hot_encoder*: to perform one_hot encoding on a data set using *data.table* power.
+- Minor changes in log (in particular regarding progress bars and typos)
 - Unit test evolution to be more readable
+- Refactoring: 
+	- Privat efunction *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
 
 WARNING:
 - *date1* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if "0" are not present in month or day part.

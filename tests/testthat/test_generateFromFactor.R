@@ -12,10 +12,6 @@ test_that("generateFromFactor: don't drop: ",
             expect_equal(ncol(messy_adult), store_ncol + 3)
           })
 
-test_that("generateFromFactor: warning: ",
-          {
-            expect_warning(generateFromFactor(messy_adult, cols = "age"), "generateFromFactor: age isn't a factor, i do nothing.")
-          })
 
 data("messy_adult")
 store_ncol <- ncol(messy_adult)
@@ -25,4 +21,14 @@ messy_adult <- generateFromFactor(messy_adult, cols = "auto", drop = TRUE)
 test_that("generateFromFactor: drop: ",
           {
             expect_equal(ncol(messy_adult), store_ncol + 2 * n_factor)
+          })
+		  
+		  
+## one_hot_encoder
+# ----------------
+data(adult)
+res <- one_hot_encoder(adult, "auto", drop = TRUE, verbose = verbose)
+test_that("one_hot_encoder: ",
+          {
+            expect_equal(ncol(res), 110)
           })

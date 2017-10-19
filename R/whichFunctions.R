@@ -29,7 +29,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
   listOfConstantCols <- NULL
@@ -115,7 +115,7 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
   
@@ -168,7 +168,7 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
 
@@ -229,7 +229,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name)
   ## Initialization
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing
     return(NULL)
@@ -301,7 +301,7 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  keep_cols <- real_cols(keep_cols, names(dataSet), function_name)
+  keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing

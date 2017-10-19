@@ -112,17 +112,63 @@ is.col <- function(dataSet, cols = NULL, ...){
 }
 
 # Reduce list of cols to only cols in dataSet set
-real_cols <- function(cols, data_names, function_name){
-  listOfIsError <- ! cols %in% data_names
+# Reduce columns that aren't of the wanted type
+# Handle "auto" value
+# @param dataSet Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns).
+# @param cols list of column(s) name(s) of dataSet to control. (Default to auto, all cols that match types)
+# @param function_name name of the function where it's called from. For LOG. (Character, default to "real_cols")
+# @param types types of wanted columns.
+real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
+  ## If NULL cols
+  if (is.null(cols)){
+	return(NULL)
+  }
+  
+  ## If auto cols
+  if (all(cols == "auto")){
+    cols <- colnames(dataSet)
+    was_auto <- TRUE
+  }
+  else{
+    was_auto <- FALSE
+  }
+  
+  # Filter cols that doesn't exist
+  listOfIsError <- ! cols %in% colnames(dataSet)
   if (sum(listOfIsError) > 0){
-    printl(function_name, ":", cols[listOfIsError], 
-           "aren\'t columns of the table, i do nothing for those variables")
+    printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
+           " aren\'t columns of the table, i do nothing for those variables")
     cols <- cols[!listOfIsError] # Reduce list of col
   }
   rm(listOfIsError)
   
+  # Filter cols that aren't of the right type
+  if (! is.null(types)){
+    if (all(types == "date")){
+      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.date)]
+    }
+    else if(all(types == "numeric")){
+      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.numeric)]
+    }
+    else{
+      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, class) %in% types]  
+    }
+    if (sum(listOfIsError) > 0){
+      if (! was_auto){
+        printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
+               " aren\'t columns of types ", paste(types, collapse = " or ")," i do nothing for those variables.")  
+      }
+      cols <- cols[!listOfIsError] # Reduce list of col
+    }
+    rm(listOfIsError)
+  }
+  
+  ## Wrapp-up
   return(cols)
 }
+
+
+
 
 
 ###################################################################################################
@@ -152,6 +198,10 @@ printl <- function(...){
 # Use when you build a progress bar for colnames
 #' @importFrom progress progress_bar
 initPB <- function(function_name, cols_names){
+  if (length(cols_names) == 0){
+    # No prossessing to do, so no progress bar
+    return(NULL)
+  }
   pb <- progress_bar$new(
     format = paste0("   ", function_name, " [:bar] :percent in :elapsed \r"),
     total = length(cols_names), clear = FALSE, width= 60)
@@ -310,6 +360,7 @@ make_new_col_name <- function(new_col, col_names){
   }  
   
   ## Initialization
+  new_col <- gsub("[[:punct:]]", ".", new_col) # replace special characters
   if (! new_col %in% col_names){
     return(new_col)
   }

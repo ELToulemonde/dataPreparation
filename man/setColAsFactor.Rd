@@ -4,12 +4,13 @@
 \alias{setColAsFactor}
 \title{Set columns as factor}
 \usage{
-setColAsFactor(dataSet, cols, n_levels = 53, verbose = TRUE)
+setColAsFactor(dataSet, cols = "auto", n_levels = 53, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into factor}
+\item{cols}{list of column(s) name(s) of dataSet to transform into factor. To transform all columns
+set it to "auto", (characters, default to auto).}
 
 \item{n_levels}{max number of levels for factor (integer, default to 53) 
 set it to -1 to disable control.}
