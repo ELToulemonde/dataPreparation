@@ -32,7 +32,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
-  listOfConstantCols <- NULL
+  constant_cols <- NULL
   if (verbose){
 	start_time <- proc.time()
     pb <- initPB(function_name, names(dataSet))
@@ -43,7 +43,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   if (nrow(dataSet) > 1 ){ # We check for constant only if there are at least two lines
     for (col in cols){
       if (fastMaxNbElt(dataSet[[col]], 1)){
-        listOfConstantCols <- c(listOfConstantCols, col)
+        constant_cols <- c(constant_cols, col)
         if(verbose){
           printl(function_name, ": ", col, " is constant.")
         }
@@ -56,13 +56,13 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   gc(verbose = FALSE)
   
   ## Wrapp-up
-  listOfConstantCols <- which(names(dataSet) %in% listOfConstantCols) # To return indexes
+  constant_cols <- which(names(dataSet) %in% constant_cols) # To return indexes
   if (verbose){
     printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), 
-           "s to identify ", length(listOfConstantCols), " constant column(s)")
+           "s to identify ", length(constant_cols), " constant column(s)")
   }
   
-  return(listOfConstantCols)
+  return(constant_cols)
 }
 
 
@@ -120,11 +120,11 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Initialization
   
   ## Computation
-  listOfDoubles <- bi_col_test(dataSet, keep_cols = keep_cols, verbose = verbose,
+  double_cols <- bi_col_test(dataSet, keep_cols = keep_cols, verbose = verbose,
                                test_function = "fastIsEqual", function_name = function_name, test_log = " is exactly equal to ")
   
   ## Wrapp-up
-  return(listOfDoubles)
+  return(double_cols)
 }
 
 
@@ -173,11 +173,11 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Initialization
 
   ## Computation # to-do dé-gorifier
-  listOfBijection <- bi_col_test(dataSet, keep_cols, verbose = verbose, 
+  bijection_cols <- bi_col_test(dataSet, keep_cols, verbose = verbose, 
                                  test_function = "fastIsBijection", function_name = function_name, test_log = " is a bijection of ")
   
   ## Wrapp up
-  return(listOfBijection)
+  return(bijection_cols)
 }
 
 
@@ -234,7 +234,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing
     return(NULL)
   }
-  listOfIncluded <- NULL
+  included_cols <- NULL
   I <- 1:max(ncol(dataSet) - 1, 1) 
   keep_cols_index <- which(names(dataSet) %in% keep_cols)
   if (verbose){
@@ -246,7 +246,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
     i <- I[1]
     
     J <- (i+1):ncol(dataSet)
-    J <- J[!J %in% listOfIncluded]
+    J <- J[!J %in% included_cols]
     while (length(J) > 0){
       j <- J[1]
       if (! all(c(i, j) %in% keep_cols_index)){
@@ -254,14 +254,14 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
         temp_data <- temp_data[!duplicated(temp_data)]
         
         if (nrow(temp_data) == nbr_various_val[i] & ! j %in% keep_cols_index){
-          listOfIncluded <- c(listOfIncluded, j)
+          included_cols <- c(included_cols, j)
           if(verbose){
             printl(function_name, ": ", names(dataSet)[j], " is included in column ", names(dataSet)[i], ".")
           }
         }
         else{
           if (nrow(temp_data) == nbr_various_val[j] & ! i %in% keep_cols_index){
-            listOfIncluded <- c(listOfIncluded, i)
+            included_cols <- c(included_cols, i)
             if(verbose){
               printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
             }
@@ -272,17 +272,17 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
       J <- J[-1] # drop handled j
     }
     I <- I[-1] # drop handled i
-    I <- I[!I %in% listOfIncluded]
+    I <- I[!I %in% included_cols]
     if (verbose){
       setPB(pb, names(dataSet)[i])
     }
   }
   gc(verbose = FALSE)
   ## Wrapp up
-  if (! is.null(listOfIncluded)){
-    listOfIncluded <- sort(unique(listOfIncluded))
+  if (! is.null(included_cols)){
+    included_cols <- sort(unique(included_cols))
   }  
-  return(listOfIncluded)
+  return(included_cols)
 }
 
 ###################################################################################################

@@ -280,7 +280,7 @@ fastIsEqual <- function(object1, object2){
   }
   # Simple comparaison for factors
   if (is.factor(object1)){
-    if (!(sum(levels(object1) %in% levels(object2)) == length(levels(object1)) & sum(levels(object2) %in% levels(object1)) == length(levels(object2)))){
+    if (! identical(levels(object1), levels(object2))){
       return(FALSE) # To-do Limitation: les levels vides
     }
   }
@@ -296,10 +296,11 @@ fastIsEqual <- function(object1, object2){
   }
   
   # Comparaison for long object
-  maxPower <- floor(log(length(object1)) / log(10)) + 1
+  exp_factor <- 10
+  maxPower <- floor(log(length(object1)) / log(exp_factor)) + 1
   for (i in 1:maxPower){
-    I <- (10^(i - 1)):min(10^i - 1, length(object1))
-    if (sum(object1[I] == object2[I], na.rm = TRUE) + sum(is.na(object1[I]) & is.na(object2[I])) != length(I)){
+    I <- (exp_factor^(i - 1)):min(exp_factor^i - 1, length(object1))
+    if (! identical(object1[I], object2[I])){
       return(FALSE)
     }
   }
@@ -331,9 +332,10 @@ fastIsBijection <- function(object1, object2){
   
   # Comparaison for long object
   nrows <- nrow(dataSet)
-  maxPower <- floor(log(nrows)/log(10)) + 1
+  exp_factor <- 10
+  maxPower <- floor(log(nrows)/log(exp_factor)) + 1
   for (i in 1:maxPower){
-    I <- (10 ^ (i - 1)):min(10 ^ i - 1,  nrows)
+    I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
     n1 <- uniqueN(dataSet[I, 1])
     n2 <- uniqueN(dataSet[I, 2])
     if (n1 != n2){
@@ -364,12 +366,13 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   
   ## Initialization
   listOfUnique <- NULL
-  maxPower <- floor(log(length(object)) / log(10)) + 1
+  exp_factor <- 10
+  maxPower <- floor(log(length(object)) / log(exp_factor)) + 1
   i <- 1
   
   ## Computation
   for (i in 1:maxPower){
-    I <- (10 ^ (i - 1)):min(10 ^ i - 1, length(object))
+    I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1, length(object))
     listOfUnique <- unique( c( listOfUnique, unique( object[I])))
     if (length(listOfUnique) > max_n_values){
       return(FALSE)
