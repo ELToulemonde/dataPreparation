@@ -31,9 +31,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   col_class_init <-  sapply(col_class, function(x){x[[1]]}) # Safety for classes with multiple values: ex: POSIXct, POSIXt
   ## Computation
   carac_cols <- names(col_class)[col_class %in% c("character")]
-  if (length(carac_cols) > 0){
-    dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
-  }
+  dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)
   num_cols <- names(col_class)[col_class %in% c("numeric", "integer")]
