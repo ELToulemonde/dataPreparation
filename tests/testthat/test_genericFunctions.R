@@ -27,13 +27,12 @@ test_that("findNFirstNonNull: not enough not NAs values",
           })
 ## checkAndReturnDataTable
 #-------------------------
-data("messy_adult")
-
+data("iris")
 test_that("checkAndReturnDataTable", 
           {
-            expect_true(is.data.table(checkAndReturnDataTable(messy_adult)))
-            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(messy_adult))))
-            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(messy_adult))))
+            expect_true(is.data.table(checkAndReturnDataTable(iris)))
+            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(iris))))
+            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(iris))))
             
             expect_error(checkAndReturnDataTable("a"))
             expect_error(checkAndReturnDataTable(1))
@@ -78,6 +77,7 @@ test_that("real_cols:",
             expect_equal(length(real_cols(adult, c("education", "asucgzr"))), 1)
             expect_equal(real_cols(adult, cols = "auto"), colnames(adult))
 			expect_null(real_cols(adult, cols = NULL))
+			expect_null(real_cols(adult, cols = character(0)))
             expect_identical(real_cols(adult, cols = "auto", types = c("numeric", "integer")), c("age", "fnlwgt", "education_num", "capital_gain", "capital_loss", 
                                                                                                  "hr_per_week"))
             expect_identical(real_cols(adult, cols = c("education", "age"), types = c("numeric", "integer")), "age")

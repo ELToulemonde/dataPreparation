@@ -55,6 +55,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   
   ## Initialization
   # Make an nice list of functions
+  functions <- c(mean = mean, min = min, max = max, sd = sd)
   if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
     # Make as vector
@@ -83,9 +84,6 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
     }
     
     functions <- true.aggFunction(functions, function_name)
-  }
-  else{
-    functions <- c(mean = mean, min = min, max = max, sd = sd)
   }
   name_separator <- build_name_separator(args)
   

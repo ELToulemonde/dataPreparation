@@ -120,7 +120,7 @@ is.col <- function(dataSet, cols = NULL, ...){
 # @param types types of wanted columns.
 real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
   ## If NULL cols
-  if (is.null(cols)){
+  if (is.null(cols) || length(cols) == 0){ # length cols is for the case where cols == character(0)
 	return(NULL)
   }
   

@@ -79,11 +79,9 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   dataSet <- fastFilterVariables(dataSet, keep_cols = args[["key"]], verbose = verbose)
   
   # 1.1 Unfactor
+  n_unfactor <- 53
   if (! is.null(args[["n_unfactor"]])){
     n_unfactor <- args[["n_unfactor"]]
-  }
-  else{
-    n_unfactor <- 53
   }
   dataSet <- unFactor(dataSet, n_unfactor = n_unfactor, verbose = verbose)
   
@@ -133,8 +131,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   # 3.2 Round
   if(!is.null(args[["digits"]])){
-    digits <- args[["digits"]]
-    result <- fastRound(result, digits = digits, verbose = verbose)
+    result <- fastRound(result, digits = args[["digits"]], verbose = verbose)
   }
   
   ### 4 Handle NA

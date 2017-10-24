@@ -118,11 +118,13 @@ one_hot_encoder <- function(dataSet, cols = "auto", drop = FALSE, verbose = TRUE
     if (verbose){
       printl(function_name, ": I am doing column: ", col)
     }
-    # one_hot _encode
-    for (level in levels(dataSet[[col]])){
-      new_col <- paste0(col, name_separator, level)
-      new_col <- make_new_col_name(new_col, names(dataSet))
-      dataSet[, (new_col) := as.integer(dataSet[[col]] == level)]
+    # Build columns with 0 value (it save time to pre-set the columns)
+    new_cols <- paste0(col, name_separator, levels(dataSet[[col]]))
+    new_cols <- sapply(new_cols, function(x)make_new_col_name(x, names(dataSet)))
+    dataSet[, (new_cols) := 0]
+    # Set the write value
+    for (i in 1:length(new_cols)){
+      set(dataSet, NULL, new_cols[i], as.integer(dataSet[[col]] == levels(dataSet[[col]])[i]))
     }
     
     # drop col if asked

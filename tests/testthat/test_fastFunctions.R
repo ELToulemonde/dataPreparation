@@ -14,7 +14,7 @@ test_that("fastFilterVariables: ",
 
 ## fastRound
 ##----------
-M <- as.data.table(matrix(runif (3e4), ncol = 10))
+M <- as.data.table(matrix(runif (3e3), ncol = 10))
 M[, stringColumn := "a string"] 
 
 test_that("fastRound: ", 
@@ -61,8 +61,7 @@ test_that("private function: fastIsEqual",
             expect_true(fastIsEqual(1, 1))
             expect_false(fastIsEqual(1, 2))
             expect_true(fastIsEqual(messy_adult, messy_adult))
-          }
-)
+          })
 
 
 
@@ -75,8 +74,7 @@ test_that("private function: fastIsBijection",
           {
             expect_true(fastIsBijection(adult[["education"]], adult[["education_num"]]))
             expect_false(fastIsBijection(adult[["education"]], adult[["income"]]))
-          }
-)
+          })
 
 ## fastMaxNbElt
 # -------------
