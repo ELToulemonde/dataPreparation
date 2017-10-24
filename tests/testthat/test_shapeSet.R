@@ -7,12 +7,13 @@ verbose <- TRUE
 #----------------
 
 data("adult")
+adult$logical <- adult$age > 25 # Add a logical column
 test_that("prepareSet: test class of results:", 
           {
             expect_true(is.data.table(shapeSet(copy(adult), verbose = verbose)))
             expect_true(is.matrix(shapeSet(copy(adult), finalForm = "numerical_matrix")))
           })
-
+adult$logical <- NULL
 ## setAsNumericMatrix
 # --------------------
 data("messy_adult")

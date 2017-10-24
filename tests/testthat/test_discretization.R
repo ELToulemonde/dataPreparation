@@ -18,6 +18,7 @@ test_that("build_bins: ",
 # -------------------
 
 data("adult")
+adult$age[1] <- NA # add a NA
 adult <- fastDiscretization(adult, bins = NULL, verbose = verbose)
 test_that("fastDiscretization: ",
           {
