@@ -320,7 +320,7 @@ setColAsFactor <- function(dataSet, cols = "auto", n_levels = 53, verbose = TRUE
         n_transformed <- n_transformed + 1
       }
       else{
-        warning(paste0(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it."))
+        printl(function_name, ": ", col, " has more than ", n_levels, " values, i don't transform it.")
       }  
     }
     else{

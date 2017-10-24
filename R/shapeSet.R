@@ -32,7 +32,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   ## Computation
   carac_cols <- names(col_class)[col_class %in% c("character")]
   if (length(carac_cols) > 0){
-	dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
+    dataSet <- setColAsFactor(dataSet, cols = carac_cols, n_levels = -1, verbose = verbose)
   }
   
   # NUMERIC INTO FACTORS (IF # OF MODALITIES <= THRESH)
@@ -40,30 +40,22 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   if (length(num_cols) > 0){
     if (verbose) {
       printl("Transforming numerical variables into factors when length(unique(col)) <= ",  thresh, ".")
-      pb <- initPB(function_name, num_cols)
     }
-    for (col in num_cols) {
-      if (fastMaxNbElt(dataSet[[col]], thresh)){
-        set(dataSet, NULL, col, as.factor(dataSet[[col]]))
-      } 
-      if (verbose){
-        setPB(pb, col)
-      }
-    }
+    dataSet <- setColAsFactor(dataSet, cols = num_cols, n_levels = thresh, verbose = FALSE)
   }
   col_class <- sapply(dataSet, class)
   
   # LOGICAL INTO BINARY
   logical_col <- names(col_class)[which(col_class %in% c("logical"))]
   if (length(logical_col) > 0){
-	if (verbose) {printl("Transforming logical into binaries.\n")}
-	for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
+    if (verbose) {printl("Transforming logical into binaries.\n")}
+    for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
   }
-
+  
   # Distribution des types de colonnes
   if (verbose){
     col_class_end <- sapply(dataSet, class)
-	col_class_end <- sapply(col_class_end, function(x){x[[1]]})
+    col_class_end <- sapply(col_class_end, function(x){x[[1]]})
     printl("Previous distribution of column types:")
     print(table(col_class_init))
     printl("Current distribution of column types:")
@@ -72,7 +64,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
     col_class <- sapply(dataSet, class)
     factor_cols <- names(col_class)[which(col_class %in% c("factor"))]
   }
-
+  
   ## Wrapp-up
   if (finalForm == "numerical_matrix"){
     dataSet <- setAsNumericMatrix(dataSet)
@@ -100,7 +92,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
 #' @importFrom stats as.formula model.matrix contrasts
 #' @importFrom Matrix sparse.model.matrix
 setAsNumericMatrix <- function(dataSet, intercept = FALSE, allCols = FALSE, 
-                                     sparse = FALSE) {
+                               sparse = FALSE) {
   
   ## SANITY CHECKS
   if (!("data.table") %in% class(dataSet)) stop("setAsNumericMatrix: dataSet is not a data.table")
@@ -111,7 +103,7 @@ setAsNumericMatrix <- function(dataSet, intercept = FALSE, allCols = FALSE,
   # preferable to keep functions that modify dataSet by reference separated from
   # functions that generate new dataSet.
   if (any(!sapply(dataSet, function(x) is.numeric(x) | is.logical(x) |
-                 is.factor(x)))){
+                  is.factor(x)))){
     stop("setAsNumericMatrix: some columns are not numerical/logical/factor. Consider using shapeSet() to prepare the dataSet.")
   } 
   
