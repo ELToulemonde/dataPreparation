@@ -41,16 +41,16 @@ test_that("whichAreInDouble: exceptions",
 
 ## whichAreBijection
 # ------------------
-data("messy_adult")
+data("adult")
 
 
 test_that("whichAreBijection", 
           {
-            expect_identical(whichAreBijection(messy_adult, verbose = verbose), as.integer(c(3, 5, 14)))
+            expect_equal(whichAreBijection(adult, verbose = verbose), 5)
           })
 
 data("messy_adult")
-test_that("whichAreInDouble: exceptions", 
+test_that("whichAreBijection: exceptions", 
           {
             expect_null(whichAreBijection(messy_adult[,.(date1)], verbose = verbose))
           })
@@ -62,19 +62,7 @@ data(messy_adult)
 
 # Reduce it to make it faster
 messy_adult <- messy_adult[1:5000, ]
-
-# Check for included columns
-
-test_that("whichAreIncluded: standard test", 
-          {
-            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(4, 7, 9, 14)))
-          })
-
-
-# Return columns that are also constant, double and bijection
-# Let's add a truly just included column
 messy_adult$are50OrMore <- messy_adult$age > 50
-
 test_that("whichAreIncluded: build column", 
           {
             expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(4, 7, 9, 14, 25)))
@@ -84,8 +72,6 @@ test_that("whichAreIncluded: build column",
 # But you should be carefull, if there is a column id, every column will be dropped:
 messy_adult$id <- 1:nrow(messy_adult) # build id
 setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) # Set id as first column
-
-
 test_that("whichAreIncluded: id at the beginning", 
           {
             expect_identical(whichAreIncluded(messy_adult, verbose = verbose), 2:26)

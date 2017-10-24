@@ -49,39 +49,34 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   ## Initialization
   # Store class of reference set and transform it into data.table to make computation faster
   referenceSet_class <- class(referenceSet)
-  if (! any(referenceSet_class %in% c("data.table", "data.frame", "matrix") )){
-    stop(paste0(function_name, "referenceSet should be a data.table, data.frame or matrix."))
-  }
-  # To-do: check if it is possible not to transform referenceSet which is expensive in RAM.
-  referenceSet <- checkAndReturnDataTable(referenceSet)
-  
+  referenceSet <- checkAndReturnDataTable(referenceSet, name = "referenceSet")
   
   ## Computation
   # Complete list of columns
   if (verbose){
     printl(function_name, ": verify that every column is present.")
   }
-  for (col in names(referenceSet)){
-    if (! col %in% names(dataSet)){
-      dataSet[[col]] <- NA
-      if (verbose){
-        printl(function_name, ": column ", col, " was missing, I create it.")
-      }
+  create_list <- names(referenceSet)[! names(referenceSet) %in% names(dataSet)]
+  if (length(create_list) > 0){
+    if (verbose){
+      printl(function_name, ": columns ", paste(create_list, collapse = ", "), " are missing, I create them.")
     }
+    dataSet[, eval(create_list) := NA]
   }
   
   # Drop unwanted columns
   if (verbose){
     printl(function_name, ": drop unwanted columns.")
-    drop_list <- names(dataSet)[! names(dataSet) %in% names(referenceSet)]
-    if (length(drop_list) > 0){
-      if (verbose){
-        printl(function_name, ": the folowing columns are in transform set but not in reference set: i drop them: ")
-        print(drop_list)
-      }
-      dataSet[, (drop_list) := NULL]
-    }
   }
+  drop_list <- names(dataSet)[! names(dataSet) %in% names(referenceSet)]
+  if (length(drop_list) > 0){
+    if (verbose){
+      printl(function_name, ": the folowing columns are in dataSet but not in referenceSet: I drop them: ")
+      print(drop_list)
+    }
+    dataSet[, (drop_list) := NULL]
+  }
+  
   # Class of columns
   if (verbose){
     printl(function_name, ": verify that every column is in the right type.")
@@ -127,7 +122,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
       if (! identical(transfo_levels, ref_levels)){
         set(dataSet, NULL, col, factor(dataSet[[col]], levels = ref_levels))
         if (verbose){
-          printl(function_name, ": ", col, " class add different levels than in referenceSet i change it.")
+          printl(function_name, ": ", col, " class had different levels than in referenceSet I change it.")
         }
       }
     }

@@ -12,7 +12,9 @@ v 0.3
 - Minor changes in log (in particular regarding progress bars and typos)
 - Unit test evolution to be more readable
 - Refactoring: 
-	- Privat efunction *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
+	- Private function *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
+	- Making code faster
+	- review unit testing to be faster
 
 WARNING:
 - *date1* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if "0" are not present in month or day part.

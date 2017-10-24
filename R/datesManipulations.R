@@ -90,7 +90,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   ## Initialization
   dates <- NULL
   formats <- NULL
-  date_sep <-  c(",", "/", "-", "_", ":")
+  date_sep <-  getPossibleSeparators()
   ## Computation
   if (verbose){ 
     pb <- initPB(function_name, names(dataSet))
@@ -118,7 +118,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
           date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
           # Debug warning
           if (is.na(date_hours) || is.infinite(date_hours)){ 
-            warning(paste0(function_name, ": error i shouldn't be there.",  ))
+            warning(paste0(function_name, ": error i shouldn't be there. Please report bug on GitHub.",  ))
             date_hours <- FALSE
           }
           # Build list of all formats to check

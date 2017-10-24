@@ -25,13 +25,11 @@ findNFirstNonNull <- function(dataSet, N){
       result <- c(result, data_sample[1:min(N - length(result), length(data_sample))])
     }
     
-    
     ## If we found enough elements, we stop
     if (length(result) == N){
       return(result)
     }
   }
-  
   ## Wrapp-up
   return(result)
 }
@@ -45,16 +43,16 @@ findNFirstNonNull <- function(dataSet, N){
 #' @import data.table
 checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
   if (!any( class(dataSet) %in% c("data.table", "data.frame", "matrix"))){
-    stop(paste(name, "should be a data.table, a data.frame or a matrix"))
+    stop(paste(name, "should be a data.table, a data.frame or a matrix."))
   }
   if (nrow(dataSet) < 1){
-    stop(paste(name, "should have at least have 1 line"))
+    stop(paste(name, "should have at least have 1 line."))
   }
   if (ncol(dataSet) < 1){
-    stop(paste(name, "should have at least have 1 column"))
+    stop(paste(name, "should have at least have 1 column."))
   }
   
-  if (! "data.table" %in% class(dataSet)){
+  if (! is.data.table(dataSet)){
     if (class(dataSet) == "data.frame"){
       setDT(dataSet)
     }
@@ -120,7 +118,7 @@ is.col <- function(dataSet, cols = NULL, ...){
 # @param types types of wanted columns.
 real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
   ## If NULL cols
-  if (is.null(cols)){
+  if (is.null(cols) || length(cols) == 0){ # length cols is for the case where cols == character(0)
 	return(NULL)
   }
   
@@ -168,17 +166,13 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
 }
 
 
-
-
-
 ###################################################################################################
 ########################################### getPossibleSeparators #################################
 ###################################################################################################
 ## Separators are used in multiple functions, so i put them here!
 getPossibleSeparators <- function(){
   listOfPossibleSeparator <- c(",", "/", "-", "_", ":")
-  
-  return(paste(listOfPossibleSeparator, collapse = "|"))
+  return(listOfPossibleSeparator)
 }
 
 
@@ -188,9 +182,7 @@ getPossibleSeparators <- function(){
 # To stop using print(paste())
 printl <- function(...){
   args <- list(...)
-  
-  toPrint <- paste(args, collapse = "")
-  print(toPrint)
+  print(paste(args, collapse = ""))
 }
 
 ## Super progress bar
@@ -298,12 +290,13 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
   if (any(class(object) %in% c("numeric", "integer", "factor", "logical", "date", "character"))){
     built_function <- function(...){return(object)}
   }
+  # If it is a function
   if (is.function(object)){
     built_function <- object
   }
-  
-  
+  # Control of function
   if (!is.null(built_function)){
+    # On numeric functions
     if (type == "numeric"){
       if (length(built_function(1:3)) == 1){
         if (!is.numeric(built_function(1:3))){ 
@@ -315,7 +308,7 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
         return(built_function)  
       }
     }
-    
+    # On logical functions
     if (type == "logical"){
       if (length(built_function(c(TRUE, FALSE))) == 1){
         if (!is.logical(built_function(c(TRUE, FALSE)))){ 
@@ -327,6 +320,7 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
         return(built_function)  
       }
     }
+	# On character functions
     if (type == "character"){
       if (length(built_function(c("a", "b"))) == 1){
         if (!is.character(built_function(c("a", "b")))){ 
@@ -338,11 +332,9 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
         return(built_function)  
       }
     }
-    stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
   }
-  else{
-    stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
-  }
+  # Wrapp-up, if we reached here, we can't handle what was provided
+  stop(paste0(object_name, ": is in a shape that isn't handled, please provide constant or aggregation function."))
 }
 
 

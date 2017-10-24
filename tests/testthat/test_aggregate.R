@@ -6,80 +6,43 @@ verbose <- TRUE
 data("adult")
 # reduce it to save time
 adult <- adult[1:5000, ]
-
-# Aggregate it using aggregateByKey, in order to extract characteristics for each country
-adult_aggregated <- aggregateByKey(adult, key = "country", verbose = verbose)
-
-
-test_that("aggegateByKey: ",
-          {
-            expect_equal(ncol(adult_aggregated), 87)
-          }
-)
-
-data(messy_adult)
-messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
-test_that("aggegateByKey: testing execptions",
-          {
-            expect_error( aggregateByKey(adult, key = 1, verbose = verbose), ": key should be a character, you provided a ")
-            expect_error( aggregateByKey(messy_adult, key = "country", verbose = verbose), "I can only handle: numeric, integer, factor, logical, character columns. ")
-          }
-)
-## Exmple with other functions
-
-data("adult")
-# reduce it to save time
-adult <- adult[1:5000, ]
-
+# create some other columns to test it
+adult$country2 <- adult$country
+adult$boolcall <- sample(c(TRUE, FALSE), nrow(adult), replace = TRUE)
+adult$id <- 1:nrow(adult)
+# Store nrows 
+store_nrow <- nrow(adult)
+# Create an aggregation function
 power <- function(x){sum(x^2)}
-adult_aggregated <- aggregateByKey(adult, key = "country", functions = power, verbose = verbose)
+adult_aggregated <- aggregateByKey(copy(adult), key = "country", functions = c(power, min, max, mean, sd), verbose = verbose)
 
 test_that("aggegateByKey: add function",
           {
-            expect_equal(ncol(adult_aggregated), 69)
+            expect_equal(ncol(adult_aggregated), 100)
+			expect_true(all(adult_aggregated$country2 == adult_aggregated$country))
+			expect_equal(nrow(aggregateByKey(adult, key = "id", verbose = verbose)), store_nrow)
           })
 
 
 
-
-data("adult")
-# reduce it to save time
-adult <- adult[1:5000, ]
-
-test_that("aggegateByKey: add function that is not an agg function",
+## Test exceptions
+data(messy_adult)
+messy_adult <- messy_adult[1:5000, ]
+messy_adult <- unFactor(messy_adult, verbose = FALSE)
+messy_adult <- findAndTransformNumerics(messy_adult, verbose = FALSE)
+messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
+test_that("aggegateByKey: testing execptions",
           {
-            expect_warning(aggregateByKey(adult, key = "country", functions = c(power, sqrt = sqrt), verbose = verbose))
-          })
+            expect_error(aggregateByKey(copy(adult), key = 1, verbose = verbose), ": key should be a character, you provided a ")
+			expect_warning(aggregateByKey(copy(adult), key = "country", functions = c(power, sqrt = sqrt), verbose = verbose))
+            expect_error(aggregateByKey(copy(messy_adult), key = "country", verbose = verbose), "I can only handle: numeric, integer, factor, logical, character columns. ")
+          }
+)
 
 
-## No aggragtion to perform	
-data("adult")	
-# reduce it to save time
-adult <- adult[1:5000, ]
-adult$id <- 1:nrow(adult)
-store_nrow <- nrow(adult)
-test_that("aggegateByKey: no aggregation",
-          {
-            expect_equal(nrow(aggregateByKey(adult, key = "id", verbose = verbose)), store_nrow)
-          })	
-
-
-## Column that is a copy of key		  
-data("adult")	
-adult <- adult[1:5000, ]
-adult$country2 <- adult$country
-adult$boolcall <- sample(c(TRUE, FALSE), nrow(adult), replace = TRUE)
-adult_agg <- aggregateByKey(adult, key = "country", verbose = verbose)
-test_that("aggegateByKey: Column that is a copy of key	",
-          {
-            expect_true(all(adult_agg$country2 == adult_agg$country))
-          })	
 
 ## aggregateAcolumn
 # ------------------
-data("messy_adult")
-messy_adult <- unFactor(messy_adult, verbose = FALSE)
-messy_adult <- findAndTransformNumerics(messy_adult, verbose = FALSE)
 messy_adult$logical <- messy_adult$age > 25
 uniqueN_byCol <- lapply(messy_adult, uniqueN)
 functions <- c(mean = mean, min = min, max = max, sd = sd)
