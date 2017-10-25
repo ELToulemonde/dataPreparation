@@ -84,7 +84,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' first 10 lines of both columns. If they are not equal then the columns aren't identical, else
 #' it compares lines 11 to 100; then 101 to 1000... So this function is fast with dataSet set 
 #' with a large number of lines and a lot of columns that aren't equals. \cr
-#' If \code{verbose} is TRUE, the column logged will be the one returned. \cr
+#' If \code{verbose} is TRUE, the column logged will be the one returned. 
 #' @examples
 #' # First let's build a matrix with 3 columns and a lot of lines, with 1's everywhere
 #' M <- matrix(1, nrow = 1e6, ncol = 3)
@@ -172,7 +172,7 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   
   ## Initialization
 
-  ## Computation # to-do dé-gorifier
+  ## Computation # to-do clean it
   bijection_cols <- bi_col_test(dataSet, keep_cols, verbose = verbose, 
                                  test_function = "fastIsBijection", function_name = function_name, test_log = " is a bijection of ")
   
@@ -245,7 +245,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
     pb <- initPB(function_name, names(dataSet))
   }
   nbr_various_val <- sapply(dataSet, uniqueN)
-  ## Computation # to-do dé-gorifier
+  ## Computation # to-do clean it
   while (length(I) > 0){
     i <- I[1]
     

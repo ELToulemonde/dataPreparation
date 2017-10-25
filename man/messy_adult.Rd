@@ -9,7 +9,7 @@
 data("messy_adult")
 }
 \description{
-For examples and tutorials, messy_adult has been built using UCI \code{adult}.\cr
+For examples and tutorials, messy_adult has been built using UCI \code{adult}.
 }
 \details{
 We added 9 really ugly columns to the data set:

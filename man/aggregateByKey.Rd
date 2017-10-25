@@ -25,15 +25,15 @@ A \code{\link{data.table}} with one line per \code{key} elements and multiple  n
 Automatic aggregation of a dataSet set according to a \code{key}.
 }
 \details{
-Perform aggregation depending on column type:\cr
+Perform aggregation depending on column type:
 \itemize{
-\item If column is numeric \code{functions} are performed on the column. So 1 numeric column 
-give length(functions) new columns,
-\item If column is character or factor and have less than \code{thresh} different values, 
-frequency count of values is performed,
-\item If column is character or factor with more than \code{thresh} different values, number 
-of different values for each \code{key} is performed,
-\item If column is logical, count of number and rate of positive is performed.
+  \item If column is numeric \code{functions} are performed on the column. So 1 numeric column 
+    give length(functions) new columns,
+  \item If column is character or factor and have less than \code{thresh} different values, 
+    frequency count of values is performed,
+  \item If column is character or factor with more than \code{thresh} different values, number 
+    of different values for each \code{key} is performed,
+  \item If column is logical, count of number and rate of positive is performed.
 }
 Be careful using functions argument, given functions should be an aggregation function, 
 meaning that for multiple values it should only return one value.

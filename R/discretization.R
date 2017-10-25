@@ -9,7 +9,7 @@
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return A list where each element name is a column name of data set and each element contains 
 #' bins to discretize this column.
-#' @details \cr
+#' @details
 #' Using equal freq first bin will start at -Inf and last bin will end at +Inf.
 #' @examples 
 #' # Load data

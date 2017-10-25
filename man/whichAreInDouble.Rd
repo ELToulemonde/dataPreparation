@@ -25,7 +25,7 @@ This function is performing search by looking to every couple of columns. First 
 first 10 lines of both columns. If they are not equal then the columns aren't identical, else
 it compares lines 11 to 100; then 101 to 1000... So this function is fast with dataSet set 
 with a large number of lines and a lot of columns that aren't equals. \cr
-If \code{verbose} is TRUE, the column logged will be the one returned. \cr
+If \code{verbose} is TRUE, the column logged will be the one returned.
 }
 \examples{
 # First let's build a matrix with 3 columns and a lot of lines, with 1's everywhere

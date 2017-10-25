@@ -27,7 +27,6 @@ bins to discretize this column.
 Compute bins for discretization of numeric variable (either equal_width or equal_fred).
 }
 \details{
-\cr
 Using equal freq first bin will start at -Inf and last bin will end at +Inf.
 }
 \examples{
