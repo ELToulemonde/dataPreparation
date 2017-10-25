@@ -17,17 +17,19 @@ prepareSet(dataSet, finalForm = "data.table", verbose = TRUE, ...)
 }
 \value{
 A data.table or a numerical matrix (according to \code{finalForm}). \cr
-It will perform the following steps: \cr
-- Correct set: unfactor factor with many values, id dates and numeric that are hiden in character \cr
-- Transform set: compute differences between every date, transform dates into factors, generate 
-features from character..., if \code{key} is provided, will perform aggregate according to this \code{key} \cr
-- Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
-will round numeric \cr
-- Handle NA: will perform \code{\link{fastHandleNa}}) \cr
-- Shape set: will put the result in asked shape (\code{finalForm}) with acceptable columns format.
+It will perform the following steps:
+\itemize{
+  \item Correct set: unfactor factor with many values, id dates and numeric that are hiden in character
+  \item Transform set: compute differences between every date, transform dates into factors, generate 
+     features from character..., if \code{key} is provided, will perform aggregate according to this \code{key}
+  \item Filter set: filter constant, in double or bijection variables. If `digits` is provided, 
+     will round numeric
+  \item Handle NA: will perform \code{\link{fastHandleNa}})
+  \item Shape set: will put the result in asked shape (\code{finalForm}) with acceptable columns format.
+}
 }
 \description{
-Full pipeline for preparing your dataSet set \cr
+Full pipeline for preparing your dataSet set.
 }
 \details{
 Additional arguments are available to tune pipeline: 

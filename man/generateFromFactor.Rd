@@ -23,7 +23,7 @@ factors, set it to "auto". (character, default to "auto")}
 \code{dataSet} with new columns. \code{dataSet} is edited by \strong{reference}.
 }
 \description{
-Recode factors into 3 new columns: \cr
+Recode factors into 3 new columns:
 \itemize{
 \item was the value not NA, "NA", "",
 \item how often this value occures,

@@ -1,14 +1,15 @@
 #' Final preparation before ML algorithm
 #'
-#' Prepare a data.table by: \cr
-#' - transforming numeric variables into factors whenever they take less than \code{thresh} unique 
-#' variables \cr
-#' - transforming characters using \code{\link{generateFromCharacter}} \cr
-#' - transforming logical into binary integers \cr
-#' - dropping constant columns \cr
-#' - Sending the data.table to \code{\link{setAsNumericMatrix}} (when \code{finalForm == "numerical_matrix"}) will then allow 
-#' you to get a numerical matrix usable by most Machine Learning Algorithms.
-#' 
+#' Prepare a data.table by: 
+#' \itemize{
+#'  \item transforming numeric variables into factors whenever they take less than \code{thresh} unique 
+#'    variables
+#'  \item transforming characters using \code{\link{generateFromCharacter}}
+#'  \item transforming logical into binary integers
+#'  \item dropping constant columns
+#'  \item Sending the data.table to \code{\link{setAsNumericMatrix}} (when \code{finalForm == "numerical_matrix"}) 
+#'    will then allow you to get a numerical matrix usable by most Machine Learning Algorithms.
+#' }
 #' @param dataSet Matrix, data.frame or data.table
 #' @param finalForm "data.table" or "numerical_matrix" (default to data.table)
 #' @param thresh  Threshold such that  a numerical column is transformed into

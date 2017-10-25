@@ -1,6 +1,6 @@
 #' Recode factor
 #' 
-#' Recode factors into 3 new columns: \cr
+#' Recode factors into 3 new columns:
 #' \itemize{
 #' \item was the value not NA, "NA", "",
 #' \item how often this value occures,
