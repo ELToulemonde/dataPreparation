@@ -1,3 +1,11 @@
+V 0.3.2
+========
+- Change URLs to meet CRAN requirement
+
+v 0.3.1
+=======
+- Fix bug in Latex documentation
+
 v 0.3
 =====
 - New features:

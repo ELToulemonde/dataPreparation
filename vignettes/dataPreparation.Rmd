@@ -359,7 +359,7 @@ description(agg_adult, level = 0)
 
 
 # Conclusion
-We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN](https://cran.r-project.org/web/packages/dataPreparation/dataPreparation.pdf))
+We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN](https://CRAN.R-project.org/package=dataPreparation/dataPreparation.pdf))
 
 
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
