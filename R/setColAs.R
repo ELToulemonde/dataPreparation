@@ -3,12 +3,12 @@
 #######################################################################################
 #' Set columns as numeric
 #' 
-#' Set as numeric a character column (or a list of columns) from a data.table
+#' Set as numeric a character column (or a list of columns) from a data.table.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into numerics
+#' @param cols List of column(s) name(s) of dataSet to transform into numerics
 #' @param stripString should I change "," to "." in the string? (logical, default to FALSE) 
 #' If set to TRUE, computation will be a bit longer
-#' @param verbose should the function log (logical, default to TRUE)
+#' @param verbose Should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as numeric. 
 #' @examples
 #' # Build a fake data.table
@@ -80,11 +80,11 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
 #######################################################################################
 #' Set columns as character
 #'
-#' Set as character a column (or a list of columns) from a data.table
+#' Set as character a column (or a list of columns) from a data.table.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into characters. To transform 
+#' @param cols List of column(s) name(s) of dataSet to transform into characters. To transform 
 #' all columns, set it to "auto". (characters, default to "auto")
-#' @param verbose should the function log (logical, default to TRUE)
+#' @param verbose Should the function log (logical, default to TRUE)
 #' @return  dataSet (as a \code{\link{data.table}}), with specified columns set as character. 
 #' @examples
 #' # Build a fake data.frame
@@ -132,18 +132,18 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
 #######################################################################################
 #' Set columns as POSIXct 
 #'
-#' Set as POSIXct a character column (or a list of columns) from a data.table
+#' Set as POSIXct a character column (or a list of columns) from a data.table.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into dates
-#' @param format date's format (function will be faster if the format is provided) 
+#' @param cols List of column(s) name(s) of dataSet to transform into dates
+#' @param format Date's format (function will be faster if the format is provided) 
 #' (character, default to NULL).\cr
 #' For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)
-#' @param verbose should the function log (logical, default to TRUE)
+#' @param verbose Should the function log (logical, default to TRUE)
 #' @details 
 #' setColAsDate is way faster when format is provided. If you want to identify dates and format
 #' automatically, have a look to \code{\link{findAndTransformDates}}. \cr
 #' If input column is a factor, it will be returned as a POSIXct column
-#' @return dataSet (as a \code{\link{data.table}}), with specified columns set as Date. 
+#' @return \code{dataSet}(as a \code{\link{data.table}}), with specified columns set as Date. 
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
 #' # Lets build a dataSet set
@@ -272,15 +272,15 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
 #' 
 #' Set columns as factor and control number of unique element, to avoid having too large factors.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of column(s) name(s) of dataSet to transform into factor. To transform all columns
+#' @param cols List of column(s) name(s) of dataSet to transform into factor. To transform all columns
 #'  set it to "auto", (characters, default to auto).
-#' @param n_levels max number of levels for factor (integer, default to 53) 
+#' @param n_levels Max number of levels for factor (integer, default to 53) 
 #' set it to -1 to disable control.
-#' @param verbose should the function log (logical, default to TRUE)
+#' @param verbose Should the function log (logical, default to TRUE)
 #' @details 
 #' Control number of levels will help you to distinguish true categorical columns from just characters 
 #' that should be handled in another way.
-#' @return dataSet (as a \code{\link{data.table}}), with specified columns set as factor or logical.
+#' @return \code{dataSet}(as a \code{\link{data.table}}), with specified columns set as factor or logical.
 #' @examples
 #' # Load messy_adult
 #' data("messy_adult")

@@ -9,7 +9,7 @@ whichAreBijection(dataSet, keep_cols = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
+\item{keep_cols}{List of columns not to drop (list of character, default to NULL)}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
@@ -17,7 +17,7 @@ whichAreBijection(dataSet, keep_cols = NULL, verbose = TRUE)
 A list of index of columns that have an exact bijection in the dataSet set.
 }
 \description{
-Find all the columns that are bijections of another column
+Find all the columns that are bijections of another column.
 }
 \details{
 Bijection, meaning that there is another column containing the exact same information (but maybe

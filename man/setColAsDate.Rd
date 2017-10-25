@@ -9,20 +9,20 @@ setColAsDate(dataSet, cols, format = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into dates}
+\item{cols}{List of column(s) name(s) of dataSet to transform into dates}
 
-\item{format}{date's format (function will be faster if the format is provided) 
+\item{format}{Date's format (function will be faster if the format is provided) 
 (character, default to NULL).\cr
 For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-dataSet (as a \code{\link{data.table}}), with specified columns set as Date. 
+\code{dataSet}(as a \code{\link{data.table}}), with specified columns set as Date. 
 If the transformation generated only NA, the column is set back to its original value.
 }
 \description{
-Set as POSIXct a character column (or a list of columns) from a data.table
+Set as POSIXct a character column (or a list of columns) from a data.table.
 }
 \details{
 setColAsDate is way faster when format is provided. If you want to identify dates and format

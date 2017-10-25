@@ -9,7 +9,7 @@ whichAreConstant(dataSet, keep_cols = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
+\item{keep_cols}{List of columns not to drop (list of character, default to NULL)}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
@@ -23,7 +23,7 @@ Find all the columns that are constant.
 Algorithm is performing exponential search: it check constancy on row 1 to 10, 
 if it's not constant it stops, if it's constant then on 11 to 100 ... \cr
 If you have a lot of columns than aren't constant, this function is way faster than a simple 
-length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
+\code{length(unique())}! The larger the dataSet set is, the more interesting it is to use this function.
 }
 \examples{
 # Let's load our dataSet

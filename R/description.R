@@ -1,6 +1,6 @@
 #' Describe data set
 #' 
-#' Generating extensive description of a data set. 
+#' Generate extensive description of a data set. 
 #' @param dataSet Matrix, data.frame or data.table
 #' @param level Level of description (0: generic, 1: column by column) 
 #' (numeric, default to 1)
@@ -43,7 +43,16 @@ description <- function(dataSet, level = 1, path_to_write = NULL, verbose = TRUE
   # Level 1: Univariate description
   if (level >= 1){
     cat("#####################################\n## Level 1: univariate description ##\n#####################################\n")
+	card <- dataSet[, lapply(.SD, uniqueN)]
     for (col in colnames(dataSet)){
+	  # Unique or distinct values
+      if (card[[col]] == 1){
+		printl(col, " only has 1 value.")
+	  } 
+	  if (card[[col]] == nrow(dataSet)){
+	    printl(col, " has all unique values.")
+	  }
+	  # Numerical and date cols
       if (is.numeric(dataSet[[col]]) || is.date(dataSet[[col]])){
         if (is.numeric(dataSet[[col]])){
           printl("Summary for numeric variable ", col)  
@@ -53,6 +62,7 @@ description <- function(dataSet, level = 1, path_to_write = NULL, verbose = TRUE
         }
         print(summary(dataSet[[col]]))
       }
+	  # Factor cols
       if (is.factor(dataSet[[col]]) || is.logical(dataSet[[col]])){
         if (is.factor(dataSet[[col]])){
           printl("Table of occurence for factor variable ", col)  
@@ -62,6 +72,7 @@ description <- function(dataSet, level = 1, path_to_write = NULL, verbose = TRUE
         }
         print(table(dataSet[[col]]))
       }
+	  # character
       if (is.character(dataSet[[col]])){
         printl("character variable ", col, " takes ", uniqueN(dataSet[[col]]), " different values.")
       }

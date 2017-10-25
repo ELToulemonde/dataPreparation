@@ -7,18 +7,18 @@
 fastIsEqual(object1, object2)
 }
 \arguments{
-\item{object1}{an element, a vector, a data.frame, a data.table}
+\item{object1}{An element, a vector, a data.frame, a data.table}
 
-\item{object2}{an element, a vector, a data.frame, a data.table}
+\item{object2}{An element, a vector, a data.frame, a data.table}
 }
 \value{
 Logical (TRUE or FALSE) if the two objects are equals.
 }
 \description{
-Performs quick check if two objects are equal
+Performs quick check if two objects are equal.
 }
 \details{
-This function is fast for very large vectors, data.frame and data.table. 
+This function uses exponential search trick, so it is fast for very large vectors, data.frame and data.table. 
 This function is also very robust; you can compare a lot of stuff without failing.
 }
 \examples{

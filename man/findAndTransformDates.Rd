@@ -2,7 +2,7 @@
 % Please edit documentation in R/datesManipulations.R
 \name{findAndTransformDates}
 \alias{findAndTransformDates}
-\title{Identify date columns in a dataSet set}
+\title{Identify date columns}
 \usage{
 findAndTransformDates(dataSet, formats = NULL, n_test = 30,
   verbose = TRUE)
@@ -17,11 +17,11 @@ findAndTransformDates(dataSet, formats = NULL, n_test = 30,
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-The dataSet set (as a data.table) with identified dates transformed.
+dataSet set (as a data.table) with identified dates transformed by \strong{reference}.
 }
 \description{
-Function to find and transform dates. It use a bunch of default formats. 
-But you can also add your own formats.
+Find and transform dates that are hidden in a character column. \cr
+It use a bunch of default formats, and you can also add your own formats.
 }
 \details{
 This function is looking for perfect transformation. 
@@ -31,11 +31,6 @@ they will be considered as timestamps and you might have some issues. On the oth
 if you have timestamps before 1990-01-01, they won't be found, but you can use 
 \code{\link{setColAsDate}} to force transformation.
 }
-\section{Warning}{
-
-All these changes will happen \strong{by reference}.
-}
-
 \examples{
 # Load exemple set
 data(messy_adult)

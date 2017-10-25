@@ -9,25 +9,26 @@ one_hot_encoder(dataSet, cols = "auto", drop = FALSE, verbose = TRUE, ...)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of character or factor column(s) name(s) of dataSet to transform into factor}
+\item{cols}{List of character or factor column(s) name(s) of dataSet to transform into factor. \cr
+To transform all character and factor columns, set it to "auto". (character, default to "auto")}
 
-\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+\item{drop}{Should \code{cols} be dropped after generation (logical, default to FALSE)}
 
-\item{verbose}{should the function log (logical, default to TRUE) 
+\item{verbose}{Should the function log (logical, default to TRUE) 
 To transform all dates, set it to "auto", (characters, default to "auto")}
 
 \item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
 }
 \value{
-\code{dataSet} edited by reference with new columns.
+\code{dataSet} edited by \strong{reference} with new columns.
 }
 \description{
 Transform factor column into 0/1 columns with one column per values of the column.
 }
 \details{
 If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
-Please be carefull using this function, it will generate as many columns as there different values 
+Please \strong{be carefull} using this function, it will generate as many columns as there different values 
 in your column and might use a lot of RAM.
 }
 \examples{

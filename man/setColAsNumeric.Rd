@@ -9,18 +9,18 @@ setColAsNumeric(dataSet, cols, stripString = FALSE, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into numerics}
+\item{cols}{List of column(s) name(s) of dataSet to transform into numerics}
 
 \item{stripString}{should I change "," to "." in the string? (logical, default to FALSE) 
 If set to TRUE, computation will be a bit longer}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
 dataSet (as a \code{\link{data.table}}), with specified columns set as numeric.
 }
 \description{
-Set as numeric a character column (or a list of columns) from a data.table
+Set as numeric a character column (or a list of columns) from a data.table.
 }
 \examples{
 # Build a fake data.table

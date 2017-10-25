@@ -9,16 +9,16 @@ dateFormatUnifier(dataSet, format = "Date")
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{format}{desired target format: Date, POSIXct or POSIXlt, (character, default to Date)}
+\item{format}{Desired target format: Date, POSIXct or POSIXlt, (character, default to Date)}
 }
 \value{
-The same dataSet set but with dates column with the desired format
+The same dataSet set but with dates column with the desired format.
 }
 \description{
-Unify every column in a date format to the same date format
+Unify every column in a date format to the same date format.
 }
 \details{
-This function only handle Date, POSIXct and POSIXlt dates. 
+This function only handle Date, POSIXct and POSIXlt dates.  \cr
 POSIXct format is a bit slower than Date but can keep hours-min.
 }
 \examples{
@@ -31,5 +31,5 @@ dataSet = dateFormatUnifier(dataSet, format = "Date")
 
 # Control result
 sapply(dataSet, class)
-# return date for both columns
+# return Date for both columns
 }

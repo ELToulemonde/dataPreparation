@@ -1,10 +1,10 @@
 ###################################################################################
 ########################### findAndTransformDates #################################
 ###################################################################################
-#' Identify date columns in a dataSet set
+#' Identify date columns
 #' 
-#' Function to find and transform dates. It use a bunch of default formats. 
-#' But you can also add your own formats.
+#' Find and transform dates that are hidden in a character column. \cr
+#' It use a bunch of default formats, and you can also add your own formats.
 #' @param dataSet Matrix, data.frame or data.table
 #' @param formats List of additional Date formats to check (see \code{\link{strptime}})
 #' @param n_test Number of non-null rows on which to test (numeric, default to 30)
@@ -16,9 +16,7 @@
 #' they will be considered as timestamps and you might have some issues. On the other side, 
 #' if you have timestamps before 1990-01-01, they won't be found, but you can use 
 #' \code{\link{setColAsDate}} to force transformation.
-#' @section Warning:
-#' All these changes will happen \strong{by reference}.
-#' @return The dataSet set (as a data.table) with identified dates transformed.
+#' @return dataSet set (as a data.table) with identified dates transformed by \strong{reference}.
 #' @examples
 #' # Load exemple set
 #' data(messy_adult)
@@ -241,13 +239,13 @@ control_date_conversion <- function(un_converted, original){
 #######################################################################################
 #' Unify dates format
 #'
-#' Unify every column in a date format to the same date format
+#' Unify every column in a date format to the same date format.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param format desired target format: Date, POSIXct or POSIXlt, (character, default to Date)
+#' @param format Desired target format: Date, POSIXct or POSIXlt, (character, default to Date)
 #' @details 
-#' This function only handle Date, POSIXct and POSIXlt dates. 
+#' This function only handle Date, POSIXct and POSIXlt dates.  \cr
 #' POSIXct format is a bit slower than Date but can keep hours-min.
-#' @return The same dataSet set but with dates column with the desired format
+#' @return The same dataSet set but with dates column with the desired format.
 #' @examples
 #' # build a data.table
 #' require(data.table)
@@ -258,7 +256,7 @@ control_date_conversion <- function(un_converted, original){
 #'
 #' # Control result
 #' sapply(dataSet, class)
-#' # return date for both columns
+#' # return Date for both columns
 #' @import data.table
 #' @export
 dateFormatUnifier <- function(dataSet, format = "Date"){

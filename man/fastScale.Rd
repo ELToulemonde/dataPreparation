@@ -9,14 +9,14 @@ fastScale(dataSet, scales = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{scales}{result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
-It is recommended to compute build_scales before so that one can apply same scale on train
- and test set. If it is kept to NULL, build_scales will be called.}
+\item{scales}{Result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
+To perform the same scaling on train and test, it is recommended to compute \code{\link{build_scales}}
+before. If it is kept to NULL, build_scales will be called.}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-data set with columns scaled by \strong{reference}. Scaled means that each
+\code{dataSet} with columns scaled by \strong{reference}. Scaled means that each
  column mean will be 0 and each column standard deviation will be 1.
 }
 \description{

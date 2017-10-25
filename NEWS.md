@@ -1,6 +1,5 @@
 v 0.3
 =====
-- Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
 - New features:
 	- New features in existing functions:
 		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
@@ -9,12 +8,15 @@ v 0.3
 		- *fastDiscretization*: to perform equal freq or equal width discretization on a data set using *data.table* power.
 		- *fastScale*: to perform scaling on a data set using *data.table* power.
 		- *one_hot_encoder*: to perform one_hot encoding on a data set using *data.table* power.
+	- New documentation:
+		- A new vignette to illustrate how to build a correct *train* and *test* set unising data preparation
 - Minor changes in log (in particular regarding progress bars and typos)
-- Unit test evolution to be more readable
+	- Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
 - Refactoring: 
 	- Private function *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
-	- Making code faster
-	- review unit testing to be faster
+	- Making code faster: some functions are up to **30% faster**
+	- Review unit testing to be faster
+	- Unit test evolution to be more readable
 
 WARNING:
 - *date1* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if "0" are not present in month or day part.

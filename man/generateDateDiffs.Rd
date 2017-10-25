@@ -4,20 +4,20 @@
 \alias{generateDateDiffs}
 \title{Date difference}
 \usage{
-generateDateDiffs(dataSet, cols, analysisDate = NULL, units = "years",
-  drop = FALSE, verbose = TRUE, ...)
+generateDateDiffs(dataSet, cols = "auto", analysisDate = NULL,
+  units = "years", drop = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of date column(s) name(s) of dataSet to comute difference on. To transform all 
-dates, set it to "auto"}
+\item{cols}{List of date column(s) name(s) of dataSet to comute difference on. To transform all 
+dates, set it to "auto". (character, default to "auto")}
 
 \item{analysisDate}{Static date (Date or POSIXct, optional)}
 
-\item{units}{unit of difference between too dates (string, default to 'years')}
+\item{units}{Unit of difference between too dates (string, default to 'years')}
 
-\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+\item{drop}{Should \code{cols} be dropped after generation (logical, default to FALSE)}
 
 \item{verbose}{should the function log (logical, default to TRUE)}
 
@@ -32,7 +32,7 @@ A numeric column has been added for every couple of Dates. The result is in year
 Perform the differences between all dates of the dataSet set and optionally with a static date.
 }
 \details{
-\code{units} is the same as \code{\link{difftime}} units, but with years as a unit.
+\code{units} is the same as \code{\link{difftime}} units, but with one more possiblity: years.
 }
 \examples{
 # First build a useful dataSet set

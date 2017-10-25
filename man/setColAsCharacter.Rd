@@ -9,16 +9,16 @@ setColAsCharacter(dataSet, cols = "auto", verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into characters. To transform 
+\item{cols}{List of column(s) name(s) of dataSet to transform into characters. To transform 
 all columns, set it to "auto". (characters, default to "auto")}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
 dataSet (as a \code{\link{data.table}}), with specified columns set as character.
 }
 \description{
-Set as character a column (or a list of columns) from a data.table
+Set as character a column (or a list of columns) from a data.table.
 }
 \examples{
 # Build a fake data.frame
