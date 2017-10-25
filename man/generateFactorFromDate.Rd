@@ -10,18 +10,21 @@ generateFactorFromDate(dataSet, cols, type = "yearmonth", drop = FALSE,
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of date column(s) name(s) of dataSet to transform into factor. To transform all 
-dates, set it to "auto", (characters, default to "auto")}
+\item{cols}{List of date column(s) name(s) of dataSet to transform into factor. To transform all 
+dates, set it to "auto". (characters, default to "auto")}
 
 \item{type}{"year", "yearquarter", "yearmonth", "quarter" or "month", way to aggregate a date, 
 (character, default to "yearmonth")}
 
-\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+\item{drop}{Should \code{cols} be dropped after generation (logical, default to FALSE)}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 
 \item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
+}
+\value{
+\code{dataSet} with new columns. \code{dataSet} is edited by \strong{reference}.
 }
 \description{
 Taking Date or POSIXct colums, and building factor columns from them.

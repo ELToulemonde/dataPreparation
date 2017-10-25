@@ -9,16 +9,16 @@ setColAsFactor(dataSet, cols = "auto", n_levels = 53, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of column(s) name(s) of dataSet to transform into factor. To transform all columns
+\item{cols}{List of column(s) name(s) of dataSet to transform into factor. To transform all columns
 set it to "auto", (characters, default to auto).}
 
-\item{n_levels}{max number of levels for factor (integer, default to 53) 
+\item{n_levels}{Max number of levels for factor (integer, default to 53) 
 set it to -1 to disable control.}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-dataSet (as a \code{\link{data.table}}), with specified columns set as factor or logical.
+\code{dataSet}(as a \code{\link{data.table}}), with specified columns set as factor or logical.
 }
 \description{
 Set columns as factor and control number of unique element, to avoid having too large factors.

@@ -9,22 +9,25 @@ generateFromCharacter(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of character column(s) name(s) of dataSet to transform. To transform all 
-characters, set it to "auto"}
+\item{cols}{List of character column(s) name(s) of dataSet to transform. To transform all 
+characters, set it to "auto". (character, default to "auto")}
 
-\item{verbose}{should the function log (logical, default to TRUE)}
+\item{verbose}{Should the function log (logical, default to TRUE)}
 
-\item{drop}{should \code{cols} be dropped after generation (logical, default to FALSE)}
+\item{drop}{Should \code{cols} be dropped after generation (logical, default to FALSE)}
 
 \item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
 }
+\value{
+\code{dataSet} with new columns. \code{dataSet} is edited by \strong{reference}.
+}
 \description{
 Recode character into 3 new columns: \cr
 \itemize{
-\item was the value not NA, "NA", ""
-\item how often this value occures
-\item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet)
+\item was the value not NA, "NA", "",
+\item how often this value occures,
+\item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 }
 }
 \examples{

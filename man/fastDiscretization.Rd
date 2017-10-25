@@ -9,16 +9,16 @@ fastDiscretization(dataSet, bins = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{bins}{result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
-It is recommended to compute build_bins before so that one can apply same discretization
- on train and test set. If it is kept to NULL, build_bins will be called.\cr
+\item{bins}{Result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
+To perform the same discretization on train and test, it is recommended to compute \code{\link{build_bins}}
+before. If it is kept to NULL, build_bins will be called.\cr
 \code{bins} could also be carefully hand written.}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-Same dataset discretized by reference. \cr
-If you don't want to edit by reference please provide set `dataSet = copy(dataSet)`.
+Same dataset discretized by \strong{reference}. \cr
+If you don't want to edit by reference please provide set \code{dataSet = copy(dataSet)}.
 }
 \description{
 Discretization of numeric variable (either equal_width or equal_fred).

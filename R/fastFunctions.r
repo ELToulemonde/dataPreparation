@@ -5,14 +5,14 @@
 #'
 #' Delete columns that are constant or in double in your dataSet set.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param keep_cols list of columns not to drop (list of character, default to NULL)
+#' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical or 1 or 2, default to TRUE)
 #' @param ... optional parameters to be passed to the function when called from another function
 #' @details 
 #' \code{verbose} can be set to 2 have full details from which functions, otherwise they 
-#' don't log. (\code{verbose = 1} is equivalent to \code{verbose = TRUE})
+#' don't log. (\code{verbose = 1} is equivalent to \code{verbose = TRUE}).
 #' @return 
-#' The same dataSet set but with fewer columns. Columns that are constant, in double, 
+#' The same dataSet but with fewer columns. Columns that are constant, in double, 
 #' or bijection of another have been deleted.
 #' @examples
 #' # First let's build a data.frame with 3 columns: a constant column, and a column in double
@@ -51,56 +51,55 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   if (verbose){
     printl(function_name, ": I check for constant columns.")
   }
-  listOfConstantCols <- whichAreConstant(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(listOfConstantCols) > 0){
+  constant_cols <- whichAreConstant(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+  if (length(constant_cols) > 0){
     if (verbose){
-      printl(function_name, ": I delete ", length(listOfConstantCols), " constant column(s) in ", dataName, ".")
+      printl(function_name, ": I delete ", length(constant_cols), " constant column(s) in ", dataName, ".")
     }
-    dataSet[, (listOfConstantCols) := NULL]
+    dataSet[, (constant_cols) := NULL]
   }
   # Delete columns in double
   if (verbose){
     printl(function_name, ": I check for columns in double.")
   }
-  listOfDoubles <- whichAreInDouble(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(listOfDoubles) > 0){
+  double_cols <- whichAreInDouble(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+  if (length(double_cols) > 0){
     if (verbose){
-      printl(function_name, ": I delete ", length(listOfDoubles), " column(s) that are in double in ", dataName, ".")
+      printl(function_name, ": I delete ", length(double_cols), " column(s) that are in double in ", dataName, ".")
     }  
-    dataSet[, (listOfDoubles) := NULL]
+    dataSet[, (double_cols) := NULL]
   }
   
   # Delete columns that are bijections
   if (verbose){
     printl(function_name, ": I check for columns that are bijections of another column.")
   }
-  listOfBijections <- whichAreBijection(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(listOfBijections) > 0){
+  bijection_cols <- whichAreBijection(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+  if (length(bijection_cols) > 0){
     if (verbose){
-      printl(function_name, ": I delete ", length(listOfBijections), 
+      printl(function_name, ": I delete ", length(bijection_cols), 
              " column(s) that are bijections of another column in ", dataName, ".")
     }  
-    dataSet[, (listOfBijections) := NULL]
+    dataSet[, (bijection_cols) := NULL]
   }
   ## Wrapp up
   return(dataSet)
 }
-
 
 #######################################################################################
 ############################### Fast round ############################################
 #######################################################################################
 #' Fast round
 #' 
-#' Fast round of numeric in a data.table. Will only round numeric, so don't worry about characters. 
+#' Fast round of numeric columns in a data.table. Will only round numeric, so don't worry about characters. 
 #' Also, it computes it column by column so your RAM is safe too.
 #' @param dataSet matrix, data.frame or data.table
-#' @param cols list of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' @param cols List of numeric column(s) name(s) of dataSet to transform. To transform all 
 #' numerics columns, set it to "auto" (characters, default to "auto")
 #' @param digits The number of digits after comma (numeric, default to 2)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @details
-#' It is performing round by reference on dataSet, column by column, only on numercial columns. 
+#' It is performing round by \strong{reference} on dataSet, column by column, only on numercial columns. 
 #' So that it avoid copying dataSet in RAM.
 #' @return The same datasets but as a data.table and with numeric rounded.
 #' @examples
@@ -146,24 +145,22 @@ fastRound <- function(dataSet, cols = "auto", digits = 2, verbose = TRUE){
   return(dataSet)
 }
 
-
-
 #######################################################################################
 ##################################### Handle NA #######################################
 #######################################################################################
 #' Handle NA values
 #'
-#' Function to handle NAs values depending on the class of the column
+#' Handle NAs values depending on the class of the column.
 #' @param dataSet Matrix, data.frame or data.table
 #' @param set_num NAs replacement for numeric column, (numeric or function, default to 0)
 #' @param set_logical NAs replacement for logical column, (logical or function, default to FALSE)
 #' @param set_char NAs replacement for character column, (character or function, default to "")
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @details 
-#' To preserve RAM this function edits directly the dataSet set. To keep object unchanged, please use \code{\link{copy}} \cr
+#' To preserve RAM this function edits dataSet by \strong{reference}. To keep object unchanged, please use \code{\link{copy}}. \cr
 #' If you provide a function, it will be applied to the full column. So this function should handle NAs. \cr
 #' For factor columns, it will add NA to list of values.
-#' @return dataSet as a \code{\link{data.table}} with NAs handled
+#' @return dataSet as a \code{\link{data.table}} with NAs replaced.
 #' @examples
 #' # Build a useful dataSet set for example
 #' require(data.table)
@@ -238,11 +235,11 @@ fastHandleNa <- function(dataSet, set_num = 0, set_logical = FALSE,
 #######################################################################################
 #' Fast checks of equality
 #' 
-#' Performs quick check if two objects are equal 
-#' @param object1 an element, a vector, a data.frame, a data.table
-#' @param object2 an element, a vector, a data.frame, a data.table
+#' Performs quick check if two objects are equal.
+#' @param object1 An element, a vector, a data.frame, a data.table
+#' @param object2 An element, a vector, a data.frame, a data.table
 #' @details 
-#' This function is fast for very large vectors, data.frame and data.table. 
+#' This function uses exponential search trick, so it is fast for very large vectors, data.frame and data.table. 
 #' This function is also very robust; you can compare a lot of stuff without failing.
 #' @return Logical (TRUE or FALSE) if the two objects are equals.
 #' @examples
@@ -268,7 +265,7 @@ fastIsEqual <- function(object1, object2){
     return(FALSE)
   }
   # List handeling
-  if (any(class(object1) %in% c("list", "data.table", "data.frame"))){
+  if (is.data.frame(object1) || is.list(object1)){
     i <- 1
     n <- length(object1)
     result <- TRUE
@@ -309,14 +306,6 @@ fastIsEqual <- function(object1, object2){
   return(TRUE)
 }
 
-
-
-
-
-
-
-
-
 #######################################################################################
 ############################### Fast is bijection function ############################
 #######################################################################################
@@ -351,7 +340,6 @@ fastIsBijection <- function(object1, object2){
   # If every test passed, it's true
   return(TRUE)
 }
-
 
 #######################################################################################
 ############################### Fast check if has less than n elt #####################

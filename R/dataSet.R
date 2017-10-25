@@ -3,7 +3,7 @@
 ###################################################################################################
 ################################### messy_adult ###################################################
 ###################################################################################################
-#' adult with some ugly columns added
+#' Adult with some ugly columns added
 #' 
 #' For examples and tutorials, messy_adult has been built using UCI \code{adult}.\cr
 #' 
@@ -20,8 +20,8 @@
 #' @name messy_adult
 #' @docType data
 #' @keywords data
-#' @usage data(messy_adult)
-#' @format A data.table with 32561 rows and 24 variables
+#' @usage data("messy_adult")
+#' @format A data.table with 32561 rows and 24 variables.
 NULL
 
 
@@ -29,7 +29,7 @@ NULL
 ###################################################################################################
 ####################################### adult #####################################################
 ###################################################################################################
-#' adult for UCI repository
+#' Adult for UCI repository
 #' 
 #' For examples and tutorials, and in order to build \code{messy_adult}, UCI adult data set is used. \cr
 #' Data Set Information: \cr
@@ -42,6 +42,6 @@ NULL
 #' @docType data
 #' @references \url{https://archive.ics.uci.edu/ml/datasets/adult}
 #' @keywords data
-#' @usage data(adult)
-#' @format A data.table with 32561 rows and 15 variables
+#' @usage data("adult")
+#' @format A data.frame with 32561 rows and 15 variables.
 NULL

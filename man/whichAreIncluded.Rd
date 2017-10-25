@@ -9,12 +9,12 @@ whichAreIncluded(dataSet, keep_cols = NULL, verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{keep_cols}{list of columns not to drop (list of character, default to NULL)}
+\item{keep_cols}{List of columns not to drop (list of character, default to NULL)}
 
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
 \value{
-A list of index of columns that have an exact duplicate in the dataSet set.
+A list of index of columns that have an exact duplicate in the \code{dataSet}.
 }
 \description{
 Find all the columns that don't contain more information than another column. For example if 
@@ -26,6 +26,10 @@ This function is performing exponential search and is looking to every couple of
 Be very careful while using this function: \cr
 - if there is an id column, it will say everything is included in the id column; \cr
 - the order of columns will influence the result.\cr
+\cr
+For example if 
+you have a column with an amount and another with the same amount but rounded, the second 
+column is included in the first.\cr
 \cr
 And last but not least, with some machine learning algorithm it's not always smart to drop 
 columns even if they don't give more info: the extreme example is the id example.

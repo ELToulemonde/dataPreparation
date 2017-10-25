@@ -17,7 +17,7 @@ description(dataSet, level = 1, path_to_write = NULL, verbose = TRUE)
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \description{
-Generating extensive description of a data set.
+Generate extensive description of a data set.
 }
 \examples{
 # Load exemple set

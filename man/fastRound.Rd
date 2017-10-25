@@ -9,7 +9,7 @@ fastRound(dataSet, cols = "auto", digits = 2, verbose = TRUE)
 \arguments{
 \item{dataSet}{matrix, data.frame or data.table}
 
-\item{cols}{list of numeric column(s) name(s) of dataSet to transform. To transform all 
+\item{cols}{List of numeric column(s) name(s) of dataSet to transform. To transform all 
 numerics columns, set it to "auto" (characters, default to "auto")}
 
 \item{digits}{The number of digits after comma (numeric, default to 2)}
@@ -20,11 +20,11 @@ numerics columns, set it to "auto" (characters, default to "auto")}
 The same datasets but as a data.table and with numeric rounded.
 }
 \description{
-Fast round of numeric in a data.table. Will only round numeric, so don't worry about characters. 
+Fast round of numeric columns in a data.table. Will only round numeric, so don't worry about characters. 
 Also, it computes it column by column so your RAM is safe too.
 }
 \details{
-It is performing round by reference on dataSet, column by column, only on numercial columns. 
+It is performing round by \strong{reference} on dataSet, column by column, only on numercial columns. 
 So that it avoid copying dataSet in RAM.
 }
 \examples{

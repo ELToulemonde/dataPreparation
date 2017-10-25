@@ -2,17 +2,18 @@
 #' 
 #' Recode factors into 3 new columns: \cr
 #' \itemize{
-#' \item was the value not NA, "NA", ""
-#' \item how often this value occures
-#' \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet)
+#' \item was the value not NA, "NA", "",
+#' \item how often this value occures,
+#' \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 #' }
 #' @param dataSet Matrix, data.frame or data.table
 #' @param cols list of character column(s) name(s) of dataSet to transform. To transform all 
-#' factors, set it to "auto".
-#' @param verbose should the function log (logical, default to TRUE)
-#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
+#' factors, set it to "auto". (character, default to "auto")
+#' @param verbose Should the function log (logical, default to TRUE)
+#' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
+#' @return \code{dataSet} with new columns. \code{dataSet} is edited by \strong{reference}.
 #' @examples 
 #' # Load data set
 #' data(messy_adult)
@@ -77,15 +78,16 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 #' 
 #' Transform factor column into 0/1 columns with one column per values of the column.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of character or factor column(s) name(s) of dataSet to transform into factor
-#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
-#' @param verbose should the function log (logical, default to TRUE) 
+#' @param cols List of character or factor column(s) name(s) of dataSet to transform into factor. \cr
+#' To transform all character and factor columns, set it to "auto". (character, default to "auto")
+#' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
+#' @param verbose Should the function log (logical, default to TRUE) 
 #' To transform all dates, set it to "auto", (characters, default to "auto")
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
-#' @return \code{dataSet} edited by reference with new columns. 
+#' @return \code{dataSet} edited by \strong{reference} with new columns. 
 #' @details If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
-#' Please be carefull using this function, it will generate as many columns as there different values 
+#' Please \strong{be carefull} using this function, it will generate as many columns as there different values 
 #' in your column and might use a lot of RAM.
 #' @examples
 #' data(adult)

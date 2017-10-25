@@ -5,14 +5,14 @@
 #' 
 #' Find all the columns that are constant. 
 #' @param dataSet Matrix, data.frame or data.table
-#' @param keep_cols list of columns not to drop (list of character, default to NULL)
+#' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @return List of column's indexes that are constant in the dataSet set.
 #' @details
 #' Algorithm is performing exponential search: it check constancy on row 1 to 10, 
 #' if it's not constant it stops, if it's constant then on 11 to 100 ... \cr
 #' If you have a lot of columns than aren't constant, this function is way faster than a simple 
-#' length(unique())! The larger the dataSet set is, the more interesting it is to use this function.
+#' \code{length(unique())}! The larger the dataSet set is, the more interesting it is to use this function.
 #' @examples
 #' # Let's load our dataSet
 #' data("messy_adult") 
@@ -74,7 +74,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' 
 #' Find all the columns that are in double. 
 #' @param dataSet Matrix, data.frame or data.table
-#' @param keep_cols list of columns not to drop (list of character, default to NULL)
+#' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @return 
 #' A list of index of columns that have an exact duplicate in the dataSet set. 
@@ -134,9 +134,9 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #######################################################################################
 #' Identify bijections
 #' 
-#' Find all the columns that are bijections of another column
+#' Find all the columns that are bijections of another column.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param keep_cols list of columns not to drop (list of character, default to NULL)
+#' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @return A list of index of columns that have an exact bijection in the dataSet set. 
 #' @details 
@@ -192,7 +192,7 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' you have a column with an amount and another with the same amount but rounded, the second 
 #' column is included in the first.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param keep_cols list of columns not to drop (list of character, default to NULL)
+#' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @details 
 #' This function is performing exponential search and is looking to every couple of columns. \cr
@@ -200,9 +200,13 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' - if there is an id column, it will say everything is included in the id column; \cr
 #' - the order of columns will influence the result.\cr
 #' \cr
+#'For example if 
+#' you have a column with an amount and another with the same amount but rounded, the second 
+#' column is included in the first.\cr
+#' \cr
 #' And last but not least, with some machine learning algorithm it's not always smart to drop 
 #' columns even if they don't give more info: the extreme example is the id example.
-#' @return A list of index of columns that have an exact duplicate in the dataSet set.
+#' @return A list of index of columns that have an exact duplicate in the \code{dataSet}.
 #' @examples
 #' # Load toy data set
 #' require(data.table)
@@ -290,7 +294,7 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 ###################################################################################################
 # Internal function to compute test on couple of columns
 # @param dataSet Matrix, data.frame or data.table
-# @param keep_cols list of columns not to drop (list of character, default to NULL)
+# @param keep_cols List of columns not to drop (list of character, default to NULL)
 # @param verbose Should the algorithm talk (logical, default to TRUE)
 # @param test_function function to perform test
 # @param function_name function from which this function is called (for verbose)

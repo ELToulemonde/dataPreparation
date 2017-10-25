@@ -3,10 +3,10 @@
 \docType{data}
 \name{adult}
 \alias{adult}
-\title{adult for UCI repository}
-\format{A data.table with 32561 rows and 15 variables}
+\title{Adult for UCI repository}
+\format{A data.frame with 32561 rows and 15 variables.}
 \usage{
-data(adult)
+data("adult")
 }
 \description{
 For examples and tutorials, and in order to build \code{messy_adult}, UCI adult data set is used. \cr

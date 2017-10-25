@@ -9,13 +9,13 @@ build_scales(dataSet, cols = "auto", verbose = TRUE)
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of numeric column(s) name(s) of dataSet to transform. To transform all 
-characters, set it to "auto"}
+\item{cols}{List of numeric column(s) name(s) of dataSet to transform. To transform all 
+characters, set it to "auto". (character, default to "auto")}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-A list where each element name is a column name of data set and each element contains means and sd
+A list where each element name is a column name of data set and each element contains means and sd.
 }
 \description{
 Build a list of means and standard deviation for each \code{cols}.

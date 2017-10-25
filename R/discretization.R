@@ -2,10 +2,10 @@
 #' 
 #' Compute bins for discretization of numeric variable (either equal_width or equal_fred).
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of numeric column(s) name(s) of dataSet to transform. To transform all 
-#' characters, set it to "auto"
-#' @param n_bins number of group to compute (numeric, default to 10)
-#' @param type type of discretization ("equal_width" or "equal_freq")
+#' @param cols List of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' characters, set it to "auto".  (character, default to "auto")
+#' @param n_bins Number of group to compute (numeric, default to 10)
+#' @param type Type of discretization ("equal_width" or "equal_freq")
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return A list where each element name is a column name of data set and each element contains 
 #' bins to discretize this column.
@@ -77,13 +77,13 @@ build_bins <- function(dataSet, cols = "auto", n_bins = 10, type = "equal_width"
 #' 
 #' Discretization of numeric variable (either equal_width or equal_fred).
 #' @param dataSet Matrix, data.frame or data.table
-#' @param bins result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
-#' It is recommended to compute build_bins before so that one can apply same discretization
-#'  on train and test set. If it is kept to NULL, build_bins will be called.\cr
+#' @param bins Result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
+#' To perform the same discretization on train and test, it is recommended to compute \code{\link{build_bins}}
+#' before. If it is kept to NULL, build_bins will be called.\cr
 #' \code{bins} could also be carefully hand written. 
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
-#' @return Same dataset discretized by reference. \cr
-#' If you don't want to edit by reference please provide set `dataSet = copy(dataSet)`.
+#' @return Same dataset discretized by \strong{reference}. \cr
+#' If you don't want to edit by reference please provide set \code{dataSet = copy(dataSet)}.
 #' @details NAs will be putted in an NA category. 
 #' @examples 
 #' # Load data

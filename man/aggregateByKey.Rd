@@ -7,35 +7,35 @@
 aggregateByKey(dataSet, key, verbose = TRUE, thresh = 53, ...)
 }
 \arguments{
-\item{dataSet}{Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns).}
+\item{dataSet}{Matrix, data.frame or data.table (with only numeric, integer, factor, logical, character columns)}
 
-\item{key}{The name of a column of dataSet according to which the set should be aggregated (character)}
+\item{key}{Name of a column of dataSet according to which the set should be aggregated (character)}
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 
-\item{thresh}{number of max values for frequencies count (numerical, default to 53)}
+\item{thresh}{Number of max values for frequencies count (numerical, default to 53)}
 
-\item{...}{optional argument: \code{functions}:  aggregation functions for numeric columns (list of functions)
+\item{...}{Optional argument: \code{functions}:  aggregation functions for numeric columns 
 (vector of function, optional, if not set we use: c(mean, min, max, sd))}
 }
 \value{
 A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
 }
 \description{
-Automatic aggregation of a dataSet set according to a \code{key}\cr
+Automatic aggregation of a dataSet set according to a \code{key}.
 }
 \details{
 Perform aggregation depending on column type:\cr
 \itemize{
 \item If column is numeric \code{functions} are performed on the column. So 1 numeric column 
-give length(functions) new columns
+give length(functions) new columns,
 \item If column is character or factor and have less than \code{thresh} different values, 
-frequency count of values is performed
+frequency count of values is performed,
 \item If column is character or factor with more than \code{thresh} different values, number 
-of different values for each \code{key} is performed
+of different values for each \code{key} is performed,
 \item If column is logical, count of number and rate of positive is performed.
 }
-Be careful using functions argument, the function given should be an aggregation function, 
+Be careful using functions argument, given functions should be an aggregation function, 
 meaning that for multiple values it should only return one value.
 }
 \examples{

@@ -5,14 +5,15 @@
 #' 
 #' Taking Date or POSIXct colums, and building factor columns from them. 
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of date column(s) name(s) of dataSet to transform into factor. To transform all 
-#' dates, set it to "auto", (characters, default to "auto")
+#' @param cols List of date column(s) name(s) of dataSet to transform into factor. To transform all 
+#' dates, set it to "auto". (characters, default to "auto")
 #' @param type "year", "yearquarter", "yearmonth", "quarter" or "month", way to aggregate a date, 
 #' (character, default to "yearmonth")
-#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
-#' @param verbose should the function log (logical, default to TRUE)
+#' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
+#' @param verbose Should the function log (logical, default to TRUE)
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
+#' @return \code{dataSet} with new columns. \code{dataSet} is edited by \strong{reference}.
 #' @examples
 #' # Load set, and find dates
 #' data(messy_adult)
@@ -137,16 +138,16 @@ date_factor <- function(dataSet, type = "yearmonth"){
 #' 
 #' Perform the differences between all dates of the dataSet set and optionally with a static date.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of date column(s) name(s) of dataSet to comute difference on. To transform all 
-#' dates, set it to "auto"
+#' @param cols List of date column(s) name(s) of dataSet to comute difference on. To transform all 
+#' dates, set it to "auto". (character, default to "auto")
 #' @param analysisDate Static date (Date or POSIXct, optional)
-#' @param units unit of difference between too dates (string, default to 'years') 
-#' @param drop should \code{cols} be dropped after generation (logical, default to FALSE)
+#' @param units Unit of difference between too dates (string, default to 'years') 
+#' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
 #' @param verbose should the function log (logical, default to TRUE)
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
 #' @details 
-#' \code{units} is the same as \code{\link{difftime}} units, but with years as a unit. 
+#' \code{units} is the same as \code{\link{difftime}} units, but with one more possiblity: years. 
 #' @return dataSet (as a \code{\link{data.table}}) with more columns. 
 #' A numeric column has been added for every couple of Dates. The result is in years. 
 #' @examples
@@ -165,7 +166,7 @@ date_factor <- function(dataSet, type = "yearmonth"){
 #' dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"))
 #' @import data.table
 #' @export
-generateDateDiffs <- function(dataSet, cols, analysisDate = NULL, units = "years", drop = FALSE, verbose = TRUE, ...){
+generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units = "years", drop = FALSE, verbose = TRUE, ...){
   ## Working environement
   function_name <- "generateDateDiffs"
   

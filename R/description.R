@@ -1,6 +1,6 @@
 #' Describe data set
 #' 
-#' Generating extensive description of a data set. 
+#' Generate extensive description of a data set. 
 #' @param dataSet Matrix, data.frame or data.table
 #' @param level Level of description (0: generic, 1: column by column) 
 #' (numeric, default to 1)

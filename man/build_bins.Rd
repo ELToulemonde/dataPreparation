@@ -10,12 +10,12 @@ build_bins(dataSet, cols = "auto", n_bins = 10, type = "equal_width",
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{list of numeric column(s) name(s) of dataSet to transform. To transform all 
-characters, set it to "auto"}
+\item{cols}{List of numeric column(s) name(s) of dataSet to transform. To transform all 
+characters, set it to "auto".  (character, default to "auto")}
 
-\item{n_bins}{number of group to compute (numeric, default to 10)}
+\item{n_bins}{Number of group to compute (numeric, default to 10)}
 
-\item{type}{type of discretization ("equal_width" or "equal_freq")}
+\item{type}{Type of discretization ("equal_width" or "equal_freq")}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }

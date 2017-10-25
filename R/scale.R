@@ -2,10 +2,10 @@
 #' 
 #' Build a list of means and standard deviation for each \code{cols}.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols list of numeric column(s) name(s) of dataSet to transform. To transform all 
-#' characters, set it to "auto"
+#' @param cols List of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' characters, set it to "auto". (character, default to "auto")
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
-#' @return A list where each element name is a column name of data set and each element contains means and sd
+#' @return A list where each element name is a column name of data set and each element contains means and sd.
 #' @examples 
 #' # Get a data set
 #' data(adult)
@@ -48,11 +48,11 @@ build_scales <- function(dataSet, cols = "auto", verbose = TRUE){
 #' 
 #' Perform efficient scaling on a data set.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param scales result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
-#' It is recommended to compute build_scales before so that one can apply same scale on train
-#'  and test set. If it is kept to NULL, build_scales will be called.
+#' @param scales Result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
+#' To perform the same scaling on train and test, it is recommended to compute \code{\link{build_scales}}
+#' before. If it is kept to NULL, build_scales will be called.
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
-#' @return data set with columns scaled by \strong{reference}. Scaled means that each
+#' @return \code{dataSet} with columns scaled by \strong{reference}. Scaled means that each
 #'  column mean will be 0 and each column standard deviation will be 1.
 #' @details Scaling numeric values is usefull for some machine learning algorithm such as
 #'  logistic regression or neural networks. \cr

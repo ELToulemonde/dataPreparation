@@ -14,7 +14,7 @@ v 0.3
 	- Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
 - Refactoring: 
 	- Private function *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
-	- Making code faster
+	- Making code faster: some functions are up to **30% faster**
 	- Review unit testing to be faster
 	- Unit test evolution to be more readable
 

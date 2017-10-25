@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-10-24" />
+<meta name="date" content="2017-10-25" />
 
 <title>Tutorial to prepare train and test set using dataPreparation</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Tutorial to prepare train and test set using dataPreparation</h1>
-<h4 class="date"><em>2017-10-24</em></h4>
+<h4 class="date"><em>2017-10-25</em></h4>
 
 
 
@@ -141,12 +141,12 @@ y_test &lt;-<span class="st"> </span>adult[test_index, <span class="st">&quot;in
 </ul>
 <p>Let’s id them:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(adult)</code></pre></div>
-<pre><code># [1] &quot;whichAreConstant: it took me 0.21s to identify 0 constant column(s)&quot;</code></pre>
+<pre><code># [1] &quot;whichAreConstant: it took me 0.15s to identify 0 constant column(s)&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(adult)</code></pre></div>
-<pre><code># [1] &quot;whichAreInDouble: it took me 0.18s to identify 0 column(s) to drop.&quot;</code></pre>
+<pre><code># [1] &quot;whichAreInDouble: it took me 0.16s to identify 0 column(s) to drop.&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections_cols &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(adult)</code></pre></div>
 <pre><code># [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
-# [1] &quot;whichAreBijection: it took me 0.32s to identify 1 column(s) to drop.&quot;</code></pre>
+# [1] &quot;whichAreBijection: it took me 0.27s to identify 1 column(s) to drop.&quot;</code></pre>
 <p>We only found, one bijection: variable <code>education_num</code> which is an index for variable <code>education</code>. Let’s drop it:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$education_num =<span class="st"> </span><span class="ot">NULL</span>
 X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
@@ -210,10 +210,10 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <p>Let’s apply our own bins:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
 <pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
-# [1] &quot;fastDiscretization: it took me: 0.12s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+# [1] &quot;fastDiscretization: it took me: 0.13s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
 <pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
-# [1] &quot;fastDiscretization: it took me: 0.03s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+# [1] &quot;fastDiscretization: it took me: 0.01s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
 <p>Here bins have been defined to compute groups :</p>
 <ul>
 <li>0 to 18</li>
@@ -306,7 +306,7 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 # [1] &quot;one_hot_encoder: I am doing column: race&quot;
 # [1] &quot;one_hot_encoder: I am doing column: sex&quot;
 # [1] &quot;one_hot_encoder: I am doing column: country&quot;
-# [1] &quot;one_hot_encoder: It took me 0.32s to transform 9 column(s).&quot;</code></pre>
+# [1] &quot;one_hot_encoder: It took me 0.22s to transform 9 column(s).&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># [1] &quot;one_hot_encoder: I will one hot encode some columns.&quot;
 # [1] &quot;one_hot_encoder: I am doing column: age&quot;
@@ -318,7 +318,7 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 # [1] &quot;one_hot_encoder: I am doing column: race&quot;
 # [1] &quot;one_hot_encoder: I am doing column: sex&quot;
 # [1] &quot;one_hot_encoder: I am doing column: country&quot;
-# [1] &quot;one_hot_encoder: It took me 0.22s to transform 9 column(s).&quot;</code></pre>
+# [1] &quot;one_hot_encoder: It took me 0.17s to transform 9 column(s).&quot;</code></pre>
 <p>This function is called the following way:</p>
 <ul>
 <li>dataSet = X_train: means that it will perform transformation on X_train</li>
@@ -342,7 +342,7 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <p>Since a lot of columns have been created, a filtering could be relevant:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># [1] &quot;whichAreBijection: sex.Male is a bijection of sex.Female. I put it in drop list.&quot;
-# [1] &quot;whichAreBijection: it took me 13.76s to identify 1 column(s) to drop.&quot;</code></pre>
+# [1] &quot;whichAreBijection: it took me 12.47s to identify 1 column(s) to drop.&quot;</code></pre>
 <p>It found that column Male is a bijection of column female, that is not surprinsing. Let’s drop one of them:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$Male =<span class="st"> </span><span class="ot">NULL</span>
 X_test$Male =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
