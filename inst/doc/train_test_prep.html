@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="date" content="2017-10-24" />
+
+<title>Tutorial to prepare train and test set using dataPreparation</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Tutorial to prepare train and test set using dataPreparation</h1>
+<h4 class="date"><em>2017-10-24</em></h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="purpouse-of-this-vignette" class="section level2">
+<h2><span class="header-section-number">1.1</span> Purpouse of this vignette</h2>
+<p>This vignette is a tutorial to prepare a <code>train</code> and a <code>test</code> set using <code>dataPreparation</code> package.</p>
+<p>In this tutorial the following points are going to be viewed:</p>
+<ul>
+<li>Preparing a training set,</li>
+<li>Applying the same preparation to a testing set,</li>
+<li>Controling that train and test sets have the same shape.</li>
+</ul>
+<p>Using <a href="https://cran.r-project.org/web/packages/dataPreparation/index.html">dataPreparation</a> package, those sets will be</p>
+<ul>
+<li>fast (since dataPreparation is based on data.table framework and uses some computational tricks)</li>
+<li>easy (since those functions are packaged and handle most of the situations)</li>
+<li>robust (since it has been extensivly tested)</li>
+</ul>
+</div>
+<div id="data-set" class="section level2">
+<h2><span class="header-section-number">1.2</span> Data set</h2>
+<p>For this tutorial, UCI <a href="https://archive.ics.uci.edu/ml/datasets/adult">adult</a> data set will be used.</p>
+<p>The goal with this data set is to predict the income of individuals based on 14 variables.</p>
+<p>Let’s have a look to the data set:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;adult&quot;</span>)
+<span class="kw">print</span>(<span class="kw">head</span>(adult, <span class="dt">n =</span> <span class="dv">4</span>))</code></pre></div>
+<pre><code>#   age    type_employer fnlwgt education education_num            marital
+# 1  39        State-gov  77516 Bachelors            13      Never-married
+# 2  50 Self-emp-not-inc  83311 Bachelors            13 Married-civ-spouse
+# 3  38          Private 215646   HS-grad             9           Divorced
+# 4  53          Private 234721      11th             7 Married-civ-spouse
+#          occupation  relationship  race  sex capital_gain capital_loss
+# 1      Adm-clerical Not-in-family White Male         2174            0
+# 2   Exec-managerial       Husband White Male            0            0
+# 3 Handlers-cleaners Not-in-family White Male            0            0
+# 4 Handlers-cleaners       Husband Black Male            0            0
+#   hr_per_week       country income
+# 1          40 United-States  &lt;=50K
+# 2          13 United-States  &lt;=50K
+# 3          40 United-States  &lt;=50K
+# 4          40 United-States  &lt;=50K</code></pre>
+</div>
+</div>
+<div id="preparing-data" class="section level1">
+<h1><span class="header-section-number">2</span> Preparing data</h1>
+<div id="spliting-train-and-test" class="section level2">
+<h2><span class="header-section-number">2.1</span> Spliting Train and test</h2>
+<p>To avoid introducing a bias in <code>test</code> using train-data, the train-test split should be performed before (most) data preparation steps.</p>
+<p>To simulate a train and test set we are going to split randomly this data set into 80% train and 20% test.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Random sample indexes</span>
+train_index &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(adult), <span class="fl">0.8</span> *<span class="st"> </span><span class="kw">nrow</span>(adult))
+test_index &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(adult), train_index)
+
+<span class="co"># Build X_train, y_train, X_test, y_test</span>
+X_train &lt;-<span class="st"> </span>adult[train_index, -<span class="dv">15</span>]
+y_train &lt;-<span class="st"> </span>adult[train_index, <span class="st">&quot;income&quot;</span>]
+
+X_test &lt;-<span class="st"> </span>adult[test_index, -<span class="dv">15</span>]
+y_test &lt;-<span class="st"> </span>adult[test_index, <span class="st">&quot;income&quot;</span>]</code></pre></div>
+</div>
+<div id="filter-useless-variables" class="section level2">
+<h2><span class="header-section-number">2.2</span> Filter useless variables</h2>
+<p>The first thing to do, in order to make computation fast, would be to filter useless variables:</p>
+<ul>
+<li>Constant variables</li>
+<li>Variables that are in double (for example col1 == col2)</li>
+<li>Variables that are exact bijections (for example col1 = A, B, B, A and col2 = 1, 2, 2, 1)</li>
+</ul>
+<p>Let’s id them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(adult)</code></pre></div>
+<pre><code># [1] &quot;whichAreConstant: it took me 0.21s to identify 0 constant column(s)&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(adult)</code></pre></div>
+<pre><code># [1] &quot;whichAreInDouble: it took me 0.18s to identify 0 column(s) to drop.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections_cols &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(adult)</code></pre></div>
+<pre><code># [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
+# [1] &quot;whichAreBijection: it took me 0.32s to identify 1 column(s) to drop.&quot;</code></pre>
+<p>We only found, one bijection: variable <code>education_num</code> which is an index for variable <code>education</code>. Let’s drop it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$education_num =<span class="st"> </span><span class="ot">NULL</span>
+X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
+</div>
+<div id="scaling" class="section level2">
+<h2><span class="header-section-number">2.3</span> Scaling</h2>
+<p>Most machine learning algorithm rather handle scaled data instead of unscaled data.</p>
+<p>To perform scaling (meaning setting mean to 0 and standard deviation to 1), function <code>fastScale</code> is available.</p>
+<p>Since it is highly recommended to apply same scaling on train and test, you should compute the scales first using the function <code>build_scales</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scales &lt;-<span class="st"> </span><span class="kw">build_scales</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;capital_gain&quot;</span>, <span class="st">&quot;capital_loss&quot;</span>), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;build_scales: I will compute scale 2 numeric columns.&quot;
+# [1] &quot;build_scales: it took me: 0s to compute scale for 2 numeric columns.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(scales)</code></pre></div>
+<pre><code># $capital_gain
+# $capital_gain$mean
+# [1] 1056.754
+# 
+# $capital_gain$sd
+# [1] 7344.141
+# 
+# 
+# $capital_loss
+# $capital_loss$mean
+# [1] 87.34183
+# 
+# $capital_loss$sd
+# [1] 401.9154</code></pre>
+<p>As one can see, those to columns have very different mean and standard deviation. Let’s apply scaling on those:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">fastScale</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">scales =</span> scales, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;fastScale: I will scale 2 numeric columns.&quot;
+# [1] &quot;fastScale: it took me: 0s to scale 2 numeric columns.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">fastScale</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">scales =</span> scales, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;fastScale: I will scale 2 numeric columns.&quot;
+# [1] &quot;fastScale: it took me: 0s to scale 2 numeric columns.&quot;</code></pre>
+<p>And now let’s have a look at the result:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">head</span>(X_train[, <span class="kw">c</span>(<span class="st">&quot;capital_gain&quot;</span>, <span class="st">&quot;capital_loss&quot;</span>)]))</code></pre></div>
+<pre><code>#    capital_gain capital_loss
+# 1:   -0.1438907    -0.217314
+# 2:   -0.1438907     3.935302
+# 3:   -0.1438907    -0.217314
+# 4:   -0.1438907    -0.217314
+# 5:    0.7715329    -0.217314
+# 6:   -0.1438907    -0.217314</code></pre>
+</div>
+<div id="discretization" class="section level2">
+<h2><span class="header-section-number">2.4</span> Discretization</h2>
+<p>One might want to discretize the variable age, either using an equal freq/width method, or some hand-written bis.</p>
+<p>To compute equal freq bins, <code>build_bins</code> is available:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bins &lt;-<span class="st"> </span><span class="kw">build_bins</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="st">&quot;age&quot;</span>, <span class="dt">n_bins =</span> <span class="dv">10</span>, <span class="dt">type =</span> <span class="st">&quot;equal_freq&quot;</span>)</code></pre></div>
+<pre><code># [1] &quot;fastDiscretization: I will build splits for 1 numeric columns using, equal_freq method.&quot;
+# [1] &quot;fastDiscretization: it took me: 0s to build splits for 1 numeric columns.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(bins)</code></pre></div>
+<pre><code># $age
+#  [1] -Inf   22   26   30   33   37   41   45   50   58  Inf</code></pre>
+<p>To make it easy to use, in this package:</p>
+<ul>
+<li><code>dataSet</code> will always denote the data.table on which you want to perform something.</li>
+<li><code>cols</code> will always denote the columns on which you want to apply the function. It could also be set to “auto” to apply it on all relevant columns.</li>
+<li>Some spefic argument could be needed and will be presented in the documentation of each functions.</li>
+</ul>
+<p>Let’s apply our own bins:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
+<pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
+# [1] &quot;fastDiscretization: it took me: 0.12s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
+<pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
+# [1] &quot;fastDiscretization: it took me: 0.03s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+<p>Here bins have been defined to compute groups :</p>
+<ul>
+<li>0 to 18</li>
+<li>18 to 25</li>
+<li>25 to 45</li>
+<li>45 to 62</li>
+<li>Over 62.</li>
+</ul>
+<p>Let’s control it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">table</span>(X_train$age))</code></pre></div>
+<pre><code># 
+#    [0, 18[   [18, 25[   [25, 45[   [45, 62[ [62, +Inf[ 
+#        325       4152      13299       6679       1593</code></pre>
+</div>
+<div id="encoding-categorical" class="section level2">
+<h2><span class="header-section-number">2.5</span> Encoding categorical</h2>
+<p>One thing to do when you are using some machine learning algorithm such as a logistic regression or a neural network is to encode factor variables. One way to do that is to perform one-hot-encoding. For examples:</p>
+<table>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>B</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>C</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<p>Would become:</p>
+<table>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>var.A</th>
+<th>var.B</th>
+<th>var.C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>To perform it, one could use <code>dataPreparation::one_hot_encoder</code> which uses data.table power to do it in a fast and RAM efficient way.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;one_hot_encoder: I will one hot encode some columns.&quot;
+# [1] &quot;one_hot_encoder: I am doing column: age&quot;
+# [1] &quot;one_hot_encoder: I am doing column: type_employer&quot;
+# [1] &quot;one_hot_encoder: I am doing column: education&quot;
+# [1] &quot;one_hot_encoder: I am doing column: marital&quot;
+# [1] &quot;one_hot_encoder: I am doing column: occupation&quot;
+# [1] &quot;one_hot_encoder: I am doing column: relationship&quot;
+# [1] &quot;one_hot_encoder: I am doing column: race&quot;
+# [1] &quot;one_hot_encoder: I am doing column: sex&quot;
+# [1] &quot;one_hot_encoder: I am doing column: country&quot;
+# [1] &quot;one_hot_encoder: It took me 0.32s to transform 9 column(s).&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;one_hot_encoder: I will one hot encode some columns.&quot;
+# [1] &quot;one_hot_encoder: I am doing column: age&quot;
+# [1] &quot;one_hot_encoder: I am doing column: type_employer&quot;
+# [1] &quot;one_hot_encoder: I am doing column: education&quot;
+# [1] &quot;one_hot_encoder: I am doing column: marital&quot;
+# [1] &quot;one_hot_encoder: I am doing column: occupation&quot;
+# [1] &quot;one_hot_encoder: I am doing column: relationship&quot;
+# [1] &quot;one_hot_encoder: I am doing column: race&quot;
+# [1] &quot;one_hot_encoder: I am doing column: sex&quot;
+# [1] &quot;one_hot_encoder: I am doing column: country&quot;
+# [1] &quot;one_hot_encoder: It took me 0.22s to transform 9 column(s).&quot;</code></pre>
+<p>This function is called the following way:</p>
+<ul>
+<li>dataSet = X_train: means that it will perform transformation on X_train</li>
+<li>cols = “auto”: means that it will determine by it self which columns to encode (all characters and factor)</li>
+<li>drop = TRUE: means that it will drop original columns</li>
+<li>verbose = TRUE: means that it will log to tell you what it is doing.</li>
+</ul>
+<p>Even if it’s not kept in the log, a progress bar has been created to see if the functions is running and how fast. This progress bar is available in most functions from this package. It can be really helpfull when you are handling really large data sets.</p>
+<p>Let’s check the dimensions of X:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="st">&quot;Dimensions of X_train: &quot;</span>)</code></pre></div>
+<pre><code># [1] &quot;Dimensions of X_train: &quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">dim</span>(X_train))</code></pre></div>
+<pre><code># [1] 26048   111</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="st">&quot;Dimensions of X_test: &quot;</span>)</code></pre></div>
+<pre><code># [1] &quot;Dimensions of X_test: &quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">dim</span>(X_test))</code></pre></div>
+<pre><code># [1] 6513  111</code></pre>
+</div>
+<div id="filtering-variables" class="section level2">
+<h2><span class="header-section-number">2.6</span> Filtering variables</h2>
+<p>Since a lot of columns have been created, a filtering could be relevant:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;whichAreBijection: sex.Male is a bijection of sex.Female. I put it in drop list.&quot;
+# [1] &quot;whichAreBijection: it took me 13.76s to identify 1 column(s) to drop.&quot;</code></pre>
+<p>It found that column Male is a bijection of column female, that is not surprinsing. Let’s drop one of them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$Male =<span class="st"> </span><span class="ot">NULL</span>
+X_test$Male =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
+</div>
+</div>
+<div id="controling-shape" class="section level1">
+<h1><span class="header-section-number">3</span> Controling shape</h1>
+<p>Last but not least, it is very important to make sure that <code>train</code> and <code>test</code> sets have the same shape (for example the same columns).</p>
+<p>To make sure of that one could perform the following function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">sameShape</span>(X_test, <span class="dt">referenceSet =</span> X_test, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;sameShape: verify that every column is present.&quot;
+# [1] &quot;sameShape: drop unwanted columns.&quot;
+# [1] &quot;sameShape: verify that every column is in the right type.&quot;
+# [1] &quot;sameShape: verify that every factor as the right number of levels.&quot;</code></pre>
+<p>No warning have been raised it’s all is ok.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1><span class="header-section-number">4</span> Conclusion</h1>
+<p>We presented some of the functions of <em>dataPreparation</em> package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on <a href="https://cran.r-project.org/web/packages/dataPreparation/dataPreparation.pdf">CRAN</a>)</p>
+<p>We hope that this package is helpful, that it helped you prepare your data in a faster way.</p>
+<p>If you would like to give us some feedback, report some issues, add some features to this package, please tell us on <a href="https://github.com/ELToulemonde/dataPreparation/issues">GitHub</a>. Also if you want to contribute, please don’t hesitate to contact us.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

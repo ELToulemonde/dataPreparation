@@ -1,0 +1,239 @@
+---
+title: "Tutorial to prepare train and test set using dataPreparation"
+header-includes: \usepackage{booktabs}
+date: '`r Sys.Date()`'
+output:
+  rmarkdown::html_vignette:
+    number_sections: yes
+  
+vignette: >
+  %\VignetteIndexEntry{Tutorial} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r results='hide', message=FALSE, warning=FALSE, echo=FALSE}
+set.seed(2)
+library(dataPreparation)
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(pander)
+options(knitr.table.format = "html") 
+Sys.setlocale("LC_TIME", "C")
+```
+
+# Introduction
+
+## Purpouse of this vignette
+This vignette is a tutorial to prepare a `train` and a `test` set using `dataPreparation` package.
+
+In this tutorial the following points are going to be viewed:
+
+- Preparing a training set,
+- Applying the same preparation to a testing set,
+- Controling that train and test sets have the same shape.
+
+Using [dataPreparation](https://cran.r-project.org/web/packages/dataPreparation/index.html) package, those sets will be
+
+- fast (since dataPreparation is based on data.table framework and uses some computational tricks)
+- easy (since those functions are packaged and handle most of the situations)
+- robust (since it has been extensivly tested)
+
+## Data set
+For this tutorial, UCI [adult](https://archive.ics.uci.edu/ml/datasets/adult) data set will be used. 
+
+The goal with this data set is to predict the income of individuals based on 14 variables.
+
+Let's have a look to the data set:
+```{r comment="#",  null_prefix=TRUE}
+data("adult")
+print(head(adult, n = 4))
+```
+
+
+
+# Preparing data
+## Spliting Train and test
+To avoid introducing a bias in `test` using train-data, the train-test split should be performed before (most) data preparation steps.
+
+To simulate a train and test set we are going to split randomly this data set into 80% train and 20% test.
+
+```{r comment="#",  null_prefix=TRUE}
+# Random sample indexes
+train_index <- sample(1:nrow(adult), 0.8 * nrow(adult))
+test_index <- setdiff(1:nrow(adult), train_index)
+
+# Build X_train, y_train, X_test, y_test
+X_train <- adult[train_index, -15]
+y_train <- adult[train_index, "income"]
+
+X_test <- adult[test_index, -15]
+y_test <- adult[test_index, "income"]
+```
+
+
+## Filter useless variables
+
+The first thing to do, in order to make computation fast, would be to filter useless variables:
+
+- Constant variables
+- Variables that are in double (for example col1 == col2)
+- Variables that are exact bijections (for example col1 = A, B, B, A and col2 = 1, 2, 2, 1)
+
+Let's id them:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+constant_cols <- whichAreConstant(adult)
+double_cols <- whichAreInDouble(adult)
+bijections_cols <- whichAreBijection(adult)
+```
+
+We only found, one bijection: variable `education_num` which is an index for variable `education`. Let's drop it:
+
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_train$education_num = NULL
+X_test$education_num = NULL
+```
+
+
+## Scaling
+Most machine learning algorithm rather handle scaled data instead of unscaled data.
+
+To perform scaling (meaning setting mean to 0 and standard deviation to 1), function `fastScale` is available. 
+
+Since it is highly recommended to apply same scaling on train and test, you should compute the scales first using the function `build_scales`:
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+scales <- build_scales(dataSet = X_train, cols = c("capital_gain", "capital_loss"), verbose = TRUE)
+print(scales)
+```
+As one can see, those to columns have very different mean and standard deviation. Let's apply scaling on those:
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_train <- fastScale(dataSet = X_train, scales = scales, verbose = TRUE)
+X_test <- fastScale(dataSet = X_test, scales = scales, verbose = TRUE)
+```
+
+And now let's have a look at the result:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+print(head(X_train[, c("capital_gain", "capital_loss")]))
+```
+
+## Discretization
+
+One might want to discretize the variable age, either using an equal freq/width method, or some hand-written bis.
+
+To compute equal freq bins, `build_bins` is available:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+bins <- build_bins(dataSet = X_train, cols = "age", n_bins = 10, type = "equal_freq")
+print(bins)
+```
+
+To make it easy to use, in this package:
+
+- `dataSet` will always denote the data.table on which you want to perform something. 
+- `cols` will always denote the columns on which you want to apply the function. It could also be set to "auto" to apply it on all relevant columns.
+- Some spefic argument could be needed and will be presented in the documentation of each functions.
+
+
+Let's apply our own bins:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_train <- fastDiscretization(dataSet = X_train, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
+X_test <- fastDiscretization(dataSet = X_test, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
+```
+
+Here bins have been defined to compute groups :
+
+- 0 to 18
+- 18 to 25
+- 25 to 45
+- 45 to 62
+- Over 62.
+
+Let's control it:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+print(table(X_train$age))
+```
+
+## Encoding categorical
+One thing to do when you are using some machine learning algorithm such as a logistic regression or a neural network is to encode factor variables. One way to do that is to perform one-hot-encoding. For examples:
+
+ID | var
+---|----
+1  | A
+2  | B
+3  | C
+4  | C
+
+Would become:
+
+ID | var.A | var.B | var.C
+---|-------|-------|-------
+1  | 1     | 0     | 0     
+2  | 0     | 1     | 0     
+3  | 0     | 0     | 1     
+4  | 0     | 0     | 1    
+
+To perform it, one could use `dataPreparation::one_hot_encoder` which uses data.table power to do it in a fast and RAM efficient way.
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_train <- one_hot_encoder(dataSet = X_train, cols = "auto", drop = TRUE, verbose = TRUE)
+X_test <- one_hot_encoder(dataSet = X_test, cols = "auto", drop = TRUE, verbose = TRUE)
+```
+
+This function is called the following way:
+
+- dataSet = X_train: means that it will perform transformation on X_train
+- cols = "auto": means that it will determine by it self which columns to encode (all characters and factor)
+- drop = TRUE: means that it will drop original columns
+- verbose = TRUE: means that it will log to tell you what it is doing.
+
+Even if it's not kept in the log, a progress bar has been created to see if the functions is running and how fast. This progress bar is available in most functions from this package. It can be really helpfull when you are handling really large data sets.
+
+
+Let's check the dimensions of X:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+print("Dimensions of X_train: ")
+print(dim(X_train))
+print("Dimensions of X_test: ")
+print(dim(X_test))
+```
+
+
+## Filtering variables
+Since a lot of columns have been created, a filtering could be relevant:
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+bijections <- whichAreBijection(dataSet = X_train, verbose = TRUE)
+```
+
+It found that column Male is a bijection of column female, that is not surprinsing. Let's drop one of them:
+
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_train$Male = NULL
+X_test$Male = NULL
+```
+
+
+# Controling shape
+Last but not least, it is very important to make sure that `train` and `test` sets have the same shape (for example the same columns).
+
+To make sure of that one could perform the following function:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+X_test <- sameShape(X_test, referenceSet = X_test, verbose = TRUE)
+```
+
+No warning have been raised it's all is ok. 
+
+
+
+# Conclusion
+We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN](https://cran.r-project.org/web/packages/dataPreparation/dataPreparation.pdf))
+
+
+We hope that this package is helpful, that it helped you prepare your data in a faster way.
+
+
+If you would like to give us some feedback, report some issues, add some features to this package, please tell us on [GitHub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
+
