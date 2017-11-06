@@ -168,33 +168,16 @@ identifyDatesFormats <- function(dataSet, formats){
   }
   
   ## Initalization
-  formatFound <- FALSE
-  n_format <- 1
-  N_format <- length(formats)
   
   ## Computation
-  while (!formatFound & n_format <= N_format){
-    # We try to convert and unconvert to see if we found the right format
-    converted <- as.POSIXct(dataSet, format = formats[n_format])
-    # To-do: find a better way to code that
-    un_converted <- format(converted, format = formats[n_format])
+  for (format in formats){
+    converted <- as.POSIXct(dataSet, format = format)
+    un_converted <- format(converted, format = format)
     if (control_date_conversion(un_converted, dataSet)){
-      formatFound <- TRUE
-    }
-    else{ # In a "else" otherwise if we find the format we will always take the second one!
-      n_format <- n_format + 1
+      return(format)
     }
   }
-  
-  ## Wrapp-up
-  if (formatFound){
-    format <- formats[n_format]
-  }
-  else{
-    # Return NULL if we didn't find format
-    format <- NULL
-  }
-  return(format)
+  return(NULL)
 }
 
 
@@ -227,12 +210,18 @@ identifyTimeStampsFormats <- function(dataSet){
 }
 
 ## Control that date is the same (with more checks like: without 0 or tolower? or boths?)
+# To-do find a cleaner way to test all comparaisons
 control_date_conversion <- function(un_converted, original){
   without_0 <- gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
   tolowers <- tolower(un_converted)
   tolowers_without_0 <- tolower(without_0)
-  return(identical(un_converted, original) || identical(without_0, original) || identical(tolowers, original) || identical(tolowers_without_0, original))
+  original_without_spaces <- gsub("(?<=[[:punct:]]).", "", original, perl = TRUE)
+  return(identical(un_converted, original) || identical(without_0, original) || 
+           identical(tolowers, original) || identical(tolowers_without_0, original) || 
+            identical(un_converted, original_without_spaces) || identical(without_0, original_without_spaces) || 
+              identical(tolowers, original_without_spaces) || identical(tolowers_without_0, original_without_spaces))
 }
+
 
 #######################################################################################
 ############################### Unify dates types #####################################
@@ -309,17 +298,20 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
   ## Computation
   # Build list of possible formats
   datesFormats <- NULL
-  for (separator in date_sep){
-    for (year in base_year){
-      for (month in base_month){
-        for (day in base_day){
-          tempList <- c(
-            paste(year, month, day, sep = separator), 
-            paste(year, day, month, sep = separator), 
-            paste(day, month, year, sep = separator), 
-            paste(month, day, year, sep = separator)
-          )
-          datesFormats <- c(datesFormats, tempList)
+  for (separator_1 in date_sep){
+    for (separator_2 in date_sep){
+      for (year in base_year){
+        for (month in base_month){
+          for (day in base_day){
+            tempList <- c(
+              paste(paste(year, month, sep = separator_1), day, sep = separator_2),
+              paste(paste(year, day, sep = separator_1), month, sep = separator_2),
+              paste(paste(day, month, sep = separator_1), year, sep = separator_2),
+              paste(paste(month, day, sep = separator_1), year, sep = separator_2)
+            )
+            
+            datesFormats <- c(datesFormats, tempList)
+          }
         }
       }
     }
@@ -338,6 +330,7 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
   ## Wrapp-up
   return(formats)
 }
+
 
 #######################################################################################
 ############################### Format for parse_date_time ############################
