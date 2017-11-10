@@ -284,12 +284,7 @@ fastIsEqual <- function(object1, object2){
   
   # Comparaison for short object
   if (length(object1) <= 3){ # (length(object1) <= 3) => (maxPower == 0) =>  We check direcly for equality
-    if (any(object1 != object2)){
-      return(FALSE)  
-    }
-    else{
-      return(TRUE)
-    }
+    return(identical(object1, object2))
   }
   
   # Comparaison for long object
@@ -366,7 +361,6 @@ fastMaxNbElt <- function(object, max_n_values = 1){
       return(FALSE)
     }
   }
-  
   
   ## Wrapp-up
   # if every test passed, return TRUE

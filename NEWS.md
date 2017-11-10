@@ -3,8 +3,10 @@ V 0.3.3
 - New features:
 	- New features in existing functions:
 		- *findAndTransFormDates* now recognize date character even if there are multiple separator in date (ex: "2016, Jan-26").
-
+		- *findAndTransFormDates* now recognize date character even if there are leading and tailing white spaces.
+		
 WARNING:
+- *date3* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if there are leading and/or trailing white spaces.
 - *date4* column in *messy_adult* data set has changed in order to illustrate the recognition of date character even if there are multiple separator.
 
 V 0.3.2

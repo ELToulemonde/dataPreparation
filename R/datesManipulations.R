@@ -215,11 +215,15 @@ control_date_conversion <- function(un_converted, original){
   without_0 <- gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
   tolowers <- tolower(un_converted)
   tolowers_without_0 <- tolower(without_0)
-  original_without_spaces <- gsub("(?<=[[:punct:]]).", "", original, perl = TRUE)
-  return(identical(un_converted, original) || identical(without_0, original) || 
-           identical(tolowers, original) || identical(tolowers_without_0, original) || 
-            identical(un_converted, original_without_spaces) || identical(without_0, original_without_spaces) || 
-              identical(tolowers, original_without_spaces) || identical(tolowers_without_0, original_without_spaces))
+  without_first_0 <- sub("^0", "", un_converted)
+  tolowers_without_first_0 <- tolower(without_first_0)
+  un_con_list <- list(un_converted, without_0, tolowers, tolowers_without_0, without_first_0, tolowers_without_first_0)
+  
+  original_with_spaces_after_sep <- gsub("(?<=[[:punct:]]) ", "", original, perl = TRUE)
+  original_trimws <- trimws(original)
+  original_with_spaces_after_sep_trimws <- trimws(original_with_spaces_after_sep)
+  original_list <- list(original, original_with_spaces_after_sep, original_with_spaces_after_sep_trimws, original_trimws)
+  return(any(un_con_list %in% original_list))
 }
 
 

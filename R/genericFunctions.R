@@ -171,7 +171,7 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
 ###################################################################################################
 ## Separators are used in multiple functions, so i put them here!
 getPossibleSeparators <- function(){
-  listOfPossibleSeparator <- c(",", "/", "-", "_", ":")
+  listOfPossibleSeparator <- c(",", "/", "-", "_", ":", " ")
   return(listOfPossibleSeparator)
 }
 

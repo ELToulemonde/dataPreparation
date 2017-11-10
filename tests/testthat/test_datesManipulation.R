@@ -65,6 +65,7 @@ test_that("private function: control_date_conversion ",
           {
             expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-1-2", "1-september-2017")))
             expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-01-02", "01-september-2017")))
+            expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-01-02", "1-september-2017")))
           })
 
 
