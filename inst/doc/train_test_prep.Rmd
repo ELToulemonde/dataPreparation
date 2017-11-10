@@ -34,7 +34,7 @@ In this tutorial the following points are going to be viewed:
 - Applying the same preparation to a testing set,
 - Controling that train and test sets have the same shape.
 
-Using [dataPreparation](https://cran.r-project.org/web/packages/dataPreparation/index.html) package, those sets will be
+Using [dataPreparation](https://CRAN.R-project.org/package=dataPreparation/index.html) package, those sets will be
 
 - fast (since dataPreparation is based on data.table framework and uses some computational tricks)
 - easy (since those functions are packaged and handle most of the situations)
@@ -229,7 +229,7 @@ No warning have been raised it's all is ok.
 
 
 # Conclusion
-We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN](https://cran.r-project.org/web/packages/dataPreparation/dataPreparation.pdf))
+We presented some of the functions of *dataPreparation* package. There are a few more available, plus they have some parameters to make their use easier. So if you liked it, please go check the package documentation (by installing it or on [CRAN]( https://CRAN.R-project.org/package=dataPreparation/dataPreparation.pdf))
 
 
 We hope that this package is helpful, that it helped you prepare your data in a faster way.
