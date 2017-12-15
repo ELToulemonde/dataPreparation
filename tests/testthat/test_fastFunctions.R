@@ -9,7 +9,7 @@ messy_adult$age2 = messy_adult$age # add a double
 
 test_that("fastFilterVariables: ", 
           {
-            expect_equal(ncol(fastFilterVariables(messy_adult, verbose = verbose)), 20)
+			expect_equal(ncol(fastFilterVariables(messy_adult, level = 4, verbose = verbose)), 20)
           })
 
 ## fastRound

@@ -351,6 +351,11 @@ fastIsBijection <- function(object1, object2){
   for (i in 1:maxPower){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
     n1 <- uniqueN(object1[I])
+    n2 <- uniqueN(object2[I])
+    if (n2 != n1){
+      return(FALSE)
+    }
+    
     n12 <- uniqueN(data.frame(object1 = object1[I], object2 = object2[I]))
     
     if (n12 != n1){

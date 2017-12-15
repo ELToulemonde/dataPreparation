@@ -339,7 +339,13 @@ agg_adult <- prepareSet(messy_adult, finalForm = "data.table", key = "country", 
 
 As one can see, every previously steps have been done.
 
+Let's have a look to the result
 
+```{r echo=FALSE, comment="#",  null_prefix=TRUE}
+print(paste0(ncol(agg_adult), " columns have been built; for ", nrow(agg_adult), " countries."))
+kable(cbind(head(agg_adult[,1:7]), data.frame("..." = rep("  ...", 6)))) %>%
+   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12)
+```
 
 # Description
 
