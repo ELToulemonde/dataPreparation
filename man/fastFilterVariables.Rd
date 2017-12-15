@@ -4,10 +4,13 @@
 \alias{fastFilterVariables}
 \title{Filtering useless variables}
 \usage{
-fastFilterVariables(dataSet, keep_cols = NULL, verbose = TRUE, ...)
+fastFilterVariables(dataSet, level = 3, keep_cols = NULL, verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{level}{which columns do you want to filter (1 = constant, 2 = constant and doubles, 3 = constant doubles and bijections, 4 = constant doubles bijections and included)(numeric, default to 3)}
 
 \item{keep_cols}{List of columns not to drop (list of character, default to NULL)}
 

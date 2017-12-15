@@ -30,7 +30,7 @@
 #' head(messy_adult[, .(date1.quarter, date2.quarter)])
 #' @export
 #' @import data.table
-generateFactorFromDate <- function(dataSet, cols, type = "yearmonth", drop = FALSE, verbose = TRUE, ...){
+generateFactorFromDate <- function(dataSet, cols = "auto", type = "yearmonth", drop = FALSE, verbose = TRUE, ...){
   ## Working environement
   function_name <- "generateFactorFromDate"
   
@@ -165,6 +165,7 @@ date_factor <- function(dataSet, type = "yearmonth"){
 #' # Now let's compute
 #' dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"))
 #' @import data.table
+#' @importFrom lubridate is.Date
 #' @export
 generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units = "years", drop = FALSE, verbose = TRUE, ...){
   ## Working environement
@@ -180,7 +181,7 @@ generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units
   ## Initialization
   args <- list(...)
   name_separator <- build_name_separator(args)
-  if (class(analysisDate) == "Date"){
+  if (is.Date(analysisDate)){
     analysisDate <- as.POSIXct(format(analysisDate, "%Y-%m-%d"))
   }
   n_transformed <- 0

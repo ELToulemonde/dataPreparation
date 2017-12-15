@@ -4,8 +4,8 @@
 \alias{generateFactorFromDate}
 \title{Generate factor from dates}
 \usage{
-generateFactorFromDate(dataSet, cols, type = "yearmonth", drop = FALSE,
-  verbose = TRUE, ...)
+generateFactorFromDate(dataSet, cols = "auto", type = "yearmonth",
+  drop = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

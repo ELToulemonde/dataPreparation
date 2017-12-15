@@ -5,6 +5,7 @@
 #'
 #' Delete columns that are constant or in double in your dataSet set.
 #' @param dataSet Matrix, data.frame or data.table
+#' @param level which columns do you want to filter (1 = constant, 2 = constant and doubles, 3 = constant doubles and bijections, 4 = constant doubles bijections and included)(numeric, default to 3)
 #' @param keep_cols List of columns not to drop (list of character, default to NULL)
 #' @param verbose Should the algorithm talk (logical or 1 or 2, default to TRUE)
 #' @param ... optional parameters to be passed to the function when called from another function
@@ -27,7 +28,7 @@
 #' head(df)
 #' @import data.table
 #' @export
-fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
+fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = TRUE, ...){
   ## Working environement
   function_name <- "fastFilterVariables"
   
@@ -35,7 +36,11 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
   is.verbose_levels(verbose, max_level = 2, function_name = function_name)
   keep_cols <- real_cols(dataSet, keep_cols, function_name = function_name)
-  
+  if (! is.numeric(level)){
+    if (level < 1 || level > 4){
+      stop(paste0(function_name, ": level should be 1, 2, 3 or 4."))
+    }
+  }
   ## Initalization
   # Arguments for log
   args <- list(...)
@@ -48,40 +53,64 @@ fastFilterVariables <- function(dataSet, keep_cols = NULL, verbose = TRUE, ...){
   
   ## Computation
   # Delete constant columns
-  if (verbose){
-    printl(function_name, ": I check for constant columns.")
-  }
-  constant_cols <- whichAreConstant(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(constant_cols) > 0){
+  if (level >= 1){
     if (verbose){
-      printl(function_name, ": I delete ", length(constant_cols), " constant column(s) in ", dataName, ".")
+      printl(function_name, ": I check for constant columns.")
     }
-    dataSet[, (constant_cols) := NULL]
-  }
-  # Delete columns in double
-  if (verbose){
-    printl(function_name, ": I check for columns in double.")
-  }
-  double_cols <- whichAreInDouble(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(double_cols) > 0){
-    if (verbose){
-      printl(function_name, ": I delete ", length(double_cols), " column(s) that are in double in ", dataName, ".")
-    }  
-    dataSet[, (double_cols) := NULL]
+    constant_cols <- whichAreConstant(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+    if (length(constant_cols) > 0){
+      if (verbose){
+        printl(function_name, ": I delete ", length(constant_cols), " constant column(s) in ", dataName, ".")
+      }
+      dataSet[, (constant_cols) := NULL]
+    }
   }
   
-  # Delete columns that are bijections
-  if (verbose){
-    printl(function_name, ": I check for columns that are bijections of another column.")
-  }
-  bijection_cols <- whichAreBijection(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
-  if (length(bijection_cols) > 0){
+  # Delete columns in double
+  if (level >= 2){
     if (verbose){
-      printl(function_name, ": I delete ", length(bijection_cols), 
-             " column(s) that are bijections of another column in ", dataName, ".")
-    }  
-    dataSet[, (bijection_cols) := NULL]
+      printl(function_name, ": I check for columns in double.")
+    }
+    double_cols <- whichAreInDouble(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+    if (length(double_cols) > 0){
+      if (verbose){
+        printl(function_name, ": I delete ", length(double_cols), " column(s) that are in double in ", dataName, ".")
+      }  
+      dataSet[, (double_cols) := NULL]
+    }
   }
+  
+  
+  # Delete columns that are bijections
+  if (level >= 3){
+    if (verbose){
+      printl(function_name, ": I check for columns that are bijections of another column.")
+    }
+    bijection_cols <- whichAreBijection(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+    if (length(bijection_cols) > 0){
+      if (verbose){
+        printl(function_name, ": I delete ", length(bijection_cols), 
+               " column(s) that are bijections of another column in ", dataName, ".")
+      }  
+      dataSet[, (bijection_cols) := NULL]
+    }
+  }
+  
+  # Delete columns that are included
+  if (level >= 4){
+    if (verbose){
+      printl(function_name, ": I check for columns that are included in another column.")
+    }
+    included_cols <- whichAreIncluded(dataSet, keep_cols = keep_cols, verbose = verbose >= 2)
+    if (length(included_cols) > 0){
+      if (verbose){
+        printl(function_name, ": I delete ", length(included_cols), 
+               " column(s) that are bijections of another column in ", dataName, ".")
+      }  
+      dataSet[, (included_cols) := NULL]
+    }
+  }
+  
   ## Wrapp up
   return(dataSet)
 }
@@ -310,25 +339,21 @@ fastIsBijection <- function(object1, object2){
   function_name <- "fastIsBijection"
   
   ## Sanity check
-
-  ## Initialization
-  dataSet <- data.table(object1 = object1, object2 = object2)
   
-  # Comparaison for long object
-  nrows <- nrow(dataSet)
+  ## Initialization
+  
+  ## Computation
+  # Concluded that there is bijection if and only if: 
+  # number of unique elements in col1, is equal to the number of unique couples (col1, col2)
+  nrows <- length(object1)
   exp_factor <- 10
-  maxPower <- floor(log(nrows)/log(exp_factor)) + 1
+  maxPower <- floor(log(nrows) / log(exp_factor)) + 1
   for (i in 1:maxPower){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
-    n1 <- uniqueN(dataSet[I, 1])
-    n2 <- uniqueN(dataSet[I, 2])
-    if (n1 != n2){
-      return(FALSE)
-    }
-    temp_data <- dataSet[I, ]
-    temp_data <- temp_data[!duplicated(temp_data), ]
+    n1 <- uniqueN(object1[I])
+    n12 <- uniqueN(data.frame(object1 = object1[I], object2 = object2[I]))
     
-    if (nrow(temp_data) != n1){
+    if (n12 != n1){
       return(FALSE)
     }
   }  
@@ -346,7 +371,6 @@ fastIsBijection <- function(object1, object2){
 # @param max_n_values number of maximal acceptable values in object (numeric, default to 1)
 # @retrun logical.
 fastMaxNbElt <- function(object, max_n_values = 1){
-  
   ## Initialization
   listOfUnique <- NULL
   exp_factor <- 10
