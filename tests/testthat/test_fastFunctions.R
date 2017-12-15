@@ -6,6 +6,7 @@ data("messy_adult")
 # Make it smaller to go faster
 messy_adult <- messy_adult[1:5000, ]
 messy_adult$age2 = messy_adult$age # add a double
+messy_adult$are50OrMore <- messy_adult$age > 50 # Add an included
 
 test_that("fastFilterVariables: ", 
           {
