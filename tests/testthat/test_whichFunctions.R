@@ -65,7 +65,7 @@ messy_adult <- messy_adult[1:5000, ]
 messy_adult$are50OrMore <- messy_adult$age > 50
 test_that("whichAreIncluded: build column", 
           {
-            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(4, 7, 9, 14, 25)))
+            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(3, 5, 7, 13, 25)))
           })
 # As one can, see this column that doesn't have additional info than age is spotted.
 

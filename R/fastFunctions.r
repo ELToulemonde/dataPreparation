@@ -396,3 +396,51 @@ fastMaxNbElt <- function(object, max_n_values = 1){
 }
 
 
+#######################################################################################
+############################### fastIsIncluded ########################################
+#######################################################################################
+## WARNING: this is a project function, it isn't used yet.
+# Concluded that there is inclusion of object2 in object1 if and only if: 
+# number of unique elements in object1, is equal to the number of unique couples (object1, object2)
+# Return either:
+# - NULL if there is no inclusion
+# - 1: if object1 is included in object2
+# - 2: if object2 is included in object1
+# - "bijection": if there is a bijection between object 1 and object2.
+#' @import data.table
+# fastIsIncluded <- function(object1, object2){
+  # ## Working environement
+  # function_name <- "fastIsIncluded"
+  
+  # ## Sanity check
+  
+  # ## Initialization
+  # nrows <- length(object1)
+  # exp_factor <- 10
+  # maxPower <- floor(log(nrows) / log(exp_factor)) + 1
+  # included_1 <- TRUE
+  # included_2 <- TRUE  
+  
+  # ## Computation
+  # for (i in 1:maxPower){
+    # I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
+    # n1 <- uniqueN(object1[I])
+    # n2 <- uniqueN(object2[I])
+    # n12 <- uniqueN(data.frame(object1 = object1[I], object2 = object2[I]))
+    
+    # if (n12 != n1 & n12 != n2){
+      # return(NULL)
+    # }
+    # included_1 <- TRUE & (n12 == n1)
+    # included_2 <- TRUE & (n12 == n2)
+  # }
+  # # If every test passed, it's true
+  # if (included_1 & ! included_2){
+    # return(2)
+  # }
+  # if (included_2 & ! included_1){
+    # return(1)
+  # }
+  # return("bijection")
+# }
+

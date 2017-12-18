@@ -87,3 +87,19 @@ test_that("private function: fastMaxNbElt",
             expect_true(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 5))
           })
 
+
+		  
+## fastIsIncluded
+# ----------------
+# data("messy_adult")
+# messy_adult$ageover50 = messy_adult$age >50
+
+# test_that("private function: fastIsBijection", 
+          # {
+            # expect_equal(fastIsIncluded(messy_adult[["constant"]], messy_adult[["date2"]]),1)
+            # expect_equal(fastIsIncluded(messy_adult[["education_num"]], messy_adult[["education"]]), "bijection")
+            # expect_equal(fastIsIncluded(messy_adult[["age"]], messy_adult[["education"]]), NULL)
+            # expect_equal(fastIsIncluded(messy_adult[["age"]], messy_adult[["ageover50"]]), 2)
+            # expect_equal(fastIsIncluded(messy_adult[["ageover50"]], messy_adult[["ageover50"]]), "bijection")
+            # expect_equal(fastIsIncluded(messy_adult[["ageover50"]], messy_adult[["age"]]), 1)
+          # })

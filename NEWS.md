@@ -1,11 +1,17 @@
 V 0.3.4
 ========
-- Improvement of function whichAreBijection. It is 2 to 15 time faster than previous version.
+- Improvement of function 
+	- *whichAreBijection*: It is 2 to 15 time faster than previous version.
+	- *whichAreIncluded*: It is a bit faster.
 - Bug fixes:
 	- *generateFactorFromDate*: default value was missing. Fixed.
 - New features:
 	- New features in existing functions:
 		- *fastFilterVariables* has a new parameter (level) to choose which types of filtering to perform
+		
+WARNING:
+- *whichAreIncluded*: in case of bijection (col1 is a bijection of col2), they are both included in the other, but the choice of the one to drop might have changed in this version.
+
 V 0.3.3
 ========
 - New features:

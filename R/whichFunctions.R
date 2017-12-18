@@ -53,7 +53,6 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
       }
     }
   }
-  gc(verbose = FALSE)
   
   ## Wrapp-up
   constant_cols <- which(names(dataSet) %in% constant_cols) # To return indexes
@@ -235,59 +234,56 @@ whichAreIncluded <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   is.verbose(verbose)
   keep_cols <- real_cols(dataSet, keep_cols, function_name)
   ## Initialization
-  if (ncol(dataSet) <= 1){ # If there are less than 1 column we do nothing
-    return(NULL)
-  }
   included_cols <- NULL
-  I <- 1:max(ncol(dataSet) - 1, 1) 
   keep_cols_index <- which(names(dataSet) %in% keep_cols)
   if (verbose){
     pb <- initPB(function_name, names(dataSet))
   }
-  nbr_various_val <- sapply(dataSet, uniqueN)
+  # Compute unique values by columns
+  n_unique_vals <- sapply(dataSet, uniqueN)
+  # We take I as sorted colomn index (according to the number of values) since
+  # if there are more element in col1 than in col2, col1 will never be included in col2
+  I <- order(n_unique_vals)[-length(n_unique_vals)] 
   ## Computation # to-do clean it
   while (length(I) > 0){
     i <- I[1]
-    
-    J <- (i+1):ncol(dataSet)
-    J <- J[!J %in% included_cols]
+    I <- I[-1]# drop handled i
+    J <- order(n_unique_vals)[(which(order(n_unique_vals) == i) + 1):length(n_unique_vals)]
     while (length(J) > 0){
       j <- J[1]
+      J <- J[-1] # drop handled j
       if (! all(c(i, j) %in% keep_cols_index)){
-        temp_data <- dataSet[, c(i, j), with = FALSE]
-        temp_data <- temp_data[!duplicated(temp_data)]
+        n_couples <- uniqueN(dataSet[, c(i, j), with = FALSE])
         
-        if (nrow(temp_data) == nbr_various_val[i] & ! j %in% keep_cols_index){
-          included_cols <- c(included_cols, j)
+        if (n_couples == n_unique_vals[j] & ! i %in% keep_cols_index){
+          included_cols <- c(included_cols, i)
           if(verbose){
-            printl(function_name, ": ", names(dataSet)[j], " is included in column ", names(dataSet)[i], ".")
+            printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
+          }
+          break # Break loop since i will be dropped.
+        }
+        else {
+          if (n_couples == n_unique_vals[i] & ! j %in% keep_cols_index){
+            # This is when i and j are bijections and i isn't dropable
+            included_cols <- c(included_cols, j)
+            if(verbose){
+              printl(function_name, ": ", names(dataSet)[j], " is included in column ", names(dataSet)[i], ".")
+            }
           }
         }
-        else{
-          if (nrow(temp_data) == nbr_various_val[j] & ! i %in% keep_cols_index){
-            included_cols <- c(included_cols, i)
-            if(verbose){
-              printl(function_name, ": ", names(dataSet)[i], " is included in column ", names(dataSet)[j], ".")
-            }
-            break # Break loop since i will be dropped.
-          }
-        } 
       }
-      J <- J[-1] # drop handled j
     }
-    I <- I[-1] # drop handled i
-    I <- I[!I %in% included_cols]
     if (verbose){
       setPB(pb, names(dataSet)[i])
     }
   }
-  gc(verbose = FALSE)
   ## Wrapp up
   if (! is.null(included_cols)){
     included_cols <- sort(unique(included_cols))
   }  
   return(included_cols)
 }
+
 
 ###################################################################################################
 ############################### Bi test function  #################################################
