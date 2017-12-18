@@ -36,11 +36,10 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
   is.verbose_levels(verbose, max_level = 2, function_name = function_name)
   keep_cols <- real_cols(dataSet, keep_cols, function_name = function_name)
-  if (! is.numeric(level)){
-    if (level < 1 || level > 4){
-      stop(paste0(function_name, ": level should be 1, 2, 3 or 4."))
-    }
+  if (! is.numeric(level) || level < 1 || level > 4){
+    stop(paste0(function_name, ": level should be 1, 2, 3 or 4."))
   }
+  
   ## Initalization
   # Arguments for log
   args <- list(...)

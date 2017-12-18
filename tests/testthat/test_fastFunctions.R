@@ -11,6 +11,7 @@ messy_adult$are50OrMore <- messy_adult$age > 50 # Add an included
 test_that("fastFilterVariables: ", 
           {
 			expect_equal(ncol(fastFilterVariables(messy_adult, level = 4, verbose = verbose)), 20)
+			expect_error(fastFilterVariables(messy_adult, level = "a", verbose = verbose), ": level should be 1, 2, 3 or 4.")
           })
 
 ## fastRound
