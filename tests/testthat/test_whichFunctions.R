@@ -47,6 +47,7 @@ data("adult")
 test_that("whichAreBijection", 
           {
             expect_equal(whichAreBijection(adult, verbose = verbose), 5)
+			expect_equal(whichAreBijection(adult, keep_cols = "education_num", verbose = verbose), 4)
           })
 
 data("messy_adult")
@@ -66,6 +67,7 @@ messy_adult$are50OrMore <- messy_adult$age > 50
 test_that("whichAreIncluded: build column", 
           {
             expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(3, 5, 7, 13, 25)))
+			expect_identical(whichAreIncluded(messy_adult, keep_cols = "education", verbose = verbose), as.integer(c(3, 5, 7, 14, 25)))
           })
 # As one can, see this column that doesn't have additional info than age is spotted.
 
