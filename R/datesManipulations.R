@@ -141,7 +141,6 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
       setPB(pb, col)
     }
   }
-  gc(verbose = FALSE)
   ## Wrapp-up
   return(list(dates = dates, formats = formats))
 }

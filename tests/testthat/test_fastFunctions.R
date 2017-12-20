@@ -6,10 +6,12 @@ data("messy_adult")
 # Make it smaller to go faster
 messy_adult <- messy_adult[1:5000, ]
 messy_adult$age2 = messy_adult$age # add a double
+messy_adult$are50OrMore <- messy_adult$age > 50 # Add an included
 
 test_that("fastFilterVariables: ", 
           {
-            expect_equal(ncol(fastFilterVariables(messy_adult, verbose = verbose)), 20)
+			expect_equal(ncol(fastFilterVariables(messy_adult, level = 4, verbose = verbose)), 20)
+			expect_error(fastFilterVariables(messy_adult, level = "a", verbose = verbose), ": level should be 1, 2, 3 or 4.")
           })
 
 ## fastRound
@@ -85,3 +87,19 @@ test_that("private function: fastMaxNbElt",
             expect_true(fastMaxNbElt(sample(1:5, 100, replace = TRUE), 5))
           })
 
+
+		  
+## fastIsIncluded
+# ----------------
+# data("messy_adult")
+# messy_adult$ageover50 = messy_adult$age >50
+
+# test_that("private function: fastIsBijection", 
+          # {
+            # expect_equal(fastIsIncluded(messy_adult[["constant"]], messy_adult[["date2"]]),1)
+            # expect_equal(fastIsIncluded(messy_adult[["education_num"]], messy_adult[["education"]]), "bijection")
+            # expect_equal(fastIsIncluded(messy_adult[["age"]], messy_adult[["education"]]), NULL)
+            # expect_equal(fastIsIncluded(messy_adult[["age"]], messy_adult[["ageover50"]]), 2)
+            # expect_equal(fastIsIncluded(messy_adult[["ageover50"]], messy_adult[["ageover50"]]), "bijection")
+            # expect_equal(fastIsIncluded(messy_adult[["ageover50"]], messy_adult[["age"]]), 1)
+          # })
