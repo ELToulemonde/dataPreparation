@@ -33,6 +33,7 @@ messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
 
 test_that("findAndTransformDates: ambiguities", 
           {
+			expect_error(result1 <- findAndTransformDates(copy(messy_adult), verbose =  verbose, ambiguities = 1))
 			expect_warning(result1 <- findAndTransformDates(copy(messy_adult), verbose =  verbose))
             expect_equal(sum(sapply(result1, is.POSIXct)), 4)
 			expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), ambiguities = "WARN", verbose =  verbose), is.POSIXct)), 3)

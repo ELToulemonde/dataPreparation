@@ -18,9 +18,9 @@
 #' they will be considered as timestamps and you might have some issues. On the other side, 
 #' if you have timestamps before 1990-01-01, they won't be found, but you can use 
 #' \code{\link{setColAsDate}} to force transformation.
-#' @section Ambiguity
+#' @section Ambiguity:
 #' Ambiguities are often present in dates. For example, in date: 2017/01/01, there is no way to know
-#'  if format is YYYY/MM/DD or DD/MM/YYYY. \cr
+#'  if format is YYYY/MM/DD or YYYY/DD/MM. \cr
 #' Some times ambiguity can be solved by a human. For example
 #'  17/12/31, a human miight guess that it is YY/MM/DD, but there is no sure way to know.  \cr
 #' To be safe, findAndTransformDates doesn't try to guess ambiguities. \cr
@@ -48,7 +48,7 @@
 #' # Try all three methods:
 #' result_1 = findAndTransformDates(copy(messy_adult))
 #' result_2 = findAndTransformDates(copy(messy_adult), ambiguities = "WARN")
-#' result_3 = findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE")}
+#' result_3 = findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE")
 #' }
 #' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @export

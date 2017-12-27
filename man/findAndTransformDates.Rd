@@ -34,3 +34,39 @@ they will be considered as timestamps and you might have some issues. On the oth
 if you have timestamps before 1990-01-01, they won't be found, but you can use 
 \code{\link{setColAsDate}} to force transformation.
 }
+\section{Ambiguity}{
+
+Ambiguities are often present in dates. For example, in date: 2017/01/01, there is no way to know
+ if format is YYYY/MM/DD or YYYY/DD/MM. \cr
+Some times ambiguity can be solved by a human. For example
+ 17/12/31, a human miight guess that it is YY/MM/DD, but there is no sure way to know.  \cr
+To be safe, findAndTransformDates doesn't try to guess ambiguities. \cr
+To answer ambiguities problem, param \code{ambiguities} is now available. It can take one of the following values
+\itemize{
+\item \code{IGNORE} function will then take the first format which match (fast, but can make some mistakes)
+\item \code{WARN} function will try all format and tell you - via prints - that there are multiple matches (and won't perform date transformation)
+\item \code{SOLVE} function will try to solve ambiguity by going through more lines, so will be slower. 
+If it is able to solve it, it will transform the column, if not it will print the various acceptable formats.
+}
+}
+
+\examples{
+# Load exemple set
+data(messy_adult)
+head(messy_adult)
+# using the findAndTransformDates
+findAndTransformDates(messy_adult, n_test = 5)
+head(messy_adult)
+
+# Example with ambiguities
+\dontrun{
+data(messy_adult) # reload data
+# Add an ambiguity by sorting date1
+messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
+# Try all three methods:
+result_1 = findAndTransformDates(copy(messy_adult))
+result_2 = findAndTransformDates(copy(messy_adult), ambiguities = "WARN")
+result_3 = findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE")
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
+}
