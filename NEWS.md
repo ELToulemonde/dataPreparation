@@ -1,3 +1,9 @@
+V 0.3.5
+=======
+
+- New features:
+	- New features in existing functions:
+		- *findAndTransFormDates* now as an *ambiguities* parameter, IGNORE to work as before, WARN to check for ambiguities and print them, SOLVE to try to solve ambiguities on more lines. (NB: with SOLVE, *n_test* becomes a not needed user parameter)	
 V 0.3.4
 ========
 - Improvement of function 

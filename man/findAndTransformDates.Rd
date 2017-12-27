@@ -5,7 +5,7 @@
 \title{Identify date columns}
 \usage{
 findAndTransformDates(dataSet, formats = NULL, n_test = 30,
-  verbose = TRUE)
+  ambiguities = "IGNORE", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -13,6 +13,9 @@ findAndTransformDates(dataSet, formats = NULL, n_test = 30,
 \item{formats}{List of additional Date formats to check (see \code{\link{strptime}})}
 
 \item{n_test}{Number of non-null rows on which to test (numeric, default to 30)}
+
+\item{ambiguities}{How ambiguities should be treated (see details in ambiguities section)
+(character, default to IGNORE)}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
@@ -30,12 +33,4 @@ In the unlikely case where you have numeric higher than \code{as.numeric(as.POSI
 they will be considered as timestamps and you might have some issues. On the other side, 
 if you have timestamps before 1990-01-01, they won't be found, but you can use 
 \code{\link{setColAsDate}} to force transformation.
-}
-\examples{
-# Load exemple set
-data(messy_adult)
-head(messy_adult)
-# using the findAndTransformDates
-findAndTransformDates(messy_adult, n_test = 5)
-head(messy_adult)
 }

@@ -28,6 +28,17 @@ test_that("findAndTransformDates: no dates to find",
             expect_true(all(sapply(data_transformed, function(x)class(x)[1]) == c("numeric", "numeric", "numeric", "numeric", "factor")))
           })
 
+data("messy_adult")
+messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
+
+test_that("findAndTransformDates: ambiguities", 
+          {
+			expect_warning(result1 <- findAndTransformDates(copy(messy_adult), verbose =  verbose))
+            expect_equal(sum(sapply(result1, is.POSIXct)), 4)
+			expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), ambiguities = "WARN", verbose =  verbose), is.POSIXct)), 3)
+			expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE", verbose =  verbose), is.POSIXct)), 4)
+          })
+		
 ## identifyDates
 #---------------
 test_that("private function identifyDates :",
