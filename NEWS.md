@@ -5,9 +5,11 @@ V 0.3.5
 	- New features in existing functions:
 		- *findAndTransFormDates* now as an *ambiguities* parameter, IGNORE to work as before, WARN to check for ambiguities and print them, SOLVE to try to solve ambiguities on more lines. (NB: with SOLVE, *n_test* becomes a not needed user parameter)	
 		- *one_hot_encoder* now uses a *build_encoding* functions to be able to build same encoding on train and on test.
-		
+		- *aggregateByKey* is now way faster on numerics. But it changed the way it gets input functions.
 WARNING:
 - *one_hot_encoder* now requires you to run *build_encoding* first.
+- *aggregateByKey* now require functions to be passed by character name
+		
 		
 V 0.3.4
 ========

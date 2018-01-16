@@ -113,6 +113,9 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
   ## Initialization
   # Transform char into factor
   if (is.null(encoding)){
+    if (verbose){
+	  printl(function_name, ": Since you didn't profvide encoding, I compute them with build_encoding.")
+    }
     encoding <- build_encoding(dataSet, cols = "auto", verbose = verbose)
   }
   cols <- names(encoding)
@@ -215,7 +218,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, ...){
   }
   if (verbose){
     printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
-           "s to compute encding for ", length(cols), " character and factor columns.")
+           "s to compute encoding for ", length(cols), " character and factor columns.")
   }
   ## Wrapp-up
   return(encoder)
