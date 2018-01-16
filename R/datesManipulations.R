@@ -22,7 +22,7 @@
 #' Ambiguities are often present in dates. For example, in date: 2017/01/01, there is no way to know
 #'  if format is YYYY/MM/DD or YYYY/DD/MM. \cr
 #' Some times ambiguity can be solved by a human. For example
-#'  17/12/31, a human miight guess that it is YY/MM/DD, but there is no sure way to know.  \cr
+#'  17/12/31, a human might guess that it is YY/MM/DD, but there is no sure way to know.  \cr
 #' To be safe, findAndTransformDates doesn't try to guess ambiguities. \cr
 #' To answer ambiguities problem, param \code{ambiguities} is now available. It can take one of the following values
 #' \itemize{
@@ -42,6 +42,7 @@
 #' 
 #' # Example with ambiguities
 #' \dontrun{
+#' require(data.table)
 #' data(messy_adult) # reload data
 #' # Add an ambiguity by sorting date1
 #' messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)

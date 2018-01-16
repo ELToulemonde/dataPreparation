@@ -27,8 +27,17 @@ test_that("generateFromFactor: drop: ",
 ## one_hot_encoder
 # ----------------
 data(adult)
-res <- one_hot_encoder(adult, "auto", drop = TRUE, verbose = verbose)
+setDT(adult)
+encoding = build_encoding(adult)
+
+
+
+res <- one_hot_encoder(adult, encoding = encoding, drop = TRUE)
+
+one_hot_encoder(adult, "auto", drop = TRUE, verbose = verbose)
 test_that("one_hot_encoder: ",
           {
+            expect_equal(length(names(encoding)), 9)
             expect_equal(ncol(res), 110)
+            
           })

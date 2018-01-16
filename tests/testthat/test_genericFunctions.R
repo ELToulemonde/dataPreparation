@@ -27,12 +27,12 @@ test_that("findNFirstNonNull: not enough not NAs values",
           })
 ## checkAndReturnDataTable
 #-------------------------
-data("iris")
+data("adult")
 test_that("checkAndReturnDataTable", 
           {
-            expect_true(is.data.table(checkAndReturnDataTable(iris)))
-            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(iris))))
-            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(iris))))
+            expect_true(is.data.table(checkAndReturnDataTable(adult)))
+            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(adult))))
+            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(adult))))
             
             expect_error(checkAndReturnDataTable("a"))
             expect_error(checkAndReturnDataTable(1))
@@ -113,12 +113,16 @@ test_that("control_nb_rows:",
 
 ## true.aggFunction
 # -----------------
+b = 1
+attach(list(b=b)) # A bit ugly, but i don't know how to do it another way.
+
 test_that("true.aggFunction:", 
           {
-            expect_warning(result <- true.aggFunction(list(sum = sum, a = "a")), " is not a function, it wont be used.")
+            expect_error(result <- true.aggFunction(list(sum, "sum")),  "functions should be a list of names")
+			expect_warning(result <- true.aggFunction(list("sum", "a")), " doesn't exist, it wont be used.")
+            expect_warning(result <- true.aggFunction(list("sum", "b")), " is not a function, it wont be used.")
             expect_equal(length(result), 1)
           })
-
 
 ## function.maker
 # ---------------

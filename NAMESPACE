@@ -2,6 +2,7 @@
 
 export(aggregateByKey)
 export(build_bins)
+export(build_encoding)
 export(build_scales)
 export(dateFormatUnifier)
 export(description)

@@ -327,8 +327,9 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
           if (! col_j %in% keep_cols & !is.character(dataSet[[col_j]])){
             result_list <- c(result_list, col_j)
             if (verbose){
-              printl(function_name, ": ", col_j, test_log, col_i, ". I put it in drop list.")  
-            }
+              printl(function_name, ": ", col_j, test_log, col_i, ". I put it in drop list.") 
+			  setPB(pb, col_j) # Add a tick since col_j is going to be dropped
+			}
             col_I <- col_I[col_I != col_j] # Drop it from search list
           }
           else{ # Drop i

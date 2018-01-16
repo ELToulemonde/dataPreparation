@@ -6,7 +6,7 @@
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @param thresh Number of max values for frequencies count (numerical, default to 53)
 #' @param ... Optional argument: \code{functions}:  aggregation functions for numeric columns 
-#' (vector of function, optional, if not set we use: c(mean, min, max, sd))
+#' (vector of function names (character), optional, if not set we use: c("mean", "min", "max", "sd"))
 #' @details
 #' Perform aggregation depending on column type:
 #' \itemize{
@@ -30,7 +30,7 @@
 #'
 #' # Exmple with other functions
 #' power <- function(x){sum(x^2)}
-#' adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c(power, sqrt))
+#' adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c("power", "sqrt"))
 #' 
 #' # sqrt is not an aggregation function, so it wasn't used.
 #' @import data.table
@@ -55,55 +55,32 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   
   ## Initialization
   # Make an nice list of functions
-  functions <- c(mean = mean, min = min, max = max, sd = sd)
+  functions <- c("mean", "min", "max", "sd")
   if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
-    # Make as vector
-    if (! is.vector(functions)){
-      store_name <-  as.character(match.call()$functions)
-      functions <- c(functions)
-      names(functions) <- store_name
-    }
-    
-    functions <- unique(functions)
-    
-    # If functions have no names, give one
-    if (!is.null(args[["listNames"]])){ # passed by prepareSet
-      # This is a bit ugly, but since we are retriving function name depending on how function was called, we need to get the names from first function.
-      listNames <- as.character(args[["listNames"]])
-    }
-    else{
-      listNames <- as.character(match.call()$functions)
-    }
-    if (is.null(names(functions))){
-      names(functions) <- listNames[! listNames %in% c("c", "list")]
-    }
-    # If some functions still have no name, put fun1, fun2...
-    if (any(names(functions) == "")){
-      names(functions)[names(functions) == ""] <- paste0("fun", 1:sum(names(functions) == ""))
-    }
-    
-    functions <- true.aggFunction(functions, function_name)
   }
+  functions <- true.aggFunction(functions, function_name)
   name_separator <- build_name_separator(args)
-  
-  
-  # identification of nbr of element per column
-  uniqueN_byCol <- lapply(dataSet, uniqueN)
   
   ## Aggregation
   # If there are more lines than unique key: we aggregate
-  if (nrow(dataSet) != uniqueN_byCol[key]){ 
+  if (nrow(dataSet) != uniqueN(dataSet[[key]])){ 
     result <- dataSet[, .N, by = key]
     setnames(result, "N", "nbrLines")
+    unique_keys <- result[, key, with = FALSE]
     if (verbose){
       printl(function_name, ": I start to aggregate")
       pb <- initPB(function_name, names(dataSet))
       start_time <- proc.time()
     }
     for (col in colnames(dataSet)[colnames(dataSet) != key]){ # we don't aggregate the key!
-      data_sample <- dataSet[, c(key, col), with = FALSE] # To save some RAM
-      result_tmp <- aggregateAcolumn(data_sample, col, key, uniqueN_byCol, name_separator, functions, thresh)
+      result_tmp <- aggregateAcolumn(dataSet = dataSet[, c(key, col), with = FALSE], 
+                                     col = col, 
+                                     key = key, 
+                                     unique_keys = unique_keys,
+                                     name_separator = name_separator, 
+                                     functions = functions, 
+                                     thresh = thresh)
       result <- merge(result, result_tmp, by = key, all.x = TRUE)
       if (verbose){
         setPB(pb, col)
@@ -122,10 +99,6 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
 }
 
 
-
-
-
-
 ###########################################################################
 ##################### aggregateAcolumn ####################################
 ###########################################################################
@@ -137,55 +110,61 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
 # @param dataSet Matrix, data.frame or data.table
 # @param col name of the column to aggregate
 # @param key name of the key according to which aggregation should be performed
-# @param numberOfUniqueEltPerCol
+# @param unique_keys Unique keys in set (to avoid recomputing it)
 # @param name_separator
-# @param aggregation functions for numeric columns
+# @param functions functions for numeric columns
 # @param thresh number of max distinct values for frequencies count
 # @
 # @export # Before exporting this function should be improved!
-aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = ".", 
+aggregateAcolumn <- function(dataSet, col, key, unique_keys, name_separator = ".", 
                              functions, thresh = 53, ...){
   ## Environement
   function_name <- "aggregateAcolumn"
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.col(dataSet, cols = c(key, col), function_name = function_name)
-  
+  if (ncol(dataSet) != 2){
+    stop(paste0(function_name, ": dataSet should have 2 columns. (This is a private function)."))
+  }
   ## Initialization
-  maxNbValuePerKey <- max(dataSet[, uniqueN(get(col)), by = key][, -key, with = FALSE])
+  maxNbValuePerKey <- max(unique(dataSet)[, .N, by = key]$N)
   
   ## Computation 
-  if (maxNbValuePerKey > 1 ){
-    result_tmp <- unique(dataSet[, key, with = FALSE])
+  if (maxNbValuePerKey > 1){
+    result_tmp <- copy(unique_keys) # copy because it's a data.table, otherwise it append it
     ## Aggregation of numerics
     if (is.numeric(dataSet[[col]])){ 
       # To-do: if there is a constant nbr of value for each line consider make
       # them columns
       # To-do: if there is a small amount of values: factorize
-      for(fct in names(functions)){
-        new_col <- paste(fct, col, sep = name_separator)
-        set(result_tmp, NULL, new_col, dataSet[, functions[[fct]](get(col)), by = key][, - key, with = FALSE])
-        
-        if (fct == "sd"){
-          # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0
-          set(result_tmp, which(is.na(result_tmp[[new_col]])), new_col, 0) 
-        }
+      code = "result_tmp = dataSet[, .("
+      for (fct in functions){
+        code = paste0(code, paste(fct, col, sep = name_separator), "=", fct, "(get(col)), ")
       }
-      
+      if (length(functions) > 0){
+        code = substr(code, start = 1, stop = nchar(code) - 2)
+      }
+      code = paste0(code, "), by = key]")
+      try(eval(parse(text = code)))
+      if ("sd" %in% functions){
+        # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0
+        new_col <- paste("sd", col, sep = name_separator)
+        set(result_tmp, which(is.na(result_tmp[[new_col]])), new_col, 0) 
+      }
       
     }
     ## aggregation of character (categorical or non-categorical)
     if (is.character(dataSet[[col]]) || is.factor(dataSet[[col]])){
-      if (uniqueN_byCol[col] < thresh){ 
-        result_tmp <- dcast.data.table(dataSet[, c(key, col), with = FALSE], 
+      if (fastMaxNbElt(dataSet[[col]], max_n_values = thresh)){ 
+        result_tmp <- dcast.data.table(dataSet, 
                                        formula = paste(key, col, sep = "~"), 
                                        fun.aggregate = length,
                                        value.var = col
         )
         setnames(result_tmp, c(key, paste(col, colnames(result_tmp)[-1], sep = name_separator)))
       }
-      if (uniqueN_byCol[col] >= thresh){
-        result_tmp <- dataSet[, c(key, col), with = FALSE][, .N, by = key]
+      else{
+        result_tmp <- dataSet[, .N, by = key]
         setnames(result_tmp, c(key, paste("nbr", col, sep = name_separator)))
       }
     }
@@ -198,8 +177,7 @@ aggregateAcolumn <- function(dataSet, col, key, uniqueN_byCol, name_separator = 
   }
   if (maxNbValuePerKey == 1){
     # Only one different value by key: we put the value one time by key.
-    result_tmp <- dataSet[, c(key, col), with = FALSE] # drop potentially unwanted columns
-    result_tmp <- result_tmp[!duplicated(result_tmp), ]
+    result_tmp <- unique(dataSet)
   }
   
   ## Wrapp up

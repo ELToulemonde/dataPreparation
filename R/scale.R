@@ -25,7 +25,7 @@ build_scales <- function(dataSet, cols = "auto", verbose = TRUE){
   ## Initialization
   if (verbose){
     pb <- initPB(function_name, cols)
-    printl(function_name, ": I will compute scale ", length(cols), " numeric columns.")
+    printl(function_name, ": I will compute scale on  ", length(cols), " numeric columns.")
     start_time <- proc.time()
   }
   scales <- list()

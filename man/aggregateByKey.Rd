@@ -16,7 +16,7 @@ aggregateByKey(dataSet, key, verbose = TRUE, thresh = 53, ...)
 \item{thresh}{Number of max values for frequencies count (numerical, default to 53)}
 
 \item{...}{Optional argument: \code{functions}:  aggregation functions for numeric columns 
-(vector of function, optional, if not set we use: c(mean, min, max, sd))}
+(vector of function names (character), optional, if not set we use: c("mean", "min", "max", "sd"))}
 }
 \value{
 A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
@@ -47,7 +47,7 @@ adult_aggregated <- aggregateByKey(adult, key = 'country')
 
 # Exmple with other functions
 power <- function(x){sum(x^2)}
-adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c(power, sqrt))
+adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c("power", "sqrt"))
 
 # sqrt is not an aggregation function, so it wasn't used.
 }
