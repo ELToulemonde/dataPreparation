@@ -58,6 +58,14 @@ test_that("is.verbose_levels: control input",
             expect_error(is.verbose_levels(3, max_level = 2))
           })
 
+## is.share
+# ---------
+test_that("is.share: control input",
+          {
+            expect_error(is.share("a"))
+            expect_error(is.share(3))
+          })
+
 ## dataSet
 #---------
 
@@ -69,6 +77,7 @@ expect_error(is.col(1, cols = "b"), "is.col: dataSet should be a data.table, dat
 
 ## real_cols 
 # ----------
+rm(adult)
 data("adult")
 data("messy_adult")
 messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
@@ -115,7 +124,6 @@ test_that("control_nb_rows:",
 # -----------------
 b = 1
 attach(list(b=b)) # A bit ugly, but i don't know how to do it another way.
-
 test_that("true.aggFunction:", 
           {
             expect_error(result <- true.aggFunction(list(sum, "sum")),  "functions should be a list of names")

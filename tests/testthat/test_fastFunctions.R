@@ -41,6 +41,7 @@ test_that("fastHandleNa: There are no more NAs",
             expect_equal(sum(is.na(data_withoutNA)), 0)
           })
 
+rm(messy_adult)
 data("messy_adult")
 messy_adult$mail[sample(1:nrow(messy_adult), 10)] = NA
 messy_adult <- fastHandleNa(messy_adult)
@@ -51,6 +52,7 @@ test_that("fastHandleNa: There are no more NAs with factor",
 
 ## fastIsEqual
 #--------------
+rm(messy_adult)
 data("messy_adult")
 
 test_that("private function: fastIsEqual", 

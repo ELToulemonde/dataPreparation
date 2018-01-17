@@ -22,6 +22,7 @@ test_that("setAsNumericMatrix: ",
             expect_error(setAsNumericMatrix(messy_adult), "some columns are not numerical/logical/factor. Consider using shapeSet()")
           })
 
+rm(adult)
 data("adult")
 adult <- shapeSet(adult, verbose = FALSE, finalForm = "data.table")
 

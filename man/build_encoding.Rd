@@ -4,7 +4,8 @@
 \alias{build_encoding}
 \title{Compute encoding}
 \usage{
-build_encoding(dataSet, cols = "auto", verbose = TRUE, ...)
+build_encoding(dataSet, cols = "auto", verbose = TRUE, min_frequency = 0,
+  ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -13,6 +14,9 @@ build_encoding(dataSet, cols = "auto", verbose = TRUE, ...)
 characters, set it to "auto". (character, default to "auto")}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
+
+\item{min_frequency}{The minimal share of lines that a category should represent (numeric, 
+between 0 and 1, default to 0)}
 
 \item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
 (character, default to ".")}
@@ -24,10 +28,21 @@ and values the new columns that will be built during encoding.
 \description{
 Build a list of one hot encoding for each \code{cols}.
 }
+\details{
+To avoid creating really large sparce matrices, one can use  param \code{min_frequency} to be
+ sure that only most representative values will be used to create a new column (and not 
+ outlayers or mistakes in data). \cr
+ Setting \code{min_frequency} to something gretter than 0 may cause the function to be slower 
+ (especially for large dataSet).
+}
 \examples{
 # Get a data set
 data(adult)
 encoding <- build_encoding(adult, cols = "auto", verbose = TRUE)
 
 print(encoding)
+
+# To limit the number of generated columns, one can use min_frequency parameter:
+build_encoding(adult, cols = "auto", verbose = TRUE, min_frequency = 0.1)
+# Set to 0.1, it will create columns only for values that are present 10\% of the time.
 }

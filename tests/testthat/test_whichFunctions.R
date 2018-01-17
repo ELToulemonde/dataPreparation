@@ -50,6 +50,7 @@ test_that("whichAreBijection",
 			expect_equal(whichAreBijection(adult, keep_cols = "education_num", verbose = verbose), 4)
           })
 
+rm(messy_adult)
 data("messy_adult")
 test_that("whichAreBijection: exceptions", 
           {
@@ -58,7 +59,7 @@ test_that("whichAreBijection: exceptions",
 
 ## whichAreIncluded
 # ------------------
-
+rm(messy_adult)
 data(messy_adult)
 
 # Reduce it to make it faster

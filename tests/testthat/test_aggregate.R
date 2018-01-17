@@ -21,7 +21,7 @@ test_that("aggegateByKey: add function",
           {
             expect_equal(ncol(adult_aggregated), 100)
 			expect_true(all(adult_aggregated$country2 == adult_aggregated$country))
-			expect_equal(nrow(aggregateByKey(adult, key = "id", verbose = verbose)), store_nrow)
+			expect_equal(nrow(aggregateByKey(copy(adult), key = "id", verbose = verbose)), store_nrow)
           })
 
 
@@ -32,7 +32,7 @@ messy_adult <- messy_adult[1:5000, ]
 messy_adult <- unFactor(messy_adult, verbose = FALSE)
 messy_adult <- findAndTransformNumerics(messy_adult, verbose = FALSE)
 messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
-test_that("aggegateByKey: testing execptions",
+test_that("aggegateByKey: testing exceptions",
           {
             expect_error(aggregateByKey(copy(adult), key = 1, verbose = verbose), ": key should be a character, you provided a ")
 			expect_warning(aggregateByKey(copy(adult), key = "country", functions = c("power", "sqrt"), verbose = verbose))

@@ -97,6 +97,7 @@ test_that("setColAsFactor:",
             expect_true(is.factor(messy_adult[["education"]]))
           })
 
+rm(messy_adult)
 data("messy_adult")
 messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
 messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = -1, verbose = verbose)
@@ -105,6 +106,7 @@ test_that("setColAsFactor:",
             expect_true(is.factor(messy_adult[["education"]]))
           })
 
+rm(messy_adult)
 data("messy_adult")
 messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
 test_that("setColAsFactor: unchanged if too many factors", 
@@ -112,6 +114,3 @@ test_that("setColAsFactor: unchanged if too many factors",
             expect_error(setColAsFactor(messy_adult, cols = c("education"), n_levels = "a", verbose = verbose), ": n_levels should be an integer.")
             expect_true(is.character(messy_adult[["education"]]))
           })					   
-
-
-

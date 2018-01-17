@@ -80,6 +80,15 @@ is.verbose_levels <- function(verbose, function_name = "is.verbose", max_level =
   }
 }
 
+is.share <- function(variable, variable_name = "variable", function_name = "is.share"){
+  if (! is.numeric(variable)){
+    stop(function_name, ": ", variable_name, " should be a numeric between 0 and 1.")
+  }
+  if (variable <0 || variable > 1){
+    stop(function_name, ": ", variable_name, " should be a numeric between 0 and 1.")
+  }
+}
+
 ###################################################################################################
 ########################################## check if col is in dataset #############################
 ###################################################################################################

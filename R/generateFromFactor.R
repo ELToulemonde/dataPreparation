@@ -87,7 +87,7 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 #' @return \code{dataSet} edited by \strong{reference} with new columns. 
 #' @details If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
 #' Please \strong{be carefull} using this function, it will generate as many columns as there different values 
-#' in your column and might use a lot of RAM.
+#' in your column and might use a lot of RAM. To be safe, you can use parameter \code{min_frequency} in \code{\link{build_encoding}}.
 #' @examples
 #' data(messy_adult)
 #' 
@@ -165,8 +165,16 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
 #' @param cols List of numeric column(s) name(s) of dataSet to transform. To transform all 
 #' characters, set it to "auto". (character, default to "auto")
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @param min_frequency The minimal share of lines that a category should represent (numeric, 
+#' between 0 and 1, default to 0)
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
+#' @details 
+#' To avoid creating really large sparce matrices, one can use  param \code{min_frequency} to be
+#'  sure that only most representative values will be used to create a new column (and not 
+#'  outlayers or mistakes in data). \cr
+#'  Setting \code{min_frequency} to something gretter than 0 may cause the function to be slower 
+#'  (especially for large dataSet).
 #' @return A list where each element name is a column name of data set and each element new_cols 
 #' and values the new columns that will be built during encoding.
 #' @examples 
@@ -175,8 +183,12 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
 #' encoding <- build_encoding(adult, cols = "auto", verbose = TRUE)
 #' 
 #' print(encoding)
+#' 
+#' # To limit the number of generated columns, one can use min_frequency parameter:
+#' build_encoding(adult, cols = "auto", verbose = TRUE, min_frequency = 0.1)
+#' # Set to 0.1, it will create columns only for values that are present 10% of the time.
 #' @export
-build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, ...){
+build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency = 0, ...){
   ## Working environement
   function_name <- "build_encoding"
   
@@ -184,6 +196,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, ...){
   dataSet <- checkAndReturnDataTable(dataSet)
   cols <- real_cols(dataSet, cols, function_name, types = c("factor", "character"))
   is.verbose(verbose)
+  is.share(min_frequency, variable_name = "min_frequency", function_name = function_name)
   
   ## Initialization
   if (verbose){
@@ -200,10 +213,15 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, ...){
   for (col in cols){
     # Build columns with 0 value (it save time to pre-set the columns)
     if (is.factor(dataSet[[col]])){
-      values = levels(dataSet[[col]])
+      values <- levels(dataSet[[col]])
     }
     else{
-      values = unique(dataSet[[col]])
+      values <- unique(dataSet[[col]])
+    }
+    if (min_frequency > 0 ){
+      frequency <- dataSet[, .N / nrow(dataSet), by = col]
+      to_drop <- frequency[V1 < min_frequency, ][[col]] # V1 is the column created in frequency
+      values <- setdiff(values, to_drop)
     }
     new_cols <- paste0(col, name_separator, values)
     new_cols <- sapply(new_cols, function(x)make_new_col_name(x, names(dataSet)))

@@ -26,7 +26,7 @@ Transform factor column into 0/1 columns with one column per values of the colum
 \details{
 If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
 Please \strong{be carefull} using this function, it will generate as many columns as there different values 
-in your column and might use a lot of RAM.
+in your column and might use a lot of RAM. To be safe, you can use parameter \code{min_frequency} in \code{\link{build_encoding}}.
 }
 \examples{
 data(messy_adult)
