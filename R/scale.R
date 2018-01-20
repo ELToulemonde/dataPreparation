@@ -108,3 +108,77 @@ fastScale <- function(dataSet, scales = NULL, verbose = TRUE){
   ## Wrapp-up
   return(dataSet)
 }
+#' unScale
+#' 
+#' Perform efficient unScaling of the scaled data set which will be output of \code{\link{fastScale}}.
+#' @param dataSet Matrix, data.frame or data.table, output of \code{\link{fastScale}}
+#' @param scales Result of funcion \code{\link{build_scales}}. \cr
+#' To perform the same unscaling on train and test, it is compulsory to compute \code{\link{build_scales}}
+#' before.
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return \code{dataSet} with columns unScaled by \strong{reference}, this will make the overall 
+#' values back to actual values, that were before the scale.
+#' @details unScaling numeric values is very usefull for most post-model analysis
+#' @examples 
+#' # Load data
+#' data(adult)
+#' 
+#' # compute scales
+#' scales <- build_scales(adult, cols = "auto", verbose = TRUE)
+#' 
+#' originalAgeMean = mean(adult$age) 
+#' originalAgeSD   = sd(adult$age)
+#' 
+#' # Scale data set
+#' adult <- fastScale(adult, scales = scales, verbose = TRUE)
+#' 
+#' # Control
+#' print(mean(adult$age)) # Almost 0
+#' print(sd(adult$age)) # 1
+#' 
+#' adult <- fastUnScale(adult, scales = scales, verbose = TRUE)
+#' 
+#' mean(adult$age) == originalAgeMean # TRUE
+#' sd(adult$age)   == originalAgeSD   # TRUE
+#' @export
+fastUnScale <- function(dataSet, scales, verbose = TRUE){
+  ## Working environement
+  function_name <- "fastUnScale"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.verbose(verbose)
+  
+  ## Initialization
+  # Build scale
+  if (is.null(scales)){
+    scales <- build_scales(dataSet, cols = "auto", verbose = verbose)
+  }
+  cols <- names(scales)
+  cols <- real_cols(dataSet, cols, function_name, types = "numeric")
+  # verbose
+  
+  if (verbose){
+    pb <- initPB(function_name, cols)
+    printl(function_name, ": I will un-scale ", length(cols), " numeric columns.")
+    start_time <- proc.time()
+  }
+  ## Computation
+  thresh <- 10^-2
+  for (col in cols){
+    if(abs(sd(dataSet[[col]]) - 1) < thresh & mean(dataSet[[col]]) < thresh){
+      set(dataSet, NULL, col, (dataSet[[col]] * scales[[col]][["sd"]]) + scales[[col]][["mean"]])
+    }
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)  
+    }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to scale ", length(cols), " numeric columns.")
+  }
+  ## Wrapp-up
+  return(dataSet)
+}
+
