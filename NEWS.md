@@ -1,11 +1,8 @@
-V 0.3.6
-=======
-- New features:
-  - *fastUnScale* to scale back the already scaled *numeric* columns to get the original dataSet after building the model. 
-
 V 0.3.5
 =======
 - New features:
+    - New function[s]:
+        - *fastUnScale* to scale back the already scaled *numeric* columns to get the original dataSet after building the model. 
 	- New features in existing functions:
 		- *findAndTransFormDates* now as an *ambiguities* parameter, IGNORE to work as before, WARN to check for ambiguities and print them, SOLVE to try to solve ambiguities on more lines. (NB: with SOLVE, *n_test* becomes a not needed user parameter)	
 		- *one_hot_encoder* now uses a *build_encoding* functions to be able to build same encoding on train and on test.
