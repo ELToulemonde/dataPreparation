@@ -40,8 +40,7 @@ generateFactorFromDate <- function(dataSet, cols = "auto", type = "yearmonth", d
   is.verbose(verbose)
   
   ## Initialization
-  args <- list(...)
-  name_separator <- build_name_separator(args)
+  name_separator <- build_name_separator(list(...))
   start_time <- proc.time()
   
   ## Computation
@@ -179,8 +178,7 @@ generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units
   cols <- real_cols(dataSet, cols, function_name, types = "date")
 
   ## Initialization
-  args <- list(...)
-  name_separator <- build_name_separator(args)
+  name_separator <- build_name_separator(list(...))
   if (is.Date(analysisDate)){
     analysisDate <- as.POSIXct(format(analysisDate, "%Y-%m-%d"))
   }

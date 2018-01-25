@@ -25,9 +25,11 @@ test_that("findNFirstNonNull: not enough not NAs values",
           {
             expect_equal(length(findNFirstNonNull(c("A", "B", NA, NA), 3)), 2)
           })
+
 ## checkAndReturnDataTable
 #-------------------------
 data("adult")
+setDT(adult)
 test_that("checkAndReturnDataTable", 
           {
             expect_true(is.data.table(checkAndReturnDataTable(adult)))
@@ -51,11 +53,12 @@ test_that("is.verbose: control input",
             expect_error(is.verbose("a"))
           })
 
-
+## is.verbose_levels
+# ------------------
 test_that("is.verbose_levels: control input",
           {
-            expect_error(is.verbose_levels("a"))
-            expect_error(is.verbose_levels(3, max_level = 2))
+            expect_error(is.verbose_level("a"))
+            expect_error(is.verbose_level(3, max_level = 2))
           })
 
 ## is.share
@@ -66,51 +69,51 @@ test_that("is.share: control input",
             expect_error(is.share(3))
           })
 
-## dataSet
-#---------
-
+## is.col
+#--------
 dataSet <- data.table(a = "1")
-is.col(dataSet, cols = "a")
-
-expect_error(is.col(dataSet, cols = "b"), ". should be column of dataSet")
-expect_error(is.col(1, cols = "b"), "is.col: dataSet should be a data.table, data.frame or matrix")
+test_that("is.col: ",
+          {
+            expect_null(is.col(dataSet, cols = "a"))
+            expect_error(is.col(dataSet, cols = "b"), ". should be column of dataSet")
+            expect_error(is.col(1, cols = "b"), "is.col: dataSet should be a data.table, data.frame or matrix")
+          })
 
 ## real_cols 
 # ----------
-rm(adult)
 data("adult")
-data("messy_adult")
-messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
+date_set <- data.frame(date_col = as.Date( c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31")))
 test_that("real_cols:",
           {
             expect_equal(length(real_cols(adult, c("education", "asucgzr"))), 1)
             expect_equal(real_cols(adult, cols = "auto"), colnames(adult))
-			expect_null(real_cols(adult, cols = NULL))
-			expect_null(real_cols(adult, cols = character(0)))
+            expect_null(real_cols(adult, cols = NULL))
+            expect_null(real_cols(adult, cols = character(0)))
             expect_identical(real_cols(adult, cols = "auto", types = c("numeric", "integer")), c("age", "fnlwgt", "education_num", "capital_gain", "capital_loss", 
                                                                                                  "hr_per_week"))
             expect_identical(real_cols(adult, cols = c("education", "age"), types = c("numeric", "integer")), "age")
             expect_identical(real_cols(adult, cols = c("education", "age"), types = c("numeric")), "age")
-            expect_identical(real_cols(messy_adult, cols = c("date1", "date2"), types = c("date")), c("date1", "date2"))
+            expect_identical(real_cols(date_set, cols = c("date_col"), types = c("date")), c("date_col"))
           })
 
 ## getPossibleSeparators
 #------------------------
-result <- getPossibleSeparators()
+test_that("getPossibleSeparators:", 
+          {
+            expect_true(is.vector(getPossibleSeparators()))
+          })
 
 
 ## printl
 #--------
-if (verbose){
-  printl("printl", " is a private function ", " easier to use than print")
-}
-
+test_that("printl:", 
+          {
+            expect_output(printl("printl", " is a private function ", " easier to use than print"))
+          })
 
 ## controlNumberOfRows
 #--------------------
 dataSet <- data.table(col1 = c(1, 2, 3))
-control_nb_rows(dataSet, 1)
-
 test_that("control_nb_rows:", 
           {
             expect_equal(control_nb_rows(dataSet, 1), 1)
@@ -120,16 +123,17 @@ test_that("control_nb_rows:",
           })
 
 
-## true.aggFunction
+## is.agg_function
 # -----------------
 b = 1
 attach(list(b=b)) # A bit ugly, but i don't know how to do it another way.
-test_that("true.aggFunction:", 
+test_that("is.agg_function:", 
           {
-            expect_error(result <- true.aggFunction(list(sum, "sum")),  "functions should be a list of names")
-			expect_warning(result <- true.aggFunction(list("sum", "a")), " doesn't exist, it wont be used.")
-            expect_warning(result <- true.aggFunction(list("sum", "b")), " is not a function, it wont be used.")
+            expect_error(result <- is.agg_function(list(sum, "sum")),  "functions should be a list of names")
+            expect_warning(result <- is.agg_function(list("sum", "a")), " doesn't exist, it wont be used.")
+            expect_warning(result <- is.agg_function(list("sum", "b")), " is not a function, it wont be used.")
             expect_equal(length(result), 1)
+            expect_warning(is.agg_function("sqrt"), " sqrt is not an aggregation function")
           })
 
 ## function.maker

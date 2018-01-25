@@ -43,15 +43,12 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  if (! is.character(key)){
-    stop(paste0(function_name, ": key should be a character, you provided a ", class(key), "."))
-  }
   is.col(dataSet, cols = key, function_name = function_name)
+  is.verbose(verbose)
   if (any(! sapply(dataSet, class) %in% c("numeric", "integer", "factor", "logical", "character"))){
     stop( paste0( function_name, ": I can only handle: numeric, integer, factor, logical, character columns. 
                   Please provide them in one of those format."))
   }
-  is.verbose(verbose)
   
   ## Initialization
   # Make an nice list of functions
@@ -59,7 +56,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   if (! is.null(args[["functions"]])){
     functions <- args[["functions"]]
   }
-  functions <- true.aggFunction(functions, function_name)
+  functions <- is.agg_function(functions, function_name)
   name_separator <- build_name_separator(args)
   
   ## Aggregation

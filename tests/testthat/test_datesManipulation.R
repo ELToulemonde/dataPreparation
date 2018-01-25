@@ -2,6 +2,7 @@ requireNamespace("data.table")
 verbose <- TRUE
 Sys.setlocale("LC_TIME", "C")
 ## Build a testing set
+# --------------------
 # Please make sure to send a copy of it to not transform it
 dataSet <- data.table(ID = 1:5, 
                       date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
@@ -14,45 +15,53 @@ dataSet <- data.table(ID = 1:5,
 
 ## findAndTransformDates
 #-----------------------
-data_transformed <- findAndTransformDates(copy(dataSet), verbose =  verbose, n_test = 5)
-
-test_that("findAndTransformDates:", 
+data("messy_adult")
+data(iris)
+test_that("findAndTransformDates: ", 
           {
-            expect_true(all(sapply(data_transformed, function(x)class(x)[1]) == c("integer", "POSIXct", "POSIXct", "POSIXct", "POSIXct", "character")))
+            # Control that identify and transform something
+            expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), verbose = verbose), is.POSIXct)), 4)
+            # Doesn't nothing if there isn't anything to do
+            expect_false(any(sapply(findAndTransformDates(iris, verbose = verbose, n_test = 5), is.POSIXct))) 
           })
 
-data(iris)
-data_transformed <- findAndTransformDates(iris, verbose =  verbose, n_test = 5)
-test_that("findAndTransformDates: no dates to find", 
+test_that("findAndTransformDates: check exceptions", 
           {
-            expect_true(all(sapply(data_transformed, function(x)class(x)[1]) == c("numeric", "numeric", "numeric", "numeric", "factor")))
+            expect_error(result1 <- findAndTransformDates(copy(messy_adult), verbose = verbose, ambiguities = 1))
+          })
+
+
+
+## identifyDates
+#---------------
+test_that("private function: identifyDates: control result",
+          {
+            expect_identical(identifyDates(dataSet, n_test = 5, verbose = verbose), 
+                             list(dates = c("date1", "date2", "date3", "date4"), 
+                                  formats = c("%Y-%m-%d", "%Y_%m_%d", "%Y_%m_%d", "%d-%B-%Y")
+                                  )
+                             )
           })
 
 data("messy_adult")
-messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
-
-test_that("findAndTransformDates: ambiguities", 
+messy_adult <- messy_adult[1:500, c("date1"), with = FALSE] # To check ambiguities one col is enough
+messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE) # Add an ambiguity
+test_that("private function: identifyDates: ambiguities", 
           {
-			expect_error(result1 <- findAndTransformDates(copy(messy_adult), verbose =  verbose, ambiguities = 1))
-			expect_warning(result1 <- findAndTransformDates(copy(messy_adult), verbose =  verbose))
-            expect_equal(sum(sapply(result1, is.POSIXct)), 4)
-			expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), ambiguities = "WARN", verbose =  verbose), is.POSIXct)), 3)
-			expect_equal(sum(sapply(findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE", verbose =  verbose), is.POSIXct)), 4)
+            expect_output(result <- identifyDates(copy(messy_adult), ambiguities = "WARN", verbose = verbose), " seems to be a date but there is an ambiguity in the format. ") 
+            expect_null(result$formats) # Nothing found
+            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)$formats), 1) # Solving ambiguities add a format
           })
-		
-## identifyDates
-#---------------
-test_that("private function identifyDates :",
+
+# Ambiguity in factor
+messy_adult$date1 = as.factor(messy_adult$date1)
+test_that("private function: identifyDates: ambiguities", 
           {
-		    expect_identical(identifyDates(dataSet, n_test = 5, verbose = verbose), 
-			                 list(dates = c("date1", "date2", "date3", "date4"), 
-							      formats = c("%Y-%m-%d", "%Y_%m_%d", "%Y_%m_%d", "%d-%B-%Y")
-								  )
-							  )
+            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)$formats), 1) # Solving ambiguities add a format
           })
 
 ## identifyDatesFormats 
-# ----------------
+# ---------------------
 test_that("Private function: identifyDatesFormats ",
           {
             expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
@@ -89,27 +98,25 @@ dataSet <- data.table( column1 = as.Date("2016-01-01"), column2 = as.POSIXct("20
 
 test_that("dateFormatUnifier:", 
           {
-            expect_true(all(sapply(dateFormatUnifier(dataSet, format = "Date"), class) == c("Date", "Date")))
+            expect_true(all(sapply(dateFormatUnifier(dataSet, format = "Date"), is.Date)))
             expect_error(dateFormatUnifier(dataSet, format = "adaedeaz"), "dateFormatUnifier: only format: Date, POSXIct, POSIXlt are implemented. You gave:")
           })
 
 ## is.date
-#-----------------
-
-dateAuFormatDate <- as.Date("2016-01-01")
-dateAuFormatPOSIXct <- as.POSIXct("2016-01-01")
+#---------
+dateAsDate <- as.Date("2016-01-01")
+dateAsPOSIXct <- as.POSIXct("2016-01-01")
 
 test_that("is.date:", 
           {
-            expect_true(is.date(dateAuFormatDate))
-            expect_true(is.date(dateAuFormatPOSIXct))
+            expect_true(is.date(dateAsDate))
+            expect_true(is.date(dateAsPOSIXct))
           })
 
 
 
 ## getPossibleDatesFormats
 #-------------------------
-
 test_that("getPossibleDatesFormats:", 
           {
             expect_is(getPossibleDatesFormats(), "character")
@@ -118,5 +125,9 @@ test_that("getPossibleDatesFormats:",
 
 ## formatForparse_date_time
 #--------------------------
-formatForparse_date_time()
+test_that("Private function: formatForparse_date_time",
+         {
+           expect_true(is.vector(formatForparse_date_time()))
+         })
+
 

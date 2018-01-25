@@ -73,6 +73,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
 ###################################################################################################
 ############################### identifyNumerics  #################################################
 ###################################################################################################
+#' @import data.table
 identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   ## Working environment
   function_name <- "identifyNumerics"

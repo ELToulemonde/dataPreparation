@@ -8,7 +8,12 @@ V 0.3.5
 		- *aggregateByKey* is now way faster on numerics. But it changed the way it gets input functions.
 	- New functions:
 		- *build_encoding* build a list of encoding to be used by *one_hot_encoder*, it also has a parameter *min_frequency* to control that rare values doesn't result in new columns.
-
+- Bug fixes:
+	- *findAndTransFormDates*: bug fixed: user formats weren't used.
+	
+- Refactoring: 
+	- Unit test partly reviewed to be more readable and more efficient
+	
 WARNING:
 - *one_hot_encoder* now requires you to run *build_encoding* first.
 - *aggregateByKey* now require functions to be passed by character name

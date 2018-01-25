@@ -3,75 +3,63 @@ verbose <- TRUE
 ## setColAsNumeric
 #-----------------------
 dataSet <- data.table(charCol1 = c("1", "2", "3"), charCol2 = c("4", "5", "6"))
-dataSet <- setColAsNumeric(dataSet, cols = c("charCol1", "charCol2"), verbose = verbose)
 
 test_that("setColAsNumeric:", 
           {
-            expect_equal(all(sapply(dataSet, class) == "numeric"), TRUE)
+            expect_true(all(sapply(setColAsNumeric(dataSet, cols = c("charCol1", "charCol2"), verbose = verbose), is.numeric)))
           })
 
-dataSet <- data.table(date_col = seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))
+#dataSet <- data.table(date_col = seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))
 
 
 ## setColAsCharacter
 #-------------------
-
 dataSet <- data.table(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")), charcol = c("1", "2", "a"))
 # Set numCol and factorCol as character
-dataSet <- setColAsCharacter(dataSet, cols = c("numCol", "factorCol", "charcol"), verbose = verbose)
-
 test_that("setColAsCharacter:", 
           {
-            expect_equal(all(sapply(dataSet, class) == c("character", "character", "character")), TRUE)
+            expect_true(all(sapply(setColAsCharacter(dataSet, cols = "auto", verbose = verbose), is.character)))
           })
 
 ## setColAsDate
 #-----------------------
-
-
 dataSet <- data.table(ID = 1:5, 
                       date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
                       date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"))
                       )
 
-dataSet <- setColAsDate(dataSet, cols = "date2", format = "%Y_%m_%d", verbose = verbose)
-
-
+# Trnasform one specific column and even if it is a factor
+result <- setColAsDate(copy(dataSet), cols = "date2", format = "%Y_%m_%d", verbose = verbose)
 test_that("setColAsDate:", 
           {
-            expect_equal(lapply(dataSet, class)$ID,  "integer")
-            expect_equal(lapply(dataSet, class)$date1, "character")
-            expect_true(is.POSIXct(dataSet$date2))
+            expect_true(is.integer(result$ID))
+            expect_true(is.character(result$date1))
+            expect_true(is.POSIXct(result$date2))
           })
 
-dataSet <- setColAsDate(dataSet, cols = "date1", verbose = verbose)
+# Trnasform one specific column without giving format
+result <- setColAsDate(copy(dataSet), cols = "date1", verbose = verbose)
 test_that("setColAsDate: without giving format", 
           {
-            expect_equal(lapply(dataSet, class)$ID,  "integer")
-            expect_true(is.POSIXct(dataSet$date1))
-            expect_true(is.POSIXct(dataSet$date2))
+            expect_true(is.integer(result$ID))
+            expect_true(is.POSIXct(result$date1))
+            expect_true(is.factor(result$date2))
           })
 
 # Try to transform ID
 test_that("setColAsDate: raise warning, when column is not character", 
           {
-            expect_warning( setColAsDate(dataSet, cols = "ID", verbose = verbose),  "setColAsDate: I can't handle ID, please see documentation.")
+            expect_warning( setColAsDate(copy(dataSet), cols = "ID", verbose = verbose),  "setColAsDate: I can't handle ID, please see documentation.")
           })
 
 
 # set id as character, and try to transform it
 dataSet$ID <- as.character(dataSet$ID)
-dataSet <- setColAsDate(dataSet, cols = "ID", verbose = verbose)
 test_that("setColAsDate: don't transform a column that isn't a date", 
           {
-            expect_equal(lapply(dataSet, class)$ID,  "character")
-          })
-
-
-dataSet <- setColAsDate(dataSet, cols = "ID", format = "%Y-%m-%d", verbose = verbose)
-test_that("setColAsDate: don't transform a column that isn't a date even if format is forced", 
-          {
-            expect_equal(lapply(dataSet, class)$ID,  "character")
+            expect_true(is.character(setColAsDate(copy(dataSet), cols = "ID", verbose = verbose)$ID))
+            expect_warning(result <- setColAsDate(copy(dataSet), cols = "ID", format = "%Y-%m-%d", verbose = verbose)) #don't transform a column that isn't a date even if format is forced
+            expect_true(is.character(result$ID))
           })
 
 # test on time_stamp
@@ -87,30 +75,14 @@ test_that("setColAsDate: check time_stamp",
           })
 
 ## setColAsFactor
-#---------------------------
+#----------------
 data("messy_adult")
-messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
-messy_adult <- setColAsFactor(messy_adult, cols = c("education"), verbose = verbose)
+messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE) # Unfactor education
 
 test_that("setColAsFactor:", 
           {
-            expect_true(is.factor(messy_adult[["education"]]))
+            expect_true(is.factor(setColAsFactor(copy(messy_adult), cols = "education", verbose = verbose)[["education"]])) # Behave with default n_levels
+            expect_true(is.factor(setColAsFactor(copy(messy_adult), cols = "education", n_levels = -1, verbose = verbose)[["education"]])) # behave with n_levels = -1
+            expect_true(is.character(setColAsFactor(copy(messy_adult), cols = "education", n_levels = 2, verbose = verbose)[["education"]])) # Unchanged if too many factors
+            expect_error(setColAsFactor(copy(messy_adult), cols = "education", n_levels = "a", verbose = verbose), ": n_levels should be an integer.") #N_levels not integer
           })
-
-rm(messy_adult)
-data("messy_adult")
-messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
-messy_adult <- setColAsFactor(messy_adult, cols = c("education"), n_levels = -1, verbose = verbose)
-test_that("setColAsFactor:", 
-          {
-            expect_true(is.factor(messy_adult[["education"]]))
-          })
-
-rm(messy_adult)
-data("messy_adult")
-messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE)
-test_that("setColAsFactor: unchanged if too many factors", 
-          {
-            expect_error(setColAsFactor(messy_adult, cols = c("education"), n_levels = "a", verbose = verbose), ": n_levels should be an integer.")
-            expect_true(is.character(messy_adult[["education"]]))
-          })					   

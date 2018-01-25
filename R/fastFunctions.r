@@ -34,11 +34,9 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet = dataSet, name = "DEBUG: see fastFilterVariables")
-  is.verbose_levels(verbose, max_level = 2, function_name = function_name)
+  is.verbose_level(verbose, max_level = 2, function_name = function_name)
   keep_cols <- real_cols(dataSet, keep_cols, function_name = function_name)
-  if (! is.numeric(level) || level < 1 || level > 4){
-    stop(paste0(function_name, ": level should be 1, 2, 3 or 4."))
-  }
+  is.filtering_level(level, function_name = function_name)
   
   ## Initalization
   # Arguments for log
@@ -114,6 +112,17 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
   return(dataSet)
 }
 
+#######################################################################################
+############################# is.filtering_level ######################################
+#######################################################################################
+
+# Control that level is indeed a filtering level
+# @param level which columns do you want to filter (1 = constant, 2 = constant and doubles, 3 = constant doubles and bijections, 4 = constant doubles bijections and included)(numeric, default to 3)
+is.filtering_level <- function(level, function_name = "is.filtering_level"){
+  if (! is.numeric(level) || level < 1 || level > 4){
+    stop(paste0(function_name, ": level should be 1, 2, 3 or 4."))
+  }
+}
 #######################################################################################
 ############################### Fast round ############################################
 #######################################################################################
@@ -311,14 +320,14 @@ fastIsEqual <- function(object1, object2){
   }
   
   # Comparaison for short object
-  if (length(object1) <= 3){ # (length(object1) <= 3) => (maxPower == 0) =>  We check direcly for equality
+  if (length(object1) <= 3){ # (length(object1) <= 3) => (max_power == 0) =>  We check direcly for equality
     return(identical(object1, object2))
   }
   
   # Comparaison for long object
   exp_factor <- 10
-  maxPower <- floor(log(length(object1)) / log(exp_factor)) + 1
-  for (i in 1:maxPower){
+  max_power <- floor(log(length(object1)) / log(exp_factor)) + 1
+  for (i in 1:max_power){
     I <- (exp_factor^(i - 1)):min(exp_factor^i - 1, length(object1))
     if (! identical(object1[I], object2[I])){
       return(FALSE)
@@ -346,8 +355,8 @@ fastIsBijection <- function(object1, object2){
   # number of unique elements in col1, is equal to the number of unique couples (col1, col2)
   nrows <- length(object1)
   exp_factor <- 10
-  maxPower <- floor(log(nrows) / log(exp_factor)) + 1
-  for (i in 1:maxPower){
+  max_power <- floor(log(nrows) / log(exp_factor)) + 1
+  for (i in 1:max_power){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
     n1 <- uniqueN(object1[I])
     n2 <- uniqueN(object2[I])
@@ -373,16 +382,16 @@ fastIsBijection <- function(object1, object2){
 # Using exponential search, it check if there are indeed less than max_n_values in object
 # @param object a column of a dataSet set
 # @param max_n_values number of maximal acceptable values in object (numeric, default to 1)
-# @retrun logical.
+# @retrun logical. Return TRUE if there are less or equal to max_n_values in object.
 fastMaxNbElt <- function(object, max_n_values = 1){
   ## Initialization
   listOfUnique <- NULL
   exp_factor <- 10
-  maxPower <- floor(log(length(object)) / log(exp_factor)) + 1
+  max_power <- floor(log(length(object)) / log(exp_factor)) + 1
   i <- 1
   
   ## Computation
-  for (i in 1:maxPower){
+  for (i in 1:max_power){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1, length(object))
     listOfUnique <- unique( c( listOfUnique, unique( object[I])))
     if (length(listOfUnique) > max_n_values){
@@ -417,12 +426,12 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   # ## Initialization
   # nrows <- length(object1)
   # exp_factor <- 10
-  # maxPower <- floor(log(nrows) / log(exp_factor)) + 1
+  # max_power <- floor(log(nrows) / log(exp_factor)) + 1
   # included_1 <- TRUE
   # included_2 <- TRUE  
   
   # ## Computation
-  # for (i in 1:maxPower){
+  # for (i in 1:max_power){
     # I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
     # n1 <- uniqueN(object1[I])
     # n2 <- uniqueN(object2[I])

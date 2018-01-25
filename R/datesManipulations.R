@@ -100,7 +100,8 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
 # @param formats list of your personnal Date formats you want to check (see \code{\link{strptime}})
 # @param n_test number of non-null rows on which we should test that it is indeed a date (default to 30)
 # @param verbose logical: should the algorithm talk (Default to TRUE)
-# @param hours logical: should we check for hours in date columns (Default to TRUE)
+# @param ambiguities How ambiguities should be treated (see details in ambiguities section)
+# (character, default to "IGNORE")
 # @return 
 # A list of two list. The first list is dates contains the list columns that are Dates. 
 # The second list is formats contains the list of formats for each of the Dates of the first list. 
@@ -116,8 +117,8 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
   is.verbose(verbose)
   
   ## Initialization
-  dates <- NULL
-  formats <- NULL
+  dates_found <- NULL
+  formats_found <- NULL
   date_sep <-  getPossibleSeparators()
   ## Computation
   if (verbose){ 
@@ -146,7 +147,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
           date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
           # Debug warning
           if (is.na(date_hours) || is.infinite(date_hours)){ 
-            warning(paste0(function_name, ": error i shouldn't be there. Please report bug on GitHub.",  ))
+            warning(paste0(function_name, ": error i shouldn't be there. Please report bug on GitHub."))
             date_hours <- FALSE
           }
           # Build list of all formats to check
@@ -186,11 +187,9 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
           format <- identifyTimeStampsFormats(dataSet = data_sample)
         }
         # If a format has been found we note it
-        if (! is.null(format)){ 
-          if (length(format) == 1){
-            dates <- c(dates, col)
-            formats <- c(formats, format)  
-          }
+        if (length(format) == 1){
+          dates_found <- c(dates_found, col)
+          formats_found <- c(formats_found, format)  
         }
       }
     }
@@ -200,7 +199,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
     }
   }
   ## Wrapp-up
-  return(list(dates = dates, formats = formats))
+  return(list(dates = dates_found, formats = formats_found))
 }
 
 ## To-do
@@ -232,10 +231,12 @@ identifyDatesFormats <- function(dataSet, formats, ambiguities="IGNORE"){
     converted <- as.POSIXct(dataSet, format = format)
     un_converted <- format(converted, format = format)
     if (control_date_conversion(un_converted, dataSet)){
-      if (ambiguities == "IGNORE"){
+      if (ambiguities == "IGNORE"){ 
+        # If don't care about possible ambiguities: return found format
         return(format)  
       }
       else{
+        # Else quit searching
         temp_format <- c(temp_format, format)
       }
     }
@@ -346,8 +347,9 @@ dateFormatUnifier <- function(dataSet, format = "Date"){
 # Check if an object is in a date format
 # Are handeled: Date, POSIXct, POSIXlt 	
 # Excension of is.Date, is.POSIXct...
+#' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt
 is.date <- function(x){
-  return(any(class(x) %in% c("Date", "POSIXct", "POSIXt", "POSIXlt")))
+  return(is.POSIXct(x) || is.Date(x) || is.POSIXlt(x) || is.POSIXt(x))
 }
 
 

@@ -56,7 +56,20 @@ If you are proposing a feature:
   are welcome :)
 
   
-  
+Controlling your developments
+-----------------------------
+
+1. Build new functionality in the best R file
+2. Document function. Make sure every param is commented. 
+3. Change package version in DESCRIPTION and add what's new in NEWS.md
+3. Build unit tests in tests\testthat\test_.....R (one test file per R code file). Unit test should make sure that your function works exactly the way you want it.
+4. Generate documentation using devtools::document() and control unit tests using devtools::test()
+5. Build and install package using devtools::build(), devtools::install()
+6. Control that every thing is conform to CRAN requirement using devtools::check(pkg = "dataPreparation"). You should have no error, no warning and no notes.
+7. Control code coverage with cov <- covr::package_coverage() and then covr::zero_coverage(cov). Your new lines of codes shouldn't appear.
+8. Push on github and travis will check if everything is ok. There would also be a code coverage control.
+9. If everything passed: create a Pull Request.
+10. Thank you very much for your contributions! :)
   
   
 Code conventions

@@ -187,6 +187,7 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
 #' # To limit the number of generated columns, one can use min_frequency parameter:
 #' build_encoding(adult, cols = "auto", verbose = TRUE, min_frequency = 0.1)
 #' # Set to 0.1, it will create columns only for values that are present 10% of the time.
+#' @import data.table
 #' @export
 build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency = 0, ...){
   ## Working environement
@@ -196,7 +197,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
   dataSet <- checkAndReturnDataTable(dataSet)
   cols <- real_cols(dataSet, cols, function_name, types = c("factor", "character"))
   is.verbose(verbose)
-  is.share(min_frequency, variable_name = "min_frequency", function_name = function_name)
+  is.share(min_frequency, object_name = "min_frequency", function_name = function_name)
   
   ## Initialization
   if (verbose){
@@ -220,7 +221,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
     }
     if (min_frequency > 0 ){
       frequency <- dataSet[, .N / nrow(dataSet), by = col]
-      to_drop <- frequency[V1 < min_frequency, ][[col]] # V1 is the column created in frequency
+      to_drop <- frequency[get("V1") < min_frequency, ][[col]] # V1 is created in previous line (= .N / nrow(dataSet)). Get to avoid unwanted devtools::check note.
       values <- setdiff(values, to_drop)
     }
     new_cols <- paste0(col, name_separator, values)

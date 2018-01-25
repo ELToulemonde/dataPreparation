@@ -32,7 +32,6 @@ test_that(paste0( function_name, ": "),
 
 
 # test df
-rm(adult)
 data("adult")
 setDF(adult)
 adult2 <- copy(adult)

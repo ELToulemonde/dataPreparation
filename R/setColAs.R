@@ -162,7 +162,7 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
 #' dataSet <- data.frame( time_stamp = c(1483225200, 1485990000, 1488495600))
 #' setColAsDate(dataSet, cols = "time_stamp", format = "s")
 #' @import data.table
-#' @importFrom lubridate parse_date_time 
+#' @importFrom lubridate parse_date_time
 #' @importFrom stringr str_replace_all
 #' @export
 setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
@@ -206,7 +206,7 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
           result <- as.POSIXct(data_sample, format = format_tmp)
         }
         else{
-          printl(function_name, ":, ", col, " doesn't seem to be a date, if it really is please provide format.")
+          printl(function_name, ": ", col, " doesn't seem to be a date, if it really is please provide format.")
         }
       }
       # If it isn't NULL

@@ -11,8 +11,7 @@ test_that("generateFromFactor: don't drop: ",
           {
             expect_equal(ncol(messy_adult), store_ncol + 3)
           })
-
-rm(messy_adult)
+		  
 data("messy_adult")
 store_ncol <- ncol(messy_adult)
 n_factor <- sum(sapply(messy_adult, is.factor))
@@ -40,7 +39,7 @@ test_that("one_hot_encoder: ",
 
 ## build_encoding
 # ----------------
-rm(adult) # Otherwise it doesn't really reload it :-(
+rm("adult") # Otherwise it doesn't really reload it :-(
 data("adult")
 setDT(adult)
 test_that("build_encoding: ",
