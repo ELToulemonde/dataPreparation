@@ -14,6 +14,7 @@ V 0.3.5
 	
 - Refactoring: 
 	- Unit test partly reviewed to be more readable and more efficient. Unit test time as been divided by 3.
+	- Improving input control for more robust functions
 	
 WARNING:
 - *one_hot_encoder* now requires you to run *build_encoding* first.

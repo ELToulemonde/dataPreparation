@@ -87,18 +87,12 @@ fastScale <- function(dataSet, scales = NULL, way = "scale", verbose = TRUE){
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  control_scale_way(way)
+  .control_scale_way(way)
+  scales <- .build_and_control_scale(scales, dataSet, way, function_name)
   
   ## Initialization
   # Build scale
-  if (is.null(scales)){
-    if (way == "scale"){
-      scales <- build_scales(dataSet, cols = "auto", verbose = verbose)  
-    }
-    else{
-      stop(paste0(function_name, ": to unscale, scales must be feeded by user."))
-    }
-  }
+  
   cols <- names(scales)
   cols <- real_cols(dataSet, cols, function_name, types = "numeric")
   # verbose
@@ -130,8 +124,12 @@ fastScale <- function(dataSet, scales = NULL, way = "scale", verbose = TRUE){
 }
 
 
-
-control_scale_way <- function(way, function_name = "control_scale_way"){
+## .control_scale_way
+# -------------------
+# Control that input way is correct
+# @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
+# @param function_name internal param for log consitency
+.control_scale_way <- function(way, function_name = "control_scale_way"){
   if (!is.character(way)){
     stop(paste0(function_name, ": way should be a character either 'scale' or 'unscale'"))
   }
@@ -139,3 +137,46 @@ control_scale_way <- function(way, function_name = "control_scale_way"){
     stop(paste0(function_name, ": way should either be 'scale' or 'unscale'"))
   }
 }
+
+## .build_and_control_scale
+# --------------------------
+# Control that provided scale has the right format
+# @param scales provided scale
+# @param dataSet Matrix, data.frame or data.table
+# @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
+# @param function_name internal param for log consitency
+# @return scales if everything went well
+.build_and_control_scale <- function(scales, dataSet, way, function_name = ".build_and_control_scale"){
+  # Null scales
+  if (is.null(scales)){
+    if (way == "scale"){
+      return(build_scales(dataSet, cols = "auto", verbose = verbose))
+    }
+    else{
+      stop(paste0(function_name, ": to unscale, scales must be feeded by user."))
+    }
+  }
+  
+  # Control format
+  if (! is.list(scales)){
+    stop(paste0(function_name, ": scales should be a named list. Please build it using build_scales."))
+  }
+  
+  # If empty
+  if (length(scales) == 0){
+    return(scales)
+  }
+  
+  # If not empty control content
+  if (! all(sapply(scales, names) == c("mean", "sd"))){
+    stop(paste0(function_name, ": scales should be a named list of list having 2 elements: mean and sd. Please build it using build_scales."))
+  }
+  
+  if (! all(sapply(scales, function(scale)sapply(scale, is.numeric)))){
+    stop(paste0(function_name, ": scales should be a named list of list having 2 numeric elements: mean and sd. Please build it using build_scales."))
+  }
+  ## Wrapp-up
+  return(scales)
+}
+
+
