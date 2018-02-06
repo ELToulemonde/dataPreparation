@@ -88,7 +88,7 @@ fastScale <- function(dataSet, scales = NULL, way = "scale", verbose = TRUE){
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
   .control_scale_way(way)
-  scales <- .build_and_control_scale(scales, dataSet, way, function_name)
+  scales <- .build_and_control_scale(scales, dataSet, way, verbose = verbose, function_name)
   
   ## Initialization
   # Build scale
@@ -146,7 +146,7 @@ fastScale <- function(dataSet, scales = NULL, way = "scale", verbose = TRUE){
 # @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
 # @param function_name internal param for log consitency
 # @return scales if everything went well
-.build_and_control_scale <- function(scales, dataSet, way, function_name = ".build_and_control_scale"){
+.build_and_control_scale <- function(scales, dataSet, way, verbose = TRUE, function_name = ".build_and_control_scale"){
   # Null scales
   if (is.null(scales)){
     if (way == "scale"){
