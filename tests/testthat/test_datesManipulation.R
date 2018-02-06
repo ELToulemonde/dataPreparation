@@ -37,9 +37,7 @@ test_that("findAndTransformDates: check exceptions",
 test_that("private function: identifyDates: control result",
           {
             expect_identical(identifyDates(dataSet, n_test = 5, verbose = verbose), 
-                             list(dates = c("date1", "date2", "date3", "date4"), 
-                                  formats = c("%Y-%m-%d", "%Y_%m_%d", "%Y_%m_%d", "%d-%B-%Y")
-                                  )
+                             list(date1 = "%Y-%m-%d", date2 = "%Y_%m_%d", date3 = "%Y_%m_%d", date4 = "%d-%B-%Y")
                              )
           })
 
@@ -50,21 +48,21 @@ test_that("private function: identifyDates: ambiguities",
           {
             expect_output(result <- identifyDates(copy(messy_adult), ambiguities = "WARN", verbose = verbose), " seems to be a date but there is an ambiguity in the format. ") 
             expect_null(result$formats) # Nothing found
-            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)$formats), 1) # Solving ambiguities add a format
+            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)), 1) # Solving ambiguities add a format
           })
 
 # Ambiguity in factor
 messy_adult$date1 = as.factor(messy_adult$date1)
 test_that("private function: identifyDates: ambiguities", 
           {
-            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)$formats), 1) # Solving ambiguities add a format
+            expect_equal(length(identifyDates(copy(messy_adult), ambiguities = "SOLVE", verbose = verbose)), 1) # Solving ambiguities add a format
           })
 
 ## identifyDatesFormats 
 # ---------------------
 test_that("Private function: identifyDatesFormats ",
           {
-            expect_error(identifyDatesFormats(dataSet[["ID"]]), "identifyDatesFormats: dataSet should be some characters")
+            expect_error(identifyDatesFormats(c(TRUE, FALSE)), ": dataSet should be some characters, numerics or factor of character.")
             expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
           })
 

@@ -62,6 +62,12 @@ test_that("setColAsDate: don't transform a column that isn't a date",
             expect_true(is.character(result$ID))
           })
 
+dataSet <- data.table(time = c("10:01:55", "09:35:60"))
+test_that("setColAsDate: format not used by parse_date_time", 
+          {
+            expect_true(is.POSIXct(setColAsDate(dataSet, cols = "time", format = "%H:%M:%S", verbose = verbose)$time))
+          })
+
 # test on time_stamp
 dataSet <- data.frame( time_stamp_s = c(1483225200, 1485990000, 1488495600),
                        time_stamp_ms = c(1483225200000, 1485990000000, 1488495600000))

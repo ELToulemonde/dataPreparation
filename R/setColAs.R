@@ -201,9 +201,9 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       # If format is NULL, we let R determine the format
       if (is.null(format)){
         # If format is not given, search for it. 
-        format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))$formats
-        if (!is.null(format_tmp)){
-          result <- as.POSIXct(data_sample, format = format_tmp)
+        format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))
+        if (length(format_tmp) > 0){
+          result <- as.POSIXct(data_sample, format = format_tmp[[col]])
         }
         else{
           printl(function_name, ": ", col, " doesn't seem to be a date, if it really is please provide format.")
