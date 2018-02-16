@@ -78,7 +78,7 @@ Before using any machine learning (ML) algorithm, one needs to prepare its data.
   * **Read**: load the data set (this package don't treat this point: for csv we recommend `data.table::fread`)
   * **Correct**: most of the times, there are some mistake after reading, wrong format... one have to correct them
   * **Transform**: creating new features from date, categorical, character... in order to have information usable for a ML algorithm (aka: numeric or categorical)
-  * **Filter**: get read of useless information in order to speed up computation
+  * **Filter**: get rid of useless information in order to speed up computation
   * **Handle NA**: replace missing values
   * **Pre model transformation**: Specific manipulation for the chosen model (handling NA, discretization, one hot encoding, scaling...)
   * **Shape**: put your data set in a nice shape usable by a ML algorithm

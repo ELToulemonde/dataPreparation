@@ -136,13 +136,13 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
 #' @param dataSet Matrix, data.frame or data.table
 #' @param cols List of column(s) name(s) of dataSet to transform into dates
 #' @param format Date's format (function will be faster if the format is provided) 
-#' (character, default to NULL).\cr
+#' (character or list of character, default to NULL).\cr
 #' For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)
 #' @param verbose Should the function log (logical, default to TRUE)
 #' @details 
 #' setColAsDate is way faster when format is provided. If you want to identify dates and format
-#' automatically, have a look to \code{\link{findAndTransformDates}}. \cr
-#' If input column is a factor, it will be returned as a POSIXct column
+#' automatically, have a look to \code{\link{identifyDates}}. \cr
+#' If input column is a factor, it will be returned as a POSIXct column.
 #' @return \code{dataSet}(as a \code{\link{data.table}}), with specified columns set as Date. 
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
@@ -153,31 +153,38 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
 #'                   )
 #'
 #' # Using setColAsDate for date2
-#' data_transformed <- setColAsDate(dataSet,cols = "date2", format = "%Y_%m_%d")
+#' data_transformed <- setColAsDate(dataSet, cols = "date2", format = "%Y_%m_%d")
 #' 
 #' # Control the results
-#' lapply(data_transformed,class)
+#' lapply(data_transformed, class)
+#' 
+#' # With multiple formats:
+#' data_transformed <- setColAsDate(dataSet, format = list(date1 = "%Y-%m-%d", date2 = "%Y_%m_%d"))
+#' lapply(data_transformed, class)
 #' 
 #' # It also works with timestamps
-#' dataSet <- data.frame( time_stamp = c(1483225200, 1485990000, 1488495600))
+#' dataSet <- data.frame(time_stamp = c(1483225200, 1485990000, 1488495600))
 #' setColAsDate(dataSet, cols = "time_stamp", format = "s")
 #' @import data.table
 #' @importFrom lubridate parse_date_time
 #' @importFrom stringr str_replace_all
 #' @export
-setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
+setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
   ## Working environment
   function_name <- "setColAsDate"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
+  is.format(format, function_name)
+  cols <- parse_date_cols(cols, format, function_name)
   cols <- real_cols(dataSet, cols, function_name, types = c("character", "factor", "numeric", "integer"))
   
   ## Initialization
   start_time <- proc.time()
   if (verbose){
     printl(function_name, ": I will set some columns as Date.")
+    options(warn = -1) # if verbose, disable warning, it will  be logged
     pb <- initPB(function_name, cols)
   }
   n_transformed <- length(cols)
@@ -186,7 +193,6 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
   for (col in cols){
     if (verbose){
       printl(function_name, ": I am doing the column ", col, ".")
-      options(warn = -1) # if verbose, disable warning, it will  be logged
     }
     # Creating data sample to transform
     if (is.factor(dataSet[[col]])){
@@ -196,37 +202,47 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       data_sample <- dataSet[[col]]
     }
     n_na_init <- sum(is.na(data_sample))
-    result <- data_sample # Initialize it to no changes. To-do this shouldn't be necessay
+    
+    # Get format:
+    if (is.character(format) || is.null(format)){
+      col_format = format
+    }
+    if (is.list(format)){
+      col_format = format[[col]]
+      if (is.null(col_format)){
+        col_format = format[col == cols]
+      }
+    }
     if (is.character(data_sample)){
       # If format is NULL, we let R determine the format
-      if (is.null(format)){
+      if (is.null(col_format)){
         # If format is not given, search for it. 
-        format_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))
-        if (length(format_tmp) > 0){
-          result <- as.POSIXct(data_sample, format = format_tmp[[col]])
+        formats_tmp <- identifyDates(dataSet[, c(col), with = FALSE], n_test = min(30, nrow(dataSet)))
+        if (length(formats_tmp) == 0){
+          printl(function_name, ": ", col, " doesn't seem to be a date, if it really is please provide format.")
+          next()
         }
         else{
-          printl(function_name, ": ", col, " doesn't seem to be a date, if it really is please provide format.")
+          col_format = formats_tmp[[col]]
         }
       }
       # If it isn't NULL
-      if (!is.null(format)){
+      if (!is.null(col_format)){
         # it is faster if it's a format accepted by parse_date_time, so we check that
-        format4parse_date_time <- formatForparse_date_time()
-        format_tmp <- str_replace_all(format, "[[:punct:]]", "")
-        if (format_tmp %in% format4parse_date_time){
-          result <- parse_date_time(data_sample, orders = format_tmp)
+        format_pdt <- str_replace_all(col_format, "[[:punct:]]", "")
+        if (format_pdt %in% formatForparse_date_time()){
+          result <- parse_date_time(data_sample, orders = format_pdt)
         }
         else{
-          result <- as.POSIXct(data_sample, format = format)
+          result <- as.POSIXct(data_sample, format = col_format)
         }
       }
     }
-    else if (is.numeric(data_sample) & !is.null(format)){
-      if (format == "s"){
+    else if (is.numeric(data_sample) & !is.null(col_format)){
+      if (col_format == "s"){
         result <- as.POSIXct(dataSet[[col]], origin = "1970-01-01 00:00:00")
       }
-      if (format == "ms"){
+      if (col_format == "ms"){
         result <- as.POSIXct(dataSet[[col]] / 1000, origin = "1970-01-01 00:00:00")
       }
     }
@@ -238,33 +254,65 @@ setColAsDate <- function(dataSet, cols, format = NULL, verbose = TRUE){
       next()
     }
     n_na_end <- sum(is.na(result))
-    if (verbose){
-      printl(function_name, ":", n_na_end - n_na_init, " NA have been created due to transformation to Date.")
-    }
-    # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
-    if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){
-      if (verbose){
-        printl(function_name, ":", " Since i generated only NAs i set ", col, " as it was before.")
+    if (n_na_end - n_na_init > 0){
+      if (n_na_end == nrow(dataSet) & n_na_init < nrow(dataSet)){ 
+        # If we generated only NA and format wasn't provide, we shouldn't have changer it so we set it bakck to char
+        if (verbose){
+          printl(function_name, ":", " Since i generated only NAs i set ", col, " as it was before.")
+        }
+        result <- data_sample
+      } 
+      else{
+        if (verbose){
+          printl(function_name, ":", n_na_end - n_na_init, " NA have been created due to transformation to Date.")
+        }
       }
-      result <- data_sample
     }
     # Assign result
     set(dataSet, NULL, col, result)  
-    if (verbose){
-      # reset warnings
-      options(warn = 0)
-      setPB(pb)
-    }
+    
+    # Set log
+    if (verbose){setPB(pb)}
   }
   ## Wrapp-up
   if (verbose){
     printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
            "s to transform ", n_transformed, " column(s) to Dates.")
+    options(warn = 0) # reset warnings
   }
   return(dataSet)
 }
 
+## Control input format
+is.format <- function(format, function_name = "is.format"){
+  if (!is.null(format)){
+    if (!(is.character(format) || is.list(format))){
+      stop(paste0(function_name, ": format should either be list of formats or a character."))
+    }
+    else{
+      if (is.list(format) & ! all(sapply(format, is.character))){
+        stop(paste0(function_name, ": format should either be list of character or a character."))
+      }
+    }
+  }
+}
 
+# Match cols and format, this function is due to will to keep consitency between previous version
+parse_date_cols <- function(cols, format, function_name = "parse_date_cols"){
+  if (! is.null(cols)){
+    if (is.list(format)){
+      if (length(format) != length(cols) & any(!cols %in% format)){
+        stop(paste0(function_name, ": you provide cols and format but I'm not able to match them, please feed format as named list."))
+      }
+      return(cols)
+    }
+  }
+  else{
+    cols <- names(format)
+    return(cols)
+  }
+  return(cols)
+}
 ############################################################################################################
 ########################################### charToFactorOrLogical ##########################################
 ############################################################################################################

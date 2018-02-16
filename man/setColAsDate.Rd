@@ -4,7 +4,7 @@
 \alias{setColAsDate}
 \title{Set columns as POSIXct}
 \usage{
-setColAsDate(dataSet, cols, format = NULL, verbose = TRUE)
+setColAsDate(dataSet, cols = NULL, format = NULL, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -12,7 +12,7 @@ setColAsDate(dataSet, cols, format = NULL, verbose = TRUE)
 \item{cols}{List of column(s) name(s) of dataSet to transform into dates}
 
 \item{format}{Date's format (function will be faster if the format is provided) 
-(character, default to NULL).\cr
+(character or list of character, default to NULL).\cr
 For timestamps, format need to be provided ("s" or "ms" or second or millisecond timestamps)}
 
 \item{verbose}{Should the function log (logical, default to TRUE)}
@@ -26,8 +26,8 @@ Set as POSIXct a character column (or a list of columns) from a data.table.
 }
 \details{
 setColAsDate is way faster when format is provided. If you want to identify dates and format
-automatically, have a look to \code{\link{findAndTransformDates}}. \cr
-If input column is a factor, it will be returned as a POSIXct column
+automatically, have a look to \code{\link{identifyDates}}. \cr
+If input column is a factor, it will be returned as a POSIXct column.
 }
 \examples{
 # Lets build a dataSet set
@@ -37,12 +37,16 @@ dataSet <- data.frame(ID = 1:5,
                   )
 
 # Using setColAsDate for date2
-data_transformed <- setColAsDate(dataSet,cols = "date2", format = "\%Y_\%m_\%d")
+data_transformed <- setColAsDate(dataSet, cols = "date2", format = "\%Y_\%m_\%d")
 
 # Control the results
-lapply(data_transformed,class)
+lapply(data_transformed, class)
+
+# With multiple formats:
+data_transformed <- setColAsDate(dataSet, format = list(date1 = "\%Y-\%m-\%d", date2 = "\%Y_\%m_\%d"))
+lapply(data_transformed, class)
 
 # It also works with timestamps
-dataSet <- data.frame( time_stamp = c(1483225200, 1485990000, 1488495600))
+dataSet <- data.frame(time_stamp = c(1483225200, 1485990000, 1488495600))
 setColAsDate(dataSet, cols = "time_stamp", format = "s")
 }

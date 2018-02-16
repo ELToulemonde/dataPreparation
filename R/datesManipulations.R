@@ -77,9 +77,7 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
     return(dataSet)
   }
   start_time <- proc.time()
-  for ( col in names(formats_found)){
-    dataSet <- setColAsDate(dataSet, cols = col, format = formats_found[[col]], verbose = FALSE)
-  }
+  dataSet <- setColAsDate(dataSet, format = formats_found, verbose = FALSE)
   if (verbose){
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to transform ", length(formats_found), " columns to a Date format.")
   }

@@ -23,13 +23,23 @@ test_that("setColAsCharacter:",
 
 ## setColAsDate
 #-----------------------
-dataSet <- data.table(ID = 1:5, 
-                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
-                      date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"))
+dataSet <- data.table(ID = 1:6, 
+                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31", ""), 
+                      date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31", ""))
                       )
 
 # Trnasform one specific column and even if it is a factor
 result <- setColAsDate(copy(dataSet), cols = "date2", format = "%Y_%m_%d", verbose = verbose)
+test_that("setColAsDate:", 
+          {
+            expect_true(is.integer(result$ID))
+            expect_true(is.character(result$date1))
+            expect_true(is.POSIXct(result$date2))
+          })
+
+
+# Trnasform one specific column and even if it is a factor
+result <- setColAsDate(copy(dataSet), cols = "date2", format = list("%Y_%m_%d"), verbose = verbose)
 test_that("setColAsDate:", 
           {
             expect_true(is.integer(result$ID))
@@ -79,6 +89,26 @@ test_that("setColAsDate: check time_stamp",
             expect_true(is.POSIXct(dataSet$time_stamp_s))
             expect_true(is.POSIXct(dataSet$time_stamp_ms))
           })
+
+
+## is.format
+# ------------
+test_that("Private function: is.format",
+          {
+            expect_error(is.format(1), ": format should either be list of formats or a character.")
+            expect_error(is.format(list(1)), ": format should either be list of character or a character.")
+          })
+
+
+## parse_date_cols
+# ----------------
+test_that("Private function: parse_date_cols",
+          {
+            expect_identical(parse_date_cols(cols = NULL, format = list(a ="1", b = "2")), c("a","b"))
+            expect_identical(parse_date_cols(cols = c("a", "b"), format = list(a ="1", b = "2")), c("a","b"))
+            expect_error(parse_date_cols(cols = c("c", "d"), format = list(a ="1", b = "2", e ="3")), "you provide cols and format but I'm not able to match them, please feed format as named list.")
+          })
+
 
 ## setColAsFactor
 #----------------
