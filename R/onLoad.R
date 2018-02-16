@@ -5,7 +5,7 @@
 #' Show the NEWS file of the dataPreparation package.
 #' @export
 dataPrepNews <- function() {
-  newsfile <- file.path(system.file(package="dataPreparation"), "NEWS.md")
+  newsfile <- file.path(system.file(package="dataPreparation"), "NEWS")
   file.show(newsfile)
 }
 
