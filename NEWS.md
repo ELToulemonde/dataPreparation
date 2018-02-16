@@ -6,9 +6,12 @@ V 0.3.5
 		- *one_hot_encoder* now uses a *build_encoding* functions to be able to build same encoding on train and on test.
 		- *aggregateByKey* is now way faster on numerics. But it changed the way it gets input functions.
 		- *fastScale* now as a *way* parameter which allow you to either scale or unscale. Unscaling numeric values can be very usefull for most post-model analysis.
+		- *setColAsDate* now accept multiple formats in a single call.
 	- New functions:
 		- *build_encoding* build a list of encoding to be used by *one_hot_encoder*, it also has a parameter *min_frequency* to control that rare values doesn't result in new columns.
 		- Previously private function *identifyDates* is now exported. To be able to perform same transformation on train and on test.
+		- Adding *dataPrepNews* function to open NEWS file (inspired from rfNews() of randomForest package)
+		
 - Bug fixes:
 	- *findAndTransFormDates*: bug fixed: user formats weren't used.
 	- *identifyDates*: some formats where tested but would never work. They have been removed.
