@@ -44,7 +44,7 @@ Additional arguments are available to tune pipeline:
      \code{\link{fastRound}})
   \item \code{dateFormats} List of format of Dates in dataSet (list of characters)
   \item \code{name_separator} character to separate parts of new column names (character, default to ".")
-  \item \code{functions}  Aggregation functions for numeric columns, see \code{\link{aggregateByKey}} (list of functions)
+  \item \code{functions}  Aggregation functions for numeric columns, see \code{\link{aggregateByKey}} (list of functions names (character))
   \item \code{factor_date_type} Aggregation level to factorize date (see 
      \code{\link{generateFactorFromDate}}) (character, default to "yearmonth")
 }
@@ -69,7 +69,7 @@ adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key =
 # With some new aggregation functions
 power <- function(x){sum(x^2)}
 adult_agg <- prepareSet(messy_adult, analysisDate = as.Date("2017-01-01"), key = "country", 
-                        functions = c(min, max, mean, power))
+                        functions = c("min", "max", "mean", "power"))
 }
 # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

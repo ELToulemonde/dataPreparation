@@ -15,13 +15,14 @@ messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 messy_adult <- findAndTransformNumerics(messy_adult, verbose = FALSE)
 messy_adult[, age := NULL] # drop it to check column droping
 class(messy_adult[["education_num"]]) <- "weirdClass" # Weird class transformation warning
+class(messy_adult[["education"]]) <- "weirdClass2" # Weird class transformation warning
+as.weirdClass2 <- function(x){as.numeric(x)}
+attach(list(as.weirdClass2=as.weirdClass2))
 
-
-#adult_redone <- sameShape(adult, messy_adult, verbose = verbose)
 
 test_that(paste0( function_name, ": "),
           {
-		    expect_warning(adult_redone <- sameShape(copy(adult), copy(messy_adult), verbose = verbose), " and i don't know how to transform it.")
+            expect_warning(adult_redone <- sameShape(copy(adult), copy(messy_adult), verbose = verbose), " and i don't know how to transform it.")
             expect_equal(ncol(adult_redone), ncol(messy_adult))
             expect_identical(names(adult_redone), names(messy_adult))
             expect_true(is.numeric(adult_redone$constant))
@@ -40,6 +41,5 @@ adult_num <- shapeSet(adult2, finalForm = "numerical_matrix", verbose = FALSE)
 test_that(paste0( function_name, ": transform shape"),
           {
             expect_equal(class(sameShape(copy(adult2), copy(adult), verbose = verbose)), "data.frame")
-			expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
+            expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
           })
-

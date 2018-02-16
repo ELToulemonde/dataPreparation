@@ -8,14 +8,26 @@
 #' @param dataSet Matrix, data.frame or data.table
 #' @param formats List of additional Date formats to check (see \code{\link{strptime}})
 #' @param n_test Number of non-null rows on which to test (numeric, default to 30)
+#' @param ambiguities How ambiguities should be treated (see details in ambiguities section)
+#' (character, default to IGNORE)
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @details 
-#' This function is looking for perfect transformation. 
-#' If there are some mistakes in dataSet, consider setting them to NA before. \cr
-#' In the unlikely case where you have numeric higher than \code{as.numeric(as.POSIXct("1990-01-01"))}
-#' they will be considered as timestamps and you might have some issues. On the other side, 
-#' if you have timestamps before 1990-01-01, they won't be found, but you can use 
-#' \code{\link{setColAsDate}} to force transformation.
+#' This function is using \code{\link{identifyDates}} to find formats. Please see it's documentation. 
+#' In case \code{\link{identifyDates}} doesn't find wanted formats you can either provide format in param \code{formats}
+#' or use \code{\link{setColAsDate}} to force transformation.
+#' @section Ambiguity:
+#' Ambiguities are often present in dates. For example, in date: 2017/01/01, there is no way to know
+#'  if format is YYYY/MM/DD or YYYY/DD/MM. \cr
+#' Some times ambiguity can be solved by a human. For example
+#'  17/12/31, a human might guess that it is YY/MM/DD, but there is no sure way to know.  \cr
+#' To be safe, findAndTransformDates doesn't try to guess ambiguities. \cr
+#' To answer ambiguities problem, param \code{ambiguities} is now available. It can take one of the following values
+#' \itemize{
+#' \item \code{IGNORE} function will then take the first format which match (fast, but can make some mistakes)
+#' \item \code{WARN} function will try all format and tell you - via prints - that there are multiple matches (and won't perform date transformation)
+#' \item \code{SOLVE} function will try to solve ambiguity by going through more lines, so will be slower. 
+#' If it is able to solve it, it will transform the column, if not it will print the various acceptable formats.
+#' }
 #' @return dataSet set (as a data.table) with identified dates transformed by \strong{reference}.
 #' @examples
 #' # Load exemple set
@@ -24,37 +36,50 @@
 #' # using the findAndTransformDates
 #' findAndTransformDates(messy_adult, n_test = 5)
 #' head(messy_adult)
+#' 
+#' # Example with ambiguities
+#' \dontrun{
+#' require(data.table)
+#' data(messy_adult) # reload data
+#' # Add an ambiguity by sorting date1
+#' messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
+#' # Try all three methods:
+#' result_1 = findAndTransformDates(copy(messy_adult))
+#' result_2 = findAndTransformDates(copy(messy_adult), ambiguities = "WARN")
+#' result_3 = findAndTransformDates(copy(messy_adult), ambiguities = "SOLVE")
+#' }
+#' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @export
-findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE){
+findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
   ## Working environement
   function_name <- "findAndTransformDates"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  
+  if (!is.character(ambiguities) || ! ambiguities %in% c("IGNORE", "WARN", "SOLVE")){
+    stop(paste0(function_name, ": ambiguities should be either IGNORE, WARN or SOLVE."))
+  }
   ## initialization
   start_time <- proc.time()
   
   ## Computation
   # First we find dates
-  dates <- identifyDates(dataSet, formats = formats, n_test = n_test, verbose = verbose)
+  formats_found <- identifyDates(dataSet, formats = formats, n_test = n_test, ambiguities = ambiguities, verbose = verbose)
   if (verbose){
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to identify formats")
   }
   # Now we transform (if there is something to transform)
-  if (length(dates$dates) < 1){
+  if (length(formats_found) < 1){
     if (verbose){
       printl(function_name, ": There are no dates to transform. (If i missed something please provide the date format in inputs or consider using setColAsDate to transform it).")
     }
     return(dataSet)
   }
   start_time <- proc.time()
-  for ( i in 1:length(dates$dates)){
-    dataSet <- setColAsDate(dataSet, cols = dates$dates[i], format = dates$formats[i], verbose = FALSE)
-  }
+  dataSet <- setColAsDate(dataSet, format = formats_found, verbose = FALSE)
   if (verbose){
-    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to transform ", length(dates$dates), " columns to a Date format.")
+    printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to transform ", length(formats_found), " columns to a Date format.")
   }
   return(dataSet)
 }
@@ -63,20 +88,45 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, verbose 
 ###################################################################################
 ############################### identifyDates #####################################
 ###################################################################################
-# Identify date columns in a dataSet set
-# 
-# Function to identify dates columns and give there format. It use a bunch of default formats. But you can also add your own formats.
-# @param dataSet a data.table or data.frame or matric 
-# @param formats list of your personnal Date formats you want to check (see \code{\link{strptime}})
-# @param n_test number of non-null rows on which we should test that it is indeed a date (default to 30)
-# @param verbose logical: should the algorithm talk (Default to TRUE)
-# @param hours logical: should we check for hours in date columns (Default to TRUE)
-# @return 
-# A list of two list. The first list is dates contains the list columns that are Dates. 
-# The second list is formats contains the list of formats for each of the Dates of the first list. 
-# BE CAREFULL those formats are the formats without separator (ex: %Y%m%d)
-# @export
-identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, ...){
+#' Identify date columns
+#' 
+#' Function to identify dates columns and give there format. It use a bunch of default formats. But you can also add your own formats.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param formats List of additional Date formats to check (see \code{\link{strptime}})
+#' @param n_test Number of non-null rows on which to test (numeric, default to 30)
+#' @param ambiguities How ambiguities should be treated (see details in ambiguities section)
+#' (character, default to IGNORE)
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @details 
+#' This function is looking for perfect transformation. 
+#' If there are some mistakes in dataSet, consider setting them to NA before. \cr
+#' In the unlikely case where you have numeric higher than \code{as.numeric(as.POSIXct("1990-01-01"))}
+#' they will be considered as timestamps and you might have some issues. On the other side, 
+#' if you have timestamps before 1990-01-01, they won't be found, but you can use 
+#' \code{\link{setColAsDate}} to force transformation.
+#' @section Ambiguity:
+#' Ambiguities are often present in dates. For example, in date: 2017/01/01, there is no way to know
+#'  if format is YYYY/MM/DD or YYYY/DD/MM. \cr
+#' Some times ambiguity can be solved by a human. For example
+#'  17/12/31, a human might guess that it is YY/MM/DD, but there is no sure way to know.  \cr
+#' To be safe, findAndTransformDates doesn't try to guess ambiguities. \cr
+#' To answer ambiguities problem, param \code{ambiguities} is now available. It can take one of the following values
+#' \itemize{
+#' \item \code{IGNORE} function will then take the first format which match (fast, but can make some mistakes)
+#' \item \code{WARN} function will try all format and tell you - via prints - that there are multiple matches (and won't perform date transformation)
+#' \item \code{SOLVE} function will try to solve ambiguity by going through more lines, so will be slower. 
+#' If it is able to solve it, it will transform the column, if not it will print the various acceptable formats.
+#' }
+#' @return 
+#' A named list with names being col names of \code{dataSet} and values being formats.
+#' @examples
+#' # Load exemple set
+#' data(messy_adult)
+#' head(messy_adult)
+#' # using the findAndTransformDates
+#' identifyDates(messy_adult, n_test = 5)
+#' @export
+identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
   ## Working environement
   function_name <- "identifyDates"
   
@@ -86,9 +136,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   is.verbose(verbose)
   
   ## Initialization
-  dates <- NULL
-  formats <- NULL
-  date_sep <-  getPossibleSeparators()
+  formats_found <- list()
   ## Computation
   if (verbose){ 
     pb <- initPB(function_name, names(dataSet))
@@ -96,53 +144,38 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
   for ( col in names(dataSet) ){ 
     # We search dates only in characters
     if (is.character(dataSet[[col]]) || is.numeric(dataSet[[col]]) || (is.factor(dataSet[[col]]) & is.character(levels(dataSet[[col]])))){
-      # Get a few lines that aren't NA, NULL nor ""
-      if (is.factor(dataSet[[col]])){ # If it's a factor, we take levels to convert
-        data_sample <- findNFirstNonNull(levels(dataSet[[col]]), n_test)
-      }
-      else{
-        data_sample <- findNFirstNonNull(dataSet[[col]], n_test)
-      }
-      
-      # We check only columns that contains something (not NA, NULL, "")
-      if (length(data_sample) > 0){ 
-        if (is.character(data_sample)){
-          # Identify potentially used separator by checking it split date in at last two elements
-          date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
-          if (length(date_sep_tmp) == 0){
-            next() # No separator means no dates
+      # Look for the good format
+      format <- identifyDatesFormats(dataSet = dataSet[[col]], formats = formats, n_test = n_test, ambiguities = ambiguities)
+      if (length(format) > 1 & ambiguities != "IGNORE"){ # There is an ambiguity (second check is redondant but for code understanding)
+        if (ambiguities == "SOLVE"){
+          if (verbose){
+            printl(function_name, ": column ", col, " seems to have an ambiguity, I try to solve it.")
           }
-          # Check formats with "date_hours" only if there are more than 10 characters
-          date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
-          # Debug warning
-          if (is.na(date_hours) || is.infinite(date_hours)){ 
-            warning(paste0(function_name, ": error i shouldn't be there. Please report bug on GitHub.",  ))
-            date_hours <- FALSE
+          n_prev <- 30 # Keep track of previous n to make sure that while loop stops.
+          n <- 30 * 10
+          while (length(format) > 1 & n_prev != n){
+            n = max(n_prev * 10, nrow(dataSet))
+            format <- identifyDatesFormats(dataSet = dataSet[[col]], formats = format, n_test = n, ambiguities = ambiguities)
           }
-          # Build list of all formats to check
-          defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
-          formats_tmp <- unique(c(defaultDateFormats, formats))
-          
-          # Look for the good format
-          format <- identifyDatesFormats(dataSet = data_sample, formats = formats_tmp)
         }
-        if (is.numeric(data_sample)){
-          format <- identifyTimeStampsFormats(dataSet = data_sample)
-        }
-        # If a format has been found we note it
-        if (! is.null(format)){ 
-          dates <- c(dates, col)
-          formats <- c(formats, format)
+        if (length(format) > 1 & verbose){ # If ambiguity wasn't solved
+          printl(function_name, ": column ", col, " seems to be a date but there is an ambiguity in the format. ",
+                 " The following formats seems to work: ", paste(format, collapse = ", "))
+          format <- NULL
         }
       }
     }
     
+    # If a format has been found we note it
+    if (length(format) == 1){
+      formats_found[[col]] <- format
+    }
     if (verbose){
       setPB(pb, col)
     }
   }
   ## Wrapp-up
-  return(list(dates = dates, formats = formats))
+  return(formats_found)
 }
 
 ## To-do
@@ -158,25 +191,63 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, verbose = TRUE, 
 ############################################################################################################
 # 
 # 
-identifyDatesFormats <- function(dataSet, formats){
+identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGNORE"){
   ## Working environement
   function_name <- "identifyDatesFormats"
   ## Sanity check
-  if (! is.character(dataSet)){
-    stop(paste0(function_name, ": dataSet should be some characters."))
+  if (! (is.character(dataSet) || is.numeric(dataSet) || (is.factor(dataSet) & is.character(levels(dataSet))))){
+    stop(paste0(function_name, ": dataSet should be some characters, numerics or factor of character."))
   }
   
   ## Initalization
+  date_sep <-  getPossibleSeparators()
+  # Get a few lines that aren't NA, NULL nor ""
+  if (is.factor(dataSet)){ # If it's a factor, we take levels to convert
+    data_sample <- findNFirstNonNull(levels(dataSet), n_test)
+  }
+  else{
+    data_sample <- findNFirstNonNull(dataSet, n_test)
+  }
   
   ## Computation
-  for (format in formats){
-    converted <- as.POSIXct(dataSet, format = format)
-    un_converted <- format(converted, format = format)
-    if (control_date_conversion(un_converted, dataSet)){
-      return(format)
+  temp_format <- NULL
+  if (length(data_sample) > 0){ 
+    # Identify potentially used separator by checking it split date in at last two elements
+    if (is.character(data_sample)){
+      date_sep_tmp <- date_sep[sapply(date_sep, function(x)length(grep(x, data_sample))) > 0] 
+      if (length(date_sep_tmp) == 0){
+        return(NULL) # No separator means no dates
+      }
+      
+      # Check formats with "date_hours" only if there are more than 10 characters
+      date_hours <- max(sapply(data_sample, nchar), na.rm = TRUE) > 10 
+      # Debug warning
+      if (is.na(date_hours) || is.infinite(date_hours)){ 
+        warning(paste0(function_name, ": error i shouldn't be there. Please report bug on GitHub."))
+        date_hours <- FALSE
+      }
+      # Build list of all formats to check
+      defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
+      formats_tmp <- unique(c(defaultDateFormats, formats))
+      
+      for (format in formats_tmp){
+        converted <- as.POSIXct(data_sample, format = format)
+        un_converted <- format(converted, format = format)
+        if (control_date_conversion(un_converted, data_sample)){
+          if (ambiguities == "IGNORE"){ # If don't care about possible ambiguities: return found format
+            return(format)
+          }
+          else{ # Else keep searching
+            temp_format <- c(temp_format, format)
+          }
+        }
+      }
+    }
+    if (is.numeric(data_sample)){
+      temp_format <- identifyTimeStampsFormats(dataSet = data_sample)
     }
   }
-  return(NULL)
+  return(temp_format)
 }
 
 
@@ -282,8 +353,9 @@ dateFormatUnifier <- function(dataSet, format = "Date"){
 # Check if an object is in a date format
 # Are handeled: Date, POSIXct, POSIXlt 	
 # Excension of is.Date, is.POSIXct...
+#' @importFrom lubridate is.POSIXct is.POSIXlt is.POSIXt
 is.date <- function(x){
-  return(any(class(x) %in% c("Date", "POSIXct", "POSIXt", "POSIXlt")))
+  return(is.POSIXct(x) || is.Date(x) || is.POSIXlt(x) || is.POSIXt(x))
 }
 
 
@@ -296,7 +368,8 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
   hours_format <- c("%H:%M:%S", "%H:%M", "%H")
   base_year <- c("%Y", "%y")
   base_month <- c("%b", "%B", "%m")
-  base_day <- c("%d", "%a", "%A")
+  base_day <- c("%d")
+  base_week_day <- c("%A", "%a") # Not used yet
   
   ## Computation
   # Build list of possible formats
@@ -340,7 +413,7 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
 #######################################################################################
 # Code is commented and result hard written so that it's way faster. You should keep it that way
 formatForparse_date_time<- function(){
-  # # Get complete liste of format
+  # Get complete liste of format
   # listOfFastFormat <- getPossibleDatesFormats()
   # result <- NULL
   # for (format in listOfFastFormat){
@@ -354,8 +427,21 @@ formatForparse_date_time<- function(){
   # }
   # result <- sapply(result, function(x)str_replace_all(x, "[[:punct:]]", ""))
   # result <- unique(result)
-  
-  result <- c("Ybd", "Ydb", "dbY", "bdY", "YBd", "YdB", "dBY", "BdY", "Ymd", "Ydm", "dmY", "mdY", "ybd", "ydb", "dby", "bdy", "yBd", "ydB", "dBy", "Bdy", "ymd", "ydm", "dmy", "mdy", "Ybd HMS", "Ybd HM", "Ybd H", "Ydb HMS", "Ydb HM", "Ydb H", "dbY HMS", "dbY HM", "dbY H", "bdY HMS", "bdY HM", "bdY H", "YBd HMS", "YBd HM", "YBd H", "YdB HMS", "YdB HM", "YdB H", "dBY HMS", "dBY HM", "dBY H", "BdY HMS", "BdY HM", "BdY H", "Ymd HMS", "Ymd HM", "Ymd H", "Ydm HMS", "Ydm HM", "Ydm H", "dmY HMS", "dmY HM", "dmY H", "mdY HMS", "mdY HM", "mdY H", "ybd HMS", "ybd HM", "ybd H", "ydb HMS", "ydb HM", "ydb H", "dby HMS", "dby HM", "dby H", "bdy HMS", "bdy HM", "bdy H", "yBd HMS", "yBd HM", "yBd H", "ydB HMS", "ydB HM", "ydB H", "dBy HMS", "dBy HM", "dBy H", "Bdy HMS", "Bdy HM", "Bdy H", "ymd HMS", "ymd HM", "ymd H", "ydm HMS", "ydm HM", "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H")
+  # 
+  result <- c("Ybd", "Ydb", "dbY", "bdY", "YBd", "YdB", "dBY", "BdY", "Ymd", 
+              "Ydm", "dmY", "mdY", "ybd", "ydb", "dby", "bdy", "yBd", "ydB", 
+              "dBy", "Bdy", "ymd", "ydm", "dmy", "mdy", "Ybd HMS", "Ybd HM", 
+              "Ybd H", "Ydb HMS", "Ydb HM", "Ydb H", "dbY HMS", "dbY HM", "dbY H", 
+              "bdY HMS", "bdY HM", "bdY H", "YBd HMS", "YBd HM", "YBd H", "YdB HMS", 
+              "YdB HM", "YdB H", "dBY HMS", "dBY HM", "dBY H", "BdY HMS", "BdY HM", 
+              "BdY H", "Ymd HMS", "Ymd HM", "Ymd H", "Ydm HMS", "Ydm HM", "Ydm H", 
+              "dmY HMS", "dmY HM", "dmY H", "mdY HMS", "mdY HM", "mdY H", "ybd HMS", 
+              "ybd HM", "ybd H", "ydb HMS", "ydb HM", "ydb H", "dby HMS", "dby HM", 
+              "dby H", "bdy HMS", "bdy HM", "bdy H", "yBd HMS", "yBd HM", "yBd H", 
+              "ydB HMS", "ydB HM", "ydB H", "dBy HMS", "dBy HM", "dBy H", "Bdy HMS", 
+              "Bdy HM", "Bdy H", "ymd HMS", "ymd HM", "ymd H", "ydm HMS", "ydm HM", 
+              "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H"
+  )
   
   
   ## Wrapp-up

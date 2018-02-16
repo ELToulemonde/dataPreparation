@@ -4,21 +4,18 @@
 \alias{one_hot_encoder}
 \title{One hot encoder}
 \usage{
-one_hot_encoder(dataSet, cols = "auto", drop = FALSE, verbose = TRUE, ...)
+one_hot_encoder(dataSet, encoding = NULL, verbose = TRUE, drop = FALSE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{cols}{List of character or factor column(s) name(s) of dataSet to transform into factor. \cr
-To transform all character and factor columns, set it to "auto". (character, default to "auto")}
+\item{encoding}{Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
+To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
+before. If it is kept to NULL, build_encoding will be called.}
+
+\item{verbose}{Should the function log (logical, default to TRUE)}
 
 \item{drop}{Should \code{cols} be dropped after generation (logical, default to FALSE)}
-
-\item{verbose}{Should the function log (logical, default to TRUE) 
-To transform all dates, set it to "auto", (characters, default to "auto")}
-
-\item{...}{Other arguments such as \code{name_separator} to separate words in new columns names
-(character, default to ".")}
 }
 \value{
 \code{dataSet} edited by \strong{reference} with new columns.
@@ -29,9 +26,18 @@ Transform factor column into 0/1 columns with one column per values of the colum
 \details{
 If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
 Please \strong{be carefull} using this function, it will generate as many columns as there different values 
-in your column and might use a lot of RAM.
+in your column and might use a lot of RAM. To be safe, you can use parameter \code{min_frequency} in \code{\link{build_encoding}}.
 }
 \examples{
+data(messy_adult)
+
+# Compute encoding
+encoding <- build_encoding(messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
+
+# Apply it
+messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
+
+# Apply same encoding to adult
 data(adult)
-adult <- one_hot_encoder(adult, "auto", drop = TRUE)
+adult <- one_hot_encoder(adult, encoding = encoding, drop = TRUE)
 }

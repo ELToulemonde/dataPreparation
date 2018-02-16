@@ -56,8 +56,11 @@ X_test <- fastDiscretization(dataSet = X_test, bins = list(age = c(0, 18, 25, 45
 print(table(X_train$age))
 
 ## ----warning = FALSE, comment="#",  null_prefix=TRUE---------------------
-X_train <- one_hot_encoder(dataSet = X_train, cols = "auto", drop = TRUE, verbose = TRUE)
-X_test <- one_hot_encoder(dataSet = X_test, cols = "auto", drop = TRUE, verbose = TRUE)
+encoding <- build_encoding(dataSet = X_train, cols = "auto", verbose = TRUE)
+
+## ----warning = FALSE, comment="#",  null_prefix=TRUE---------------------
+X_train <- one_hot_encoder(dataSet = X_train, encoding = encoding, drop = TRUE, verbose = TRUE)
+X_test <- one_hot_encoder(dataSet = X_test, encoding = encoding, drop = TRUE, verbose = TRUE)
 
 ## ----warning = FALSE, comment="#",  null_prefix=TRUE---------------------
 print("Dimensions of X_train: ")

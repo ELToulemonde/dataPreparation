@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2017-11-10" />
+<meta name="date" content="2018-02-16" />
 
 <title>Tutorial to prepare train and test set using dataPreparation</title>
 
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Tutorial to prepare train and test set using dataPreparation</h1>
-<h4 class="date"><em>2017-11-10</em></h4>
+<h4 class="date"><em>2018-02-16</em></h4>
 
 
 
@@ -121,14 +121,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>To avoid introducing a bias in <code>test</code> using train-data, the train-test split should be performed before (most) data preparation steps.</p>
 <p>To simulate a train and test set we are going to split randomly this data set into 80% train and 20% test.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Random sample indexes</span>
-train_index &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(adult), <span class="fl">0.8</span> *<span class="st"> </span><span class="kw">nrow</span>(adult))
-test_index &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(adult), train_index)
+train_index &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(adult), <span class="fl">0.8</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(adult))
+test_index &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(adult), train_index)
 
 <span class="co"># Build X_train, y_train, X_test, y_test</span>
-X_train &lt;-<span class="st"> </span>adult[train_index, -<span class="dv">15</span>]
+X_train &lt;-<span class="st"> </span>adult[train_index, <span class="op">-</span><span class="dv">15</span>]
 y_train &lt;-<span class="st"> </span>adult[train_index, <span class="st">&quot;income&quot;</span>]
 
-X_test &lt;-<span class="st"> </span>adult[test_index, -<span class="dv">15</span>]
+X_test &lt;-<span class="st"> </span>adult[test_index, <span class="op">-</span><span class="dv">15</span>]
 y_test &lt;-<span class="st"> </span>adult[test_index, <span class="st">&quot;income&quot;</span>]</code></pre></div>
 </div>
 <div id="filter-useless-variables" class="section level2">
@@ -141,15 +141,15 @@ y_test &lt;-<span class="st"> </span>adult[test_index, <span class="st">&quot;in
 </ul>
 <p>Let’s id them:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">constant_cols &lt;-<span class="st"> </span><span class="kw">whichAreConstant</span>(adult)</code></pre></div>
-<pre><code># [1] &quot;whichAreConstant: it took me 0.16s to identify 0 constant column(s)&quot;</code></pre>
+<pre><code># [1] &quot;whichAreConstant: it took me 0s to identify 0 constant column(s)&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double_cols &lt;-<span class="st"> </span><span class="kw">whichAreInDouble</span>(adult)</code></pre></div>
-<pre><code># [1] &quot;whichAreInDouble: it took me 0.15s to identify 0 column(s) to drop.&quot;</code></pre>
+<pre><code># [1] &quot;whichAreInDouble: it took me 0.32s to identify 0 column(s) to drop.&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections_cols &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(adult)</code></pre></div>
 <pre><code># [1] &quot;whichAreBijection: education_num is a bijection of education. I put it in drop list.&quot;
 # [1] &quot;whichAreBijection: it took me 0.28s to identify 1 column(s) to drop.&quot;</code></pre>
 <p>We only found, one bijection: variable <code>education_num</code> which is an index for variable <code>education</code>. Let’s drop it:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$education_num =<span class="st"> </span><span class="ot">NULL</span>
-X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train<span class="op">$</span>education_num =<span class="st"> </span><span class="ot">NULL</span>
+X_test<span class="op">$</span>education_num =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
 </div>
 <div id="scaling" class="section level2">
 <h2><span class="header-section-number">2.3</span> Scaling</h2>
@@ -157,7 +157,7 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <p>To perform scaling (meaning setting mean to 0 and standard deviation to 1), function <code>fastScale</code> is available.</p>
 <p>Since it is highly recommended to apply same scaling on train and test, you should compute the scales first using the function <code>build_scales</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scales &lt;-<span class="st"> </span><span class="kw">build_scales</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;capital_gain&quot;</span>, <span class="st">&quot;capital_loss&quot;</span>), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code># [1] &quot;build_scales: I will compute scale 2 numeric columns.&quot;
+<pre><code># [1] &quot;build_scales: I will compute scale on  2 numeric columns.&quot;
 # [1] &quot;build_scales: it took me: 0s to compute scale for 2 numeric columns.&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(scales)</code></pre></div>
 <pre><code># $capital_gain
@@ -208,12 +208,12 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <li>Some spefic argument could be needed and will be presented in the documentation of each functions.</li>
 </ul>
 <p>Let’s apply our own bins:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, <span class="op">+</span><span class="ot">Inf</span>)))</code></pre></div>
 <pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
-# [1] &quot;fastDiscretization: it took me: 0.1s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, +<span class="ot">Inf</span>)))</code></pre></div>
+# [1] &quot;fastDiscretization: it took me: 0.14s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">fastDiscretization</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">bins =</span> <span class="kw">list</span>(<span class="dt">age =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">62</span>, <span class="op">+</span><span class="ot">Inf</span>)))</code></pre></div>
 <pre><code># [1] &quot;fastDiscretization: I will discretize 1 numeric columns using, bins.&quot;
-# [1] &quot;fastDiscretization: it took me: 0.02s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
+# [1] &quot;fastDiscretization: it took me: 0.04s to transform 1 numeric columns into, binarised columns.&quot;</code></pre>
 <p>Here bins have been defined to compute groups :</p>
 <ul>
 <li>0 to 18</li>
@@ -223,7 +223,7 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <li>Over 62.</li>
 </ul>
 <p>Let’s control it:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">table</span>(X_train$age))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">table</span>(X_train<span class="op">$</span>age))</code></pre></div>
 <pre><code># 
 #    [0, 18[   [18, 25[   [25, 45[   [45, 62[ [62, +Inf[ 
 #        325       4152      13299       6679       1593</code></pre>
@@ -294,8 +294,13 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 </tr>
 </tbody>
 </table>
-<p>To perform it, one could use <code>dataPreparation::one_hot_encoder</code> which uses data.table power to do it in a fast and RAM efficient way.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>To perform it, one could use <code>dataPreparation::one_hot_encoder</code> which uses data.table power to do it in a fast and RAM efficient way. Since it is important to have the same columns in train and test first, one will compute the encoding:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">encoding &lt;-<span class="st"> </span><span class="kw">build_encoding</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code># [1] &quot;build_encoding: I will compute encoding on 9 character and factor columns.&quot;
+# [1] &quot;build_encoding: it took me: 0.02s to compute encoding for 9 character and factor columns.&quot;</code></pre>
+<p>The argument cols = “auto” means that build_encoding will automatically select all columns that are either character or factor to prepare encoding.</p>
+<p>And then one can apply them to both tables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">encoding =</span> encoding, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># [1] &quot;one_hot_encoder: I will one hot encode some columns.&quot;
 # [1] &quot;one_hot_encoder: I am doing column: age&quot;
 # [1] &quot;one_hot_encoder: I am doing column: type_employer&quot;
@@ -306,8 +311,8 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 # [1] &quot;one_hot_encoder: I am doing column: race&quot;
 # [1] &quot;one_hot_encoder: I am doing column: sex&quot;
 # [1] &quot;one_hot_encoder: I am doing column: country&quot;
-# [1] &quot;one_hot_encoder: It took me 0.25s to transform 9 column(s).&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">cols =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
+# [1] &quot;one_hot_encoder: It took me 0.34s to transform 9 column(s).&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_test &lt;-<span class="st"> </span><span class="kw">one_hot_encoder</span>(<span class="dt">dataSet =</span> X_test, <span class="dt">encoding =</span> encoding, <span class="dt">drop =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># [1] &quot;one_hot_encoder: I will one hot encode some columns.&quot;
 # [1] &quot;one_hot_encoder: I am doing column: age&quot;
 # [1] &quot;one_hot_encoder: I am doing column: type_employer&quot;
@@ -318,11 +323,11 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 # [1] &quot;one_hot_encoder: I am doing column: race&quot;
 # [1] &quot;one_hot_encoder: I am doing column: sex&quot;
 # [1] &quot;one_hot_encoder: I am doing column: country&quot;
-# [1] &quot;one_hot_encoder: It took me 0.18s to transform 9 column(s).&quot;</code></pre>
+# [1] &quot;one_hot_encoder: It took me 0.31s to transform 9 column(s).&quot;</code></pre>
 <p>This function is called the following way:</p>
 <ul>
 <li>dataSet = X_train: means that it will perform transformation on X_train</li>
-<li>cols = “auto”: means that it will determine by it self which columns to encode (all characters and factor)</li>
+<li>encoding = encoding: means that we use previously built encoding</li>
 <li>drop = TRUE: means that it will drop original columns</li>
 <li>verbose = TRUE: means that it will log to tell you what it is doing.</li>
 </ul>
@@ -342,10 +347,10 @@ X_test$education_num =<span class="st"> </span><span class="ot">NULL</span></cod
 <p>Since a lot of columns have been created, a filtering could be relevant:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bijections &lt;-<span class="st"> </span><span class="kw">whichAreBijection</span>(<span class="dt">dataSet =</span> X_train, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># [1] &quot;whichAreBijection: sex.Male is a bijection of sex.Female. I put it in drop list.&quot;
-# [1] &quot;whichAreBijection: it took me 11.48s to identify 1 column(s) to drop.&quot;</code></pre>
+# [1] &quot;whichAreBijection: it took me 2.31s to identify 1 column(s) to drop.&quot;</code></pre>
 <p>It found that column Male is a bijection of column female, that is not surprinsing. Let’s drop one of them:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train$Male =<span class="st"> </span><span class="ot">NULL</span>
-X_test$Male =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train<span class="op">$</span>Male =<span class="st"> </span><span class="ot">NULL</span>
+X_test<span class="op">$</span>Male =<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
 </div>
 </div>
 <div id="controling-shape" class="section level1">

@@ -7,10 +7,11 @@ verbose <- TRUE
 data("messy_adult")
 messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
 store_ncol <- ncol(messy_adult)
-messy_adult <- generateFactorFromDate(messy_adult, cols = c("date1", "date2"), drop = TRUE, type = "yearquarter", verbose = verbose)
 test_that("generateFactorFromDate ",
           {
-            expect_equal(ncol(messy_adult), store_ncol)
+            expect_equal(
+              ncol(generateFactorFromDate(messy_adult, cols = c("date1", "date2"), drop = TRUE, type = "yearquarter", verbose = verbose)), 
+              store_ncol)
           })
 
 messy_adult <- generateFactorFromDate(messy_adult, cols = "auto", drop = TRUE, type = "yearquarter", verbose = verbose)
@@ -39,26 +40,19 @@ dataSet <- data.table(ID = 1:100,
 )
 
 # Now let's compute
-dataSet <- generateDateDiffs(dataSet, cols = "auto", analysisDate = as.Date("2016-11-14"), drop = TRUE, verbose = verbose)
+result <- generateDateDiffs(copy(dataSet), cols = "auto", analysisDate = as.Date("2016-11-14"), drop = TRUE, verbose = verbose)
 
 test_that("generateDateDiffs: ",
           {
-            expect_equal(ncol(dataSet), 4)
-            expect_equal(sum(is.na(dataSet)), 0)
+            expect_equal(ncol(result), 4)
+            expect_false(any(is.na(result)))
           })
 
 
-dataSet <- data.table(ID = 1:100, 
-                      date1 = seq(from = as.Date("2010-01-01"), 
-                                  to = as.Date("2015-01-01"), 
-                                  length.out = 100), 
-                      date2 = seq(from = as.Date("1910-01-01"), 
-                                  to = as.Date("2000-01-01"), 
-                                  length.out = 100)
-)
 test_that("generateDateDiffs: errors",
           {
-            expect_error(generateDateDiffs(dataSet, cols = "auto", analysisDate = "2017-01-01", verbose = verbose),  "analysisDate must be a Date")
+            expect_error(generateDateDiffs(copy(dataSet), cols = "auto", analysisDate = "2017-01-01", verbose = verbose),  
+                         "analysisDate must be a Date")
           })
 
 

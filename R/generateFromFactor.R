@@ -72,42 +72,53 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
   return(dataSet)
 }
 
+
 ## one_hot_encoder
 # ----------------
 #' One hot encoder
 #' 
 #' Transform factor column into 0/1 columns with one column per values of the column.
 #' @param dataSet Matrix, data.frame or data.table
-#' @param cols List of character or factor column(s) name(s) of dataSet to transform into factor. \cr
-#' To transform all character and factor columns, set it to "auto". (character, default to "auto")
+#' @param encoding Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
+#' To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
+#' before. If it is kept to NULL, build_encoding will be called.
 #' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
 #' @param verbose Should the function log (logical, default to TRUE) 
-#' To transform all dates, set it to "auto", (characters, default to "auto")
-#' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
-#' (character, default to ".")
 #' @return \code{dataSet} edited by \strong{reference} with new columns. 
 #' @details If you don't want to edit your data set consider sending \code{copy(dataSet)} as an input.\cr
 #' Please \strong{be carefull} using this function, it will generate as many columns as there different values 
-#' in your column and might use a lot of RAM.
+#' in your column and might use a lot of RAM. To be safe, you can use parameter \code{min_frequency} in \code{\link{build_encoding}}.
 #' @examples
+#' data(messy_adult)
+#' 
+#' # Compute encoding
+#' encoding <- build_encoding(messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
+#' 
+#' # Apply it
+#' messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
+#' 
+#' # Apply same encoding to adult
 #' data(adult)
-#' adult <- one_hot_encoder(adult, "auto", drop = TRUE)
+#' adult <- one_hot_encoder(adult, encoding = encoding, drop = TRUE)
 #' @export
 #' @import data.table
-one_hot_encoder <- function(dataSet, cols = "auto", drop = FALSE, verbose = TRUE, ...){
+one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FALSE){
   ## Working environement
   function_name <- "one_hot_encoder"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
-  cols <- real_cols(dataSet, cols, function_name, types = c("factor", "character"))
   is.verbose(verbose)
   
   ## Initialization
   # Transform char into factor
-  args <- list(...)
-  name_separator <- build_name_separator(args)
-  dataSet <- setColAsFactor(dataSet, cols = cols[sapply(dataSet[, cols, with = FALSE], is.character)], n_levels = -1, verbose = FALSE)
+  if (is.null(encoding)){
+    if (verbose){
+	  printl(function_name, ": Since you didn't profvide encoding, I compute them with build_encoding.")
+    }
+    encoding <- build_encoding(dataSet, cols = "auto", verbose = verbose)
+  }
+  cols <- names(encoding)
   if (verbose){
     printl(function_name, ": I will one hot encode some columns.")
     pb <- initPB(function_name, cols)
@@ -121,12 +132,11 @@ one_hot_encoder <- function(dataSet, cols = "auto", drop = FALSE, verbose = TRUE
       printl(function_name, ": I am doing column: ", col)
     }
     # Build columns with 0 value (it save time to pre-set the columns)
-    new_cols <- paste0(col, name_separator, levels(dataSet[[col]]))
-    new_cols <- sapply(new_cols, function(x)make_new_col_name(x, names(dataSet)))
+    new_cols <- encoding[[col]]$new_cols
     dataSet[, (new_cols) := 0]
     # Set the write value
     for (i in 1:length(new_cols)){
-      set(dataSet, NULL, new_cols[i], as.integer(dataSet[[col]] == levels(dataSet[[col]])[i]))
+      set(dataSet, NULL, new_cols[i], as.integer(dataSet[[col]] == encoding[[col]]$values[i]))
     }
     
     # drop col if asked
@@ -148,5 +158,88 @@ one_hot_encoder <- function(dataSet, cols = "auto", drop = FALSE, verbose = TRUE
   return(dataSet)
 }
 
-
+#' Compute encoding
+#' 
+#' Build a list of one hot encoding for each \code{cols}.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param cols List of numeric column(s) name(s) of dataSet to transform. To transform all 
+#' characters, set it to "auto". (character, default to "auto")
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @param min_frequency The minimal share of lines that a category should represent (numeric, 
+#' between 0 and 1, default to 0)
+#' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
+#' (character, default to ".")
+#' @details 
+#' To avoid creating really large sparce matrices, one can use  param \code{min_frequency} to be
+#'  sure that only most representative values will be used to create a new column (and not 
+#'  outlayers or mistakes in data). \cr
+#'  Setting \code{min_frequency} to something gretter than 0 may cause the function to be slower 
+#'  (especially for large dataSet).
+#' @return A list where each element name is a column name of data set and each element new_cols 
+#' and values the new columns that will be built during encoding.
+#' @examples 
+#' # Get a data set
+#' data(adult)
+#' encoding <- build_encoding(adult, cols = "auto", verbose = TRUE)
+#' 
+#' print(encoding)
+#' 
+#' # To limit the number of generated columns, one can use min_frequency parameter:
+#' build_encoding(adult, cols = "auto", verbose = TRUE, min_frequency = 0.1)
+#' # Set to 0.1, it will create columns only for values that are present 10% of the time.
+#' @import data.table
+#' @export
+build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency = 0, ...){
+  ## Working environement
+  function_name <- "build_encoding"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  cols <- real_cols(dataSet, cols, function_name, types = c("factor", "character"))
+  is.verbose(verbose)
+  is.share(min_frequency, object_name = "min_frequency", function_name = function_name)
+  
+  ## Initialization
+  if (verbose){
+    pb <- initPB(function_name, cols)
+    printl(function_name, ": I will compute encoding on ", length(cols), " character and factor columns.")
+    start_time <- proc.time()
+  }
+  
+  # Retrive arg
+  args <- list(...)
+  name_separator <- build_name_separator(args)
+  encoder = list()
+  ## Computation
+  for (col in cols){
+    # Build columns with 0 value (it save time to pre-set the columns)
+    if (is.factor(dataSet[[col]])){
+      values <- levels(dataSet[[col]])
+    }
+    else{
+      values <- unique(dataSet[[col]])
+    }
+    if (min_frequency > 0 ){
+      frequency <- dataSet[, .N / nrow(dataSet), by = col]
+      to_drop <- frequency[get("V1") < min_frequency, ][[col]] # V1 is created in previous line (= .N / nrow(dataSet)). Get to avoid unwanted devtools::check note.
+      values <- setdiff(values, to_drop)
+    }
+    new_cols <- paste0(col, name_separator, values)
+    new_cols <- sapply(new_cols, function(x)make_new_col_name(x, names(dataSet)))
+    
+    # Set the write value
+    encoder[[col]] = list(new_cols = new_cols, values = values)
+    
+    # Update progress bar
+    if (verbose){
+      setPB(pb, col)  
+    }
+  }
+  if (verbose){
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to compute encoding for ", length(cols), " character and factor columns.")
+  }
+  ## Wrapp-up
+  return(encoder)
+}
 

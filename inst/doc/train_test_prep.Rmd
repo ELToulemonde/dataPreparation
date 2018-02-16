@@ -176,16 +176,24 @@ ID | var.A | var.B | var.C
 4  | 0     | 0     | 1    
 
 To perform it, one could use `dataPreparation::one_hot_encoder` which uses data.table power to do it in a fast and RAM efficient way.
+Since it is important to have the same columns in train and test first, one will compute the encoding:
+```{r warning = FALSE, comment="#",  null_prefix=TRUE}
+encoding <- build_encoding(dataSet = X_train, cols = "auto", verbose = TRUE)
+```
+
+The argument cols = "auto" means that build_encoding will automatically select all columns that are either character or factor to prepare encoding.
+
+And then one can apply them to both tables:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_train <- one_hot_encoder(dataSet = X_train, cols = "auto", drop = TRUE, verbose = TRUE)
-X_test <- one_hot_encoder(dataSet = X_test, cols = "auto", drop = TRUE, verbose = TRUE)
+X_train <- one_hot_encoder(dataSet = X_train, encoding = encoding, drop = TRUE, verbose = TRUE)
+X_test <- one_hot_encoder(dataSet = X_test, encoding = encoding, drop = TRUE, verbose = TRUE)
 ```
 
 This function is called the following way:
 
 - dataSet = X_train: means that it will perform transformation on X_train
-- cols = "auto": means that it will determine by it self which columns to encode (all characters and factor)
+- encoding = encoding: means that we use previously built encoding
 - drop = TRUE: means that it will drop original columns
 - verbose = TRUE: means that it will log to tell you what it is doing.
 

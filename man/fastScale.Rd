@@ -4,7 +4,7 @@
 \alias{fastScale}
 \title{scale}
 \usage{
-fastScale(dataSet, scales = NULL, verbose = TRUE)
+fastScale(dataSet, scales = NULL, way = "scale", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -13,10 +13,12 @@ fastScale(dataSet, scales = NULL, verbose = TRUE)
 To perform the same scaling on train and test, it is recommended to compute \code{\link{build_scales}}
 before. If it is kept to NULL, build_scales will be called.}
 
+\item{way}{should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")}
+
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-\code{dataSet} with columns scaled by \strong{reference}. Scaled means that each
+\code{dataSet} with columns scaled (or unscaled) by \strong{reference}. Scaled means that each
  column mean will be 0 and each column standard deviation will be 1.
 }
 \description{
@@ -25,6 +27,7 @@ Perform efficient scaling on a data set.
 \details{
 Scaling numeric values is usefull for some machine learning algorithm such as
  logistic regression or neural networks. \cr
+ Unscaling numeric values can be very usefull for most post-model analysis to do so set way to "unscale". \cr
 This implementation of scale will be faster that \code{\link{scale}} for large data sets.
 }
 \examples{
@@ -40,4 +43,11 @@ adult <- fastScale(adult, scales = scales, verbose = TRUE)
 # Control
 print(mean(adult$age)) # Almost 0
 print(sd(adult$age)) # 1
+
+# To unscale it:
+adult <- fastScale(adult, scales = scales, way = "unscale", verbose = TRUE)
+
+# Control
+print(mean(adult$age)) # About 38.6
+print(sd(adult$age)) # About 13.6
 }

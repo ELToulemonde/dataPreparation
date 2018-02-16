@@ -4,25 +4,25 @@
 ## Description
 # Dichotomic search of non-null elements
 # Search from 1 to N then N+1 to 2*N then 2*N+1 to 4*N...
-findNFirstNonNull <- function(dataSet, N){
+findNFirstNonNull <- function(object, N){
   ## Working environment
   
   ## Initialization
-  if (length(dataSet) <= N){
-    return(dataSet[!is.null(dataSet) & !is.na(dataSet) & dataSet != ""])
+  if (length(object) <= N){
+    return(object[!is.null(object) & !is.na(object) & object != ""])
   }
-  maxMultiple <- round(log(length(dataSet)) / log(10) + 1)
+  max_power <- round(log(length(object)) / log(10) + 1)
   result <- NULL
   
   ## Computation
-  for ( mult in 1:maxMultiple){
-    I <- (10 ^ (mult - 1)):min(10 ^ mult - 1, nrow(dataSet))
-    data_sample <- dataSet[I]
+  for ( mult in 1:max_power){
+    I <- (10 ^ (mult - 1)):min(10 ^ mult - 1, nrow(object))
+    object_sample <- object[I]
     
-    data_sample <- data_sample[!is.null(data_sample) & !is.na(data_sample) & data_sample != ""]
+    object_sample <- object_sample[!is.null(object_sample) & !is.na(object_sample) & object_sample != ""]
     
-    if (length(data_sample) > 0 ){
-      result <- c(result, data_sample[1:min(N - length(result), length(data_sample))])
+    if (length(object_sample) > 0 ){
+      result <- c(result, object_sample[1:min(N - length(result), length(object_sample))])
     }
     
     ## If we found enough elements, we stop
@@ -42,7 +42,7 @@ findNFirstNonNull <- function(dataSet, N){
 # @param name name of the object passed in order to make an understandable log
 #' @import data.table
 checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
-  if (!any( class(dataSet) %in% c("data.table", "data.frame", "matrix"))){
+  if (! (is.data.table(dataSet) || is.data.frame(dataSet) || is.matrix(dataSet))){
     stop(paste(name, "should be a data.table, a data.frame or a matrix."))
   }
   if (nrow(dataSet) < 1){
@@ -53,7 +53,7 @@ checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
   }
   
   if (! is.data.table(dataSet)){
-    if (class(dataSet) == "data.frame"){
+    if (is.data.frame(dataSet)){
       setDT(dataSet)
     }
     else{
@@ -74,9 +74,18 @@ is.verbose <- function(verbose, function_name = "is.verbose"){
     stop(function_name, " verbose should be logical (TRUE or FALSE).")
   }
 }
-is.verbose_levels <- function(verbose, function_name = "is.verbose", max_level = 2){
+is.verbose_level <- function(verbose, function_name = "is.verbose", max_level = 2){
   if (! is.logical(verbose) & ! verbose %in% 1:max_level){
     stop(function_name, " verbose should be logical (TRUE or FALSE) or an integer lower than ", max_level, ".")
+  }
+}
+
+is.share <- function(object, object_name = "variable", function_name = "is.share"){
+  if (! is.numeric(object)){
+    stop(function_name, ": ", object_name, " should be a numeric between 0 and 1.")
+  }
+  if (object < 0 || object > 1){
+    stop(function_name, ": ", object_name, " should be a numeric between 0 and 1.")
   }
 }
 
@@ -84,23 +93,15 @@ is.verbose_levels <- function(verbose, function_name = "is.verbose", max_level =
 ########################################## check if col is in dataset #############################
 ###################################################################################################
 # Check if a column or a list of column is in a data.table
-is.col <- function(dataSet, cols = NULL, ...){
+is.col <- function(dataSet, cols = NULL, function_name = "is.col"){
   ## Sanity check
-  if (! any(class(dataSet) %in% c("data.table", "data.frame", "matrix"))){
+  if (! (is.data.table(dataSet) || is.data.frame(dataSet) || is.matrix(dataSet))){
     stop("is.col: dataSet should be a data.table, data.frame or matrix")
   }
   
   ## Initialization
   # Arguments for log
-  args <- list(...)
-  if (length(args) > 0){
-    if (!is.null(args[["function_name"]])){
-      function_name <- args[["function_name"]]
-    }
-  }
-  else{
-    function_name <- "is.col"
-  }
+  
   ## Computation
   for (col in cols){
     if (!col %in% colnames(dataSet)){
@@ -119,7 +120,7 @@ is.col <- function(dataSet, cols = NULL, ...){
 real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
   ## If NULL cols
   if (is.null(cols) || length(cols) == 0){ # length cols is for the case where cols == character(0)
-	return(NULL)
+    return(NULL)
   }
   
   ## If auto cols
@@ -132,33 +133,33 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
   }
   
   # Filter cols that doesn't exist
-  listOfIsError <- ! cols %in% colnames(dataSet)
-  if (sum(listOfIsError) > 0){
-    printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
+  error_list <- ! cols %in% colnames(dataSet)
+  if (sum(error_list) > 0){
+    printl(function_name, ": ", print(cols[error_list], collapse = ", "), 
            " aren\'t columns of the table, i do nothing for those variables")
-    cols <- cols[!listOfIsError] # Reduce list of col
+    cols <- cols[!error_list] # Reduce list of col
   }
-  rm(listOfIsError)
+  rm(error_list)
   
   # Filter cols that aren't of the right type
   if (! is.null(types)){
     if (all(types == "date")){
-      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.date)]
+      error_list <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.date)]
     }
     else if(all(types == "numeric")){
-      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.numeric)]
+      error_list <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.numeric)]
     }
     else{
-      listOfIsError <- ! cols %in% colnames(dataSet)[sapply(dataSet, class) %in% types]  
+      error_list <- ! cols %in% colnames(dataSet)[sapply(dataSet, class) %in% types]  
     }
-    if (sum(listOfIsError) > 0){
+    if (sum(error_list) > 0){
       if (! was_auto){
-        printl(function_name, ": ", print(cols[listOfIsError], collapse = ", "), 
+        printl(function_name, ": ", print(cols[error_list], collapse = ", "), 
                " aren\'t columns of types ", paste(types, collapse = " or ")," i do nothing for those variables.")  
       }
-      cols <- cols[!listOfIsError] # Reduce list of col
+      cols <- cols[!error_list] # Reduce list of col
     }
-    rm(listOfIsError)
+    rm(error_list)
   }
   
   ## Wrapp-up
@@ -171,8 +172,8 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
 ###################################################################################################
 ## Separators are used in multiple functions, so i put them here!
 getPossibleSeparators <- function(){
-  listOfPossibleSeparator <- c(",", "/", "-", "_", ":", " ")
-  return(listOfPossibleSeparator)
+  separator_list <- c(",", "/", "-", "_", ":", " ")
+  return(separator_list)
 }
 
 
@@ -250,27 +251,34 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
 ###################################################################################################
 # power <- function(x){sum(x^2}
 # Ex: true.aggFunction(c(power = power, sqrt = sqrt))
-true.aggFunction <- function(functions, function_name = "true.aggFunction "){
-  for(fun in names(functions)){
+is.agg_function <- function(functions, function_name = "is.agg_function"){
+  for(fun in functions){
     ## Check it
     # check type
-    if (!is.function(functions[[fun]])){
-      warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
-      functions <- functions[names(functions) != fun]
+    if (! is.character(fun)){
+      stop(paste0(function_name, ": functions should be a list of names (as character) of functions."))
+    }
+    if (!exists(x = fun)) {
+      warning(paste0(function_name, ": ", fun, " doesn't exist, it wont be used."))
+      functions <- functions[functions != fun]
     }
     else{
-      # check aggregation
-      if (length(functions[[fun]](1:3)) != 1){
-        warning(paste0(function_name, ": ", fun, " is not an aggegaration function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
-        functions <- functions[names(functions) != fun]
+      if (!is.function(get(fun))){
+        warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
+        functions <- functions[functions != fun]
       }
-    }
+      else{
+        # check aggregation
+        if (length(get(fun)(1:3)) != 1){
+          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
+          functions <- functions[functions != fun]
+        }
+      }
+    } 
   }
   # Wrapp-up
   return(functions)
 }
-
-
 
 
 
@@ -320,7 +328,7 @@ function.maker <- function(object, type, function_name = "function.maker",  obje
         return(built_function)  
       }
     }
-	# On character functions
+    # On character functions
     if (type == "character"){
       if (length(built_function(c("a", "b"))) == 1){
         if (!is.character(built_function(c("a", "b")))){ 
