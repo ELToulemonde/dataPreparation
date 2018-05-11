@@ -6,7 +6,6 @@
 #' @export
 dataPrepNews <- function() {
   newsfile <- system.file("NEWS", package="dataPreparation")
-  print(newsfile)
   file.show(newsfile)
 }
 

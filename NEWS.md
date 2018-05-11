@@ -3,6 +3,9 @@ V 0.3.6
 - Bug fixes:
 	- *identifyDates* had a weird bug. Solved
 	
+- Integration:
+	- Making dataPreparation compatible with testthat 2.0.0
+	
 V 0.3.5
 =======
 - New features:
