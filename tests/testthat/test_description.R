@@ -1,3 +1,4 @@
+context("test_description.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## Load data set

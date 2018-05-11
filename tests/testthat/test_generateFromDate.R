@@ -1,3 +1,4 @@
+context("test_generateFromDate.R")
 requireNamespace("data.table")
 Sys.setlocale("LC_TIME", "C")
 verbose <- TRUE

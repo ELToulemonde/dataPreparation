@@ -1,3 +1,4 @@
+context("test_datesManipulation.R")
 requireNamespace("data.table")
 verbose <- TRUE
 Sys.setlocale("LC_TIME", "C")

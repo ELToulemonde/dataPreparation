@@ -1,3 +1,4 @@
+context("test_genericFunctions.R")
 requireNamespace("data.table")
 verbose <- TRUE
 Sys.setlocale("LC_TIME", "C")

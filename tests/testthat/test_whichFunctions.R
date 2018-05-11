@@ -1,3 +1,4 @@
+context("test_whichFunctions.R")
 requireNamespace("data.table")
 verbose <- TRUE
 

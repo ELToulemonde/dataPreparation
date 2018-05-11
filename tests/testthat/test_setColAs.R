@@ -1,3 +1,4 @@
+context("test_setColAs.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## setColAsNumeric
