@@ -137,6 +137,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
   
   ## Initialization
   formats_found <- list()
+  format <- NULL # Initialize format to NULL to avoid considering it by mistake as the function format
   ## Computation
   if (verbose){ 
     pb <- initPB(function_name, names(dataSet))

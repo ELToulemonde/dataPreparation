@@ -1,3 +1,4 @@
+context("test_sameShape.R")
 requireNamespace("data.table")
 verbose <- TRUE
 

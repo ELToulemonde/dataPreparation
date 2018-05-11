@@ -1,3 +1,4 @@
+context("test_fastFunctions.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## fastFilterVariables

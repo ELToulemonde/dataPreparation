@@ -1,3 +1,4 @@
+context("test_generateFromCharacter.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## generateFromCharacter

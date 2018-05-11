@@ -1,3 +1,8 @@
+V 0.3.6
+=======
+- Bug fixes:
+	- *identifyDates* had a weird bug. Solved
+	
 V 0.3.5
 =======
 - New features:

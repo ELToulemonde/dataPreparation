@@ -1,3 +1,4 @@
+context("test_scale.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## build_scales

@@ -1,3 +1,4 @@
+context("test_aggregate.R")
 requireNamespace("data.table")
 verbose <- TRUE
 

@@ -1,3 +1,4 @@
+context("test_numericsManipulations.R")
 requireNamespace("data.table")
 verbose <- TRUE
 

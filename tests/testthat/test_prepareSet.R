@@ -1,3 +1,4 @@
+context("test_prepareSet.RR")
 verbose <- TRUE
 
 ## prepareSet

@@ -1,3 +1,4 @@
+context("test_generateFromFactor.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## generateFromFactor

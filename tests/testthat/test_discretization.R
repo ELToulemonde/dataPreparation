@@ -1,3 +1,4 @@
+context("test_discretization.R")
 verbose = TRUE
 ## build_bins
 # ---------------

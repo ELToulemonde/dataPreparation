@@ -1,3 +1,4 @@
+context("test_factorManipulations.R")
 requireNamespace("data.table")
 verbose <- TRUE
 ## unFactor
