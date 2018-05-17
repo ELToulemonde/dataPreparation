@@ -45,7 +45,7 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
     # has value 
     new_col <- paste0(col, name_separator, "notnull")
     new_col <- make_new_col_name(new_col, names(dataSet))
-    dataSet[, c(new_col) := levels(dataSet[[col]])[col] %in% c(NA, "NA", "")]
+	set(dataSet, NULL, new_col, levels(dataSet[[col]])[col] %in% c(NA, "NA", ""))
     
     # recode with nb of occurence of value
     new_col <- paste0(col, name_separator, "num")
@@ -57,11 +57,10 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
     new_col <- make_new_col_name(new_col, names(dataSet))
     col_levels <- levels(dataSet[[col]])
     levels_order <- order(col_levels)
-    dataSet[, c(new_col) := levels_order[col] ]
-    
+    set(dataSet, NULL, new_col, levels_order[col] )
     # if asked drop col
     if (isTRUE(drop)){
-      dataSet[, c(col) := NULL]
+	  set(dataSet, NULL, col, NULL)
     }
   }
   if (verbose){
@@ -114,7 +113,7 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
   # Transform char into factor
   if (is.null(encoding)){
     if (verbose){
-	  printl(function_name, ": Since you didn't profvide encoding, I compute them with build_encoding.")
+      printl(function_name, ": Since you didn't profvide encoding, I compute them with build_encoding.")
     }
     encoding <- build_encoding(dataSet, cols = "auto", verbose = verbose)
   }
@@ -133,7 +132,6 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
     }
     # Build columns with 0 value (it save time to pre-set the columns)
     new_cols <- encoding[[col]]$new_cols
-    dataSet[, (new_cols) := 0]
     # Set the write value
     for (i in 1:length(new_cols)){
       set(dataSet, NULL, new_cols[i], as.integer(dataSet[[col]] == encoding[[col]]$values[i]))
@@ -141,7 +139,7 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
     
     # drop col if asked
     if (isTRUE(drop)){
-      dataSet[, c(col) := NULL]
+	  set(dataSet, NULL, col, NULL)
     }
     # Update progress bar
     if (verbose){

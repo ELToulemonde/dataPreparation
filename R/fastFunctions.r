@@ -59,7 +59,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
       if (verbose){
         printl(function_name, ": I delete ", length(constant_cols), " constant column(s) in ", dataName, ".")
       }
-      dataSet[, (constant_cols) := NULL]
+	  set(dataSet, NULL, constant_cols, NULL)
     }
   }
   
@@ -72,8 +72,8 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
     if (length(double_cols) > 0){
       if (verbose){
         printl(function_name, ": I delete ", length(double_cols), " column(s) that are in double in ", dataName, ".")
-      }  
-      dataSet[, (double_cols) := NULL]
+      }
+	  set(dataSet, NULL, double_cols, NULL)
     }
   }
   
@@ -89,7 +89,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
         printl(function_name, ": I delete ", length(bijection_cols), 
                " column(s) that are bijections of another column in ", dataName, ".")
       }  
-      dataSet[, (bijection_cols) := NULL]
+	  set(dataSet, NULL, bijection_cols, NULL)
     }
   }
   
@@ -104,7 +104,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
         printl(function_name, ": I delete ", length(included_cols), 
                " column(s) that are bijections of another column in ", dataName, ".")
       }  
-      dataSet[, (included_cols) := NULL]
+	  set(dataSet, NULL, included_cols, NULL)
     }
   }
   
@@ -452,4 +452,3 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   # }
   # return("bijection")
 # }
-

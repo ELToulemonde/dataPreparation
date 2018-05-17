@@ -46,8 +46,8 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, .
     # has value 
     new_col <- paste0(col, name_separator, "notnull")
     new_col <- make_new_col_name(new_col, names(dataSet))
-    dataSet[, c(new_col) := col %in% c(NA, "NA", "")]
-    
+    set(dataSet, NULL, new_col, dataSet[[col]] %in% c(NA, "NA", ""))
+	
     # recode with nb of occurence of value
     new_col <- paste0(col, name_separator, "num")
     new_col <- make_new_col_name(new_col, names(dataSet))
@@ -65,7 +65,7 @@ generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, .
     
     # if asked drop col
     if (isTRUE(drop)){
-      dataSet[, c(col) := NULL]
+	  set(dataSet, NULL, col, NULL)
     }
   }
   if (verbose){

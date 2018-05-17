@@ -60,6 +60,10 @@ checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
       dataSet <- as.data.table(dataSet)
     }
   }
+  
+  # Since we are using set in all the package, we make sure that dataSet is overallocate, see data.table doc, among it 
+  # see: https://github.com/Rdatatable/data.table/issues/755
+  dataSet <- alloc.col(dataSet)
   ## Wrapp-up
   return(dataSet)
 }
@@ -105,7 +109,7 @@ is.col <- function(dataSet, cols = NULL, function_name = "is.col"){
   ## Computation
   for (col in cols){
     if (!col %in% colnames(dataSet)){
-      stop(paste(function_name,": ", col, " should be column of dataSet"))
+      stop(paste(function_name, ": ", col, " should be column of dataSet"))
     }
   }
 }
@@ -146,7 +150,7 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
     if (all(types == "date")){
       error_list <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.date)]
     }
-    else if(all(types == "numeric")){
+    else if (all(types == "numeric")){
       error_list <- ! cols %in% colnames(dataSet)[sapply(dataSet, is.numeric)]
     }
     else{
@@ -155,7 +159,7 @@ real_cols <- function(dataSet, cols, function_name = "real_cols", types = NULL){
     if (sum(error_list) > 0){
       if (! was_auto){
         printl(function_name, ": ", print(cols[error_list], collapse = ", "), 
-               " aren\'t columns of types ", paste(types, collapse = " or ")," i do nothing for those variables.")  
+               " aren\'t columns of types ", paste(types, collapse = " or "), " i do nothing for those variables.")  
       }
       cols <- cols[!error_list] # Reduce list of col
     }
@@ -197,7 +201,7 @@ initPB <- function(function_name, cols_names){
   }
   pb <- progress_bar$new(
     format = paste0("   ", function_name, " [:bar] :percent in :elapsed \r"),
-    total = length(cols_names), clear = FALSE, width= 60)
+    total = length(cols_names), clear = FALSE, width = 60)
   return(pb)
 }
 setPB <- function(pb, col){
@@ -221,7 +225,7 @@ setPB <- function(pb, col){
 control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name = "nb_rows"){
   ## Sanity check
   if (! is.numeric(nb_rows)){
-    stop(paste0(function_name,": ", variable_name," should be a numeric."))
+    stop(paste0(function_name, ": ", variable_name, " should be a numeric."))
   }
   dataSet <- checkAndReturnDataTable(dataSet)
   
@@ -231,14 +235,14 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
   ## Computation
   if (nb_rows > nrow(dataSet)){
     nb_rows <- nrow(dataSet)
-    warning(paste0(function_name,": You want to check more rows than there are in dataSet, I set ", 
-                   variable_name," to ", nb_rows, "."))
+    warning(paste0(function_name, ": You want to check more rows than there are in dataSet, I set ", 
+                   variable_name, " to ", nb_rows, "."))
   }
   if (nb_rows < 1){
     nb_rows <- min(30, nrow(dataSet))
     warning(paste0(function_name, 
                    ": You want to check at least a few rows than there are in dataSet, I set ", 
-                   variable_name," to ", nb_rows, "."))
+                   variable_name, " to ", nb_rows, "."))
   } 
   
   ## Wrapp-up
@@ -252,7 +256,7 @@ control_nb_rows <- function(dataSet, nb_rows, function_name = "", variable_name 
 # power <- function(x){sum(x^2}
 # Ex: true.aggFunction(c(power = power, sqrt = sqrt))
 is.agg_function <- function(functions, function_name = "is.agg_function"){
-  for(fun in functions){
+  for (fun in functions){
     ## Check it
     # check type
     if (! is.character(fun)){
@@ -270,7 +274,8 @@ is.agg_function <- function(functions, function_name = "is.agg_function"){
       else{
         # check aggregation
         if (length(get(fun)(1:3)) != 1){
-          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it wont be used. An aggregation function is a function that for multiple input return only one, exemple: sum."))
+          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it wont be used.", 
+                         " An aggregation function is a function that for multiple input return only one, exemple: sum."))
           functions <- functions[functions != fun]
         }
       }

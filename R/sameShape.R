@@ -61,7 +61,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     if (verbose){
       printl(function_name, ": columns ", paste(create_list, collapse = ", "), " are missing, I create them.")
     }
-    dataSet[, eval(create_list) := NA]
+	set(dataSet, NULL, create_list, NA)
   }
   
   # Drop unwanted columns
@@ -74,7 +74,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
       printl(function_name, ": the folowing columns are in dataSet but not in referenceSet: I drop them: ")
       print(drop_list)
     }
-    dataSet[, (drop_list) := NULL]
+	set(dataSet, NULL, drop_list, NULL)
   }
   
   # Class of columns

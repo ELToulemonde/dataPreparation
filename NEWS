@@ -1,3 +1,10 @@
+V 0.3.7
+=======
+- Improving code quality using lintr
+- Suppressing some useless code
+- Bug fixes:
+	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.
+	
 V 0.3.6
 =======
 - Bug fixes:

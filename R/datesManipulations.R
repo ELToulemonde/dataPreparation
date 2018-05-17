@@ -65,7 +65,8 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
   
   ## Computation
   # First we find dates
-  formats_found <- identifyDates(dataSet, formats = formats, n_test = n_test, ambiguities = ambiguities, verbose = verbose)
+  formats_found <- identifyDates(dataSet, formats = formats, n_test = n_test, 
+                                 ambiguities = ambiguities, verbose = verbose)
   if (verbose){
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to identify formats")
   }
@@ -394,7 +395,8 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
     }
   }
   
-  # Complete the list with the same formats but with a time format at the and separed by a ' ' or a "T" and optionaly with a "Z" at the end
+  # Complete the list with the same formats but with a time format at the and separed by 
+  # a ' ' or a "T" and optionaly with a "Z" at the end
   formats <- c(datesFormats, hours_format)
   if (date_hours){
     for (datesFormat in datesFormats){

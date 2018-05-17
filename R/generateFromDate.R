@@ -51,17 +51,17 @@ generateFactorFromDate <- function(dataSet, cols = "auto", type = "yearmonth", d
   for (col in cols){
     new_col <- paste0(col, name_separator, type)
     new_col <- make_new_col_name(new_col, names(dataSet))
-    dataSet[, (new_col) := date_factor(dataSet[[col]], type = type)]
+	set(dataSet, NULL, new_col, date_factor(dataSet[[col]], type = type))
     if (isTRUE(drop)){
-      dataSet[, c(col) := NULL]
+	  set(dataSet, NULL, col, NULL)
     }
-  
+    
     if (verbose){
       setPB(pb, col)
     }
   }
   if (verbose){ 
-	gc(verbose = FALSE)
+    gc(verbose = FALSE)
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", length(cols), " column(s).")
   }
@@ -166,7 +166,8 @@ date_factor <- function(dataSet, type = "yearmonth"){
 #' @import data.table
 #' @importFrom lubridate is.Date
 #' @export
-generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units = "years", drop = FALSE, verbose = TRUE, ...){
+generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units = "years", 
+                              drop = FALSE, verbose = TRUE, ...){
   ## Working environement
   function_name <- "generateDateDiffs"
   
@@ -176,7 +177,7 @@ generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units
     stop(paste0(function_name, ": analysisDate must be a Date"))
   }
   cols <- real_cols(dataSet, cols, function_name, types = "date")
-
+  
   ## Initialization
   name_separator <- build_name_separator(list(...))
   if (is.Date(analysisDate)){
@@ -197,17 +198,17 @@ generateDateDiffs <- function(dataSet, cols = "auto", analysisDate = NULL, units
     for (col_j in col_J){
       new_col <- paste(col_i, "Minus", col_j, sep = name_separator)
       new_col <- make_new_col_name(new_col, names(dataSet))
-      dataSet[, c(new_col) := diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units)]
+	  set(dataSet, NULL, new_col, diffTime(dataSet[[col_i]], dataSet[[col_j]], units = units))
       n_transformed <- n_transformed + 1
     }
     if (!is.null(analysisDate)){
       new_col <- paste(col_i, "Minus", "analysisDate", sep = name_separator)
       new_col <- make_new_col_name(new_col, names(dataSet))
-      dataSet[, c(new_col) := diffTime(dataSet[[col_i]], analysisDate, units = units)]
+	  set(dataSet, NULL, new_col, diffTime(dataSet[[col_i]], analysisDate, units = units))
       n_transformed <- n_transformed + 1
     }
     if (isTRUE(drop)){
-      dataSet[, c(col_i) := NULL]
+	  set(dataSet, NULL, col_i, NULL)
     }
     if (verbose){
       setPB(pb, col_i)
@@ -239,4 +240,3 @@ diffTime <- function(col1, col2, units = "days"){
     stop("Sorry this unit hasn't been implemented yet")
   }
 }
-

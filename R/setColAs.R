@@ -65,7 +65,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
       setPB(pb)
     }
   }
-  if(verbose){
+  if (verbose){
     # reset warnings
     options(warn = 0)
   }
@@ -142,8 +142,9 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
 #' @details 
 #' setColAsDate is way faster when format is provided. If you want to identify dates and format
 #' automatically, have a look to \code{\link{identifyDates}}. \cr
-#' If input column is a factor, it will be returned as a POSIXct column.
-#' @return \code{dataSet}(as a \code{\link{data.table}}), with specified columns set as Date. 
+#' If input column is a factor, it will be returned as a POSIXct column. \cr
+#' If \code{cols} is kept to default (NULL) setColAsDate won't do anything.
+#' @return \code{dataSet} (as a \code{\link{data.table}}), with specified columns set as Date. 
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
 #' # Lets build a dataSet set
@@ -205,12 +206,12 @@ setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
     
     # Get format:
     if (is.character(format) || is.null(format)){
-      col_format = format
+      col_format <- format
     }
     if (is.list(format)){
-      col_format = format[[col]]
+      col_format <- format[[col]]
       if (is.null(col_format)){
-        col_format = format[col == cols]
+        col_format <- format[col == cols]
       }
     }
     if (is.character(data_sample)){
@@ -223,7 +224,7 @@ setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
           next()
         }
         else{
-          col_format = formats_tmp[[col]]
+          col_format <- formats_tmp[[col]]
         }
       }
       # If it isn't NULL
@@ -276,7 +277,7 @@ setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
   }
   ## Wrapp-up
   if (verbose){
-    printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2), 
+    printl(function_name, ": it took me: ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", n_transformed, " column(s) to Dates.")
     options(warn = 0) # reset warnings
   }

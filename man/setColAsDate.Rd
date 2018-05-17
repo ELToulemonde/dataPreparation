@@ -18,7 +18,7 @@ For timestamps, format need to be provided ("s" or "ms" or second or millisecond
 \item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-\code{dataSet}(as a \code{\link{data.table}}), with specified columns set as Date. 
+\code{dataSet} (as a \code{\link{data.table}}), with specified columns set as Date. 
 If the transformation generated only NA, the column is set back to its original value.
 }
 \description{
@@ -27,7 +27,8 @@ Set as POSIXct a character column (or a list of columns) from a data.table.
 \details{
 setColAsDate is way faster when format is provided. If you want to identify dates and format
 automatically, have a look to \code{\link{identifyDates}}. \cr
-If input column is a factor, it will be returned as a POSIXct column.
+If input column is a factor, it will be returned as a POSIXct column. \cr
+If \code{cols} is kept to default (NULL) setColAsDate won't do anything.
 }
 \examples{
 # Lets build a dataSet set
