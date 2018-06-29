@@ -2,9 +2,14 @@ V 0.3.7
 =======
 - Improving code quality using lintr
 - Suppressing some useless code
+- Meeting new covr standard
 - Bug fixes:
 	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.
 	
+- New features:
+	- New features in existing functions:
+		- In dates identifications, we added time zones (%z) to make it even more generic. (Note that it isn't yet very robust so some formats might not be detected.)
+
 V 0.3.6
 =======
 - Bug fixes:

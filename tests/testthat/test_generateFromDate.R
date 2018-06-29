@@ -27,6 +27,7 @@ test_that("Private function: date_factor",
             expect_identical(date_factor(dataSet, type = "month"), factor(c("Jan", "Jan", "Jun")))
             expect_identical(date_factor(dataSet, type = "year"), factor(c("2014", "2015", "2015")))
             expect_error(date_factor(1:5), ": dataSet should contain dates.")
+            expect_error(date_factor(dataSet, type = "acdaezcze"), ": type must be one of 'year', 'yearquarter', 'yearmonth', 'quarter' or 'month'.")
           })
 
 ## generateDateDiffs

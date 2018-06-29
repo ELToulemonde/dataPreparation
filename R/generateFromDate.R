@@ -100,7 +100,7 @@ date_factor <- function(dataSet, type = "yearmonth"){
   
   ## Sanity check
   if (!type %in% c("year", "yearquarter", "yearmonth", "quarter", "month"))
-    stop(paste0(function_name, "type must be one of 'year', 'yearquarter', 'yearmonth', 'quarter' or 'month'"))
+    stop(paste0(function_name, ": type must be one of 'year', 'yearquarter', 'yearmonth', 'quarter' or 'month'."))
   if (! is.date(dataSet)){
     stop(paste0(function_name, ": dataSet should contain dates."))
   }

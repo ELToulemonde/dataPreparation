@@ -232,18 +232,27 @@ identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGN
       defaultDateFormats <- getPossibleDatesFormats(date_sep_tmp, date_hours = date_hours)
       formats_tmp <- unique(c(defaultDateFormats, formats))
       
+      # # Check if we should change local time (ie: should it be english?) => Future, because it as to be changed is setColAsDate too
+      # change_lc_time <- any(grepl("Aug|May|Apr", data_sample))
+      
+      # if (change_lc_time){
+        # store_loctime <- Sys.getlocale("LC_TIME")
+        # Sys.setlocale("LC_TIME", "C")
+      # }
+      #  Check formats
       for (format in formats_tmp){
         converted <- as.POSIXct(data_sample, format = format)
         un_converted <- format(converted, format = format)
         if (control_date_conversion(un_converted, data_sample)){
+		  temp_format <- c(temp_format, format)
           if (ambiguities == "IGNORE"){ # If don't care about possible ambiguities: return found format
-            return(format)
-          }
-          else{ # Else keep searching
-            temp_format <- c(temp_format, format)
+            break
           }
         }
       }
+      # if (change_lc_time){ # Reset it
+        # Sys.setlocale("LC_TIME", store_loctime)
+      # }
     }
     if (is.numeric(data_sample)){
       temp_format <- identifyTimeStampsFormats(dataSet = data_sample)
@@ -406,6 +415,9 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
     }
   }
   
+  # Add optional time zone at the end.
+  formats <- c(formats, paste(formats, "%z"))
+  
   ## Wrapp-up
   return(formats)
 }
@@ -415,6 +427,8 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
 ############################### Format for parse_date_time ############################
 #######################################################################################
 # Code is commented and result hard written so that it's way faster. You should keep it that way
+#' @importFrom lubridate parse_date_time
+#' @importFrom stringr str_replace_all
 formatForparse_date_time<- function(){
   # Get complete liste of format
   # listOfFastFormat <- getPossibleDatesFormats()
@@ -443,9 +457,23 @@ formatForparse_date_time<- function(){
               "dby H", "bdy HMS", "bdy HM", "bdy H", "yBd HMS", "yBd HM", "yBd H", 
               "ydB HMS", "ydB HM", "ydB H", "dBy HMS", "dBy HM", "dBy H", "Bdy HMS", 
               "Bdy HM", "Bdy H", "ymd HMS", "ymd HM", "ymd H", "ydm HMS", "ydm HM", 
-              "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H"
-  )
-  
+              "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H", 
+              "Ybd z", "Ydb z", "dbY z", "bdY z", "YBd z", "YdB z", "dBY z", 
+              "BdY z", "Ymd z", "Ydm z", "dmY z", "mdY z", "ybd z", "ydb z", 
+              "dby z", "bdy z", "yBd z", "ydB z", "dBy z", "Bdy z", "ymd z", 
+              "ydm z", "dmy z", "mdy z", "Ybd HMS z", "Ybd HM z", "Ybd H z", 
+              "Ydb HMS z", "Ydb HM z", "Ydb H z", "dbY HMS z", "dbY HM z", 
+              "dbY H z", "bdY HMS z", "bdY HM z", "bdY H z", "YBd HMS z", "YBd HM z", 
+              "YBd H z", "YdB HMS z", "YdB HM z", "YdB H z", "dBY HMS z", "dBY HM z", 
+              "dBY H z", "BdY HMS z", "BdY HM z", "BdY H z", "Ymd HMS z", "Ymd HM z", 
+              "Ymd H z", "Ydm HMS z", "Ydm HM z", "Ydm H z", "dmY HMS z", "dmY HM z", 
+              "dmY H z", "mdY HMS z", "mdY HM z", "mdY H z", "ybd HMS z", "ybd HM z", 
+              "ybd H z", "ydb HMS z", "ydb HM z", "ydb H z", "dby HMS z", "dby HM z", 
+              "dby H z", "bdy HMS z", "bdy HM z", "bdy H z", "yBd HMS z", "yBd HM z", 
+              "yBd H z", "ydB HMS z", "ydB HM z", "ydB H z", "dBy HMS z", "dBy HM z", 
+              "dBy H z", "Bdy HMS z", "Bdy HM z", "Bdy H z", "ymd HMS z", "ymd HM z", 
+              "ymd H z", "ydm HMS z", "ydm HM z", "ydm H z", "dmy HMS z", "dmy HM z", 
+              "dmy H z", "mdy HMS z", "mdy HM z", "mdy H z")
   
   ## Wrapp-up
   return(result)

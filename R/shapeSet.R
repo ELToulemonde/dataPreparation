@@ -87,11 +87,12 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
 #' @export
 #' @importFrom stats as.formula model.matrix contrasts
 #' @importFrom Matrix sparse.model.matrix
+#' @import data.table
 setAsNumericMatrix <- function(dataSet, intercept = FALSE, allCols = FALSE, 
                                sparse = FALSE) {
   
   ## SANITY CHECKS
-  if (!("data.table") %in% class(dataSet)) stop("setAsNumericMatrix: dataSet is not a data.table")
+  if (!is.data.table(dataSet)) stop("setAsNumericMatrix: dataSet is not a data.table")
   # Checking that columns are of the proper type. Column type modification are
   # not done here, because we would either need to duplicate the dataSet in memory
   # (not memory efficient), or we would need to modify them by reference.
