@@ -208,7 +208,7 @@ identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGN
     data_sample <- findNFirstNonNull(levels(dataSet), n_test)
   }
   else{
-    data_sample <- findNFirstNonNull(dataSet, n_test)
+    data_sample <- unique(findNFirstNonNull(dataSet, n_test))
   }
   
   ## Computation
