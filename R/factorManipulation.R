@@ -3,6 +3,8 @@
 #' To unfactorize all columns that have more than a given amount of various values. This
 #'  function will be usefull after using some reading functions that put every string as factor.
 #' @param dataSet Matrix, data.frame or data.table
+#' @param cols List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+#'  to "auto". (characters, default to "auto")
 #' @param n_unfactor Number of max element in a factor (numeric, default to 53)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @details 
@@ -26,7 +28,7 @@
 #' 
 #' @import data.table
 #' @export
-unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
+unFactor <- function(dataSet, cols = "auto", n_unfactor = 53, verbose = TRUE){
   ## Working environement
   function_name <- "unFactor"
   
@@ -45,7 +47,7 @@ unFactor <- function(dataSet, n_unfactor = 53, verbose = TRUE){
   checkAndReturnDataTable(dataSet = dataSet)
   
   ## Initialization
-  cols <- real_cols(dataSet, cols = "auto", function_name = function_name, types = "factor")
+  cols <- real_cols(dataSet, cols = cols, function_name = function_name, types = "factor")
   if (verbose){ 
     pb <- initPB(function_name, cols)
     printl(function_name, ": I will identify variable that are factor but shouldn't be.")

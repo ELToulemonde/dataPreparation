@@ -6,7 +6,7 @@ V 0.3.7
 	- New features in existing functions:
 		- In dates identifications, we make it faster by computing search of format only on unique values.
 		- In date transformation, we made it faster by using *as.POSIXct_fast* when it is necessary.
-		- Functions *findAndTransFormDates* and *findAndTransformNumerics* now accept argument *cols* to limitate search.
+		- Functions *findAndTransFormDates*, *findAndTransformNumerics* and *unFactor* now accept argument *cols* to limitate search.
 
 - Bug fixes:
 	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.

@@ -4,10 +4,13 @@
 \alias{unFactor}
 \title{Unfactor factor with too many values}
 \usage{
-unFactor(dataSet, n_unfactor = 53, verbose = TRUE)
+unFactor(dataSet, cols = "auto", n_unfactor = 53, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{cols}{List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+to "auto". (characters, default to "auto")}
 
 \item{n_unfactor}{Number of max element in a factor (numeric, default to 53)}
 
