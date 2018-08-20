@@ -41,7 +41,7 @@ setColAsNumeric <- function(dataSet, cols, stripString = FALSE, verbose = TRUE){
   ## Initialization
   
   ## Computation
-  if (verbose){
+  if (verbose & length(cols) > 0){
     printl(function_name, ": I will set some columns as numeric")
     pb <- initPB(function_name, cols)
   }
@@ -104,7 +104,7 @@ setColAsCharacter <- function(dataSet, cols = "auto", verbose = TRUE){
   cols <- real_cols(dataSet, cols, function_name)
   
   ## Initalization
-  if (verbose){
+  if (verbose & length(cols) > 0){
     printl(function_name, ": I will set some columns as character")
     pb <- initPB(function_name, cols)
   }
@@ -183,7 +183,7 @@ setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
   
   ## Initialization
   start_time <- proc.time()
-  if (verbose){
+  if (verbose & length(cols) > 0){
     printl(function_name, ": I will set some columns as Date.")
     options(warn = -1) # if verbose, disable warning, it will  be logged
     pb <- initPB(function_name, cols)

@@ -4,8 +4,8 @@
 \alias{fastHandleNa}
 \title{Handle NA values}
 \usage{
-fastHandleNa(dataSet, set_num = 0, set_logical = FALSE, set_char = "",
-  verbose = TRUE)
+fastHandleNa(dataSet, set_num = 0, set_logical = FALSE,
+  set_char = "", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

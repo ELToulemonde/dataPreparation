@@ -1,11 +1,12 @@
 V 0.3.7
 =======
 - New features:
+	- New functions:
+		- Function *as.POSIXct_fast* is now available. They help to transform dates way faster (if the same date value is present multiple times in the column. 
 	- New features in existing functions:
 		- In dates identifications, we added time zones (%z) to make it even more generic. (Note that it isn't yet very robust so some formats might not be detected.)
 		- In dates identifications, we make it faster by computing search of format only on unique values.
-	- New functions:
-		- Functions *as.Date.fast*, *as.POSIXct.fast* and *parse_date_time.fast* are now available. They help to transform dates way faster (if the same date value is present multiple times in the column. 
+		- In date transformation, we made it faster by using *as.POSIXct_fast* when it is necessary.
 
 - Bug fixes:
 	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.
@@ -14,6 +15,7 @@ V 0.3.7
 	- Improving code quality using lintr
 	- Suppressing some useless code
 	- Meeting new covr standard
+	- Improve log of setColAsXXX
 
 V 0.3.6
 =======

@@ -4,7 +4,8 @@
 \alias{one_hot_encoder}
 \title{One hot encoder}
 \usage{
-one_hot_encoder(dataSet, encoding = NULL, verbose = TRUE, drop = FALSE)
+one_hot_encoder(dataSet, encoding = NULL, verbose = TRUE,
+  drop = FALSE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
