@@ -4,11 +4,14 @@
 \alias{identifyDates}
 \title{Identify date columns}
 \usage{
-identifyDates(dataSet, formats = NULL, n_test = 30,
+identifyDates(dataSet, cols = "auto", formats = NULL, n_test = 30,
   ambiguities = "IGNORE", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{cols}{List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+to "auto". (characters, default to "auto")}
 
 \item{formats}{List of additional Date formats to check (see \code{\link{strptime}})}
 

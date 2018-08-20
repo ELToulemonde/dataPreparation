@@ -4,10 +4,14 @@
 \alias{findAndTransformNumerics}
 \title{Identify numeric columns in a dataSet set}
 \usage{
-findAndTransformNumerics(dataSet, n_test = 30, verbose = TRUE)
+findAndTransformNumerics(dataSet, cols = "auto", n_test = 30,
+  verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{cols}{List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+to "auto". (characters, default to "auto")}
 
 \item{n_test}{Number of non-null rows on which to test (numeric, default to 30)}
 
@@ -21,7 +25,9 @@ Function to find and transform characters that are in fact numeric.
 }
 \details{
 This function is looking for perfect transformation. 
-If there are some mistakes in dataSet, consider setting them to NA before.
+If there are some mistakes in dataSet, consider setting them to NA before. \cr
+If there are some columns that have no chance to be a match think of removing them from \code{cols} 
+to save some computation time.
 }
 \section{Warning}{
 

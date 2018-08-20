@@ -2,14 +2,15 @@ V 0.3.7
 =======
 - New features:
 	- New functions:
-		- Function *as.POSIXct_fast* is now available. They help to transform dates way faster (if the same date value is present multiple times in the column. 
+		- Function *as.POSIXct_fast* is now available. It helps to transform to POSIXct way faster (if the same date value is present multiple times in the column).
 	- New features in existing functions:
-		- In dates identifications, we added time zones (%z) to make it even more generic. (Note that it isn't yet very robust so some formats might not be detected.)
 		- In dates identifications, we make it faster by computing search of format only on unique values.
 		- In date transformation, we made it faster by using *as.POSIXct_fast* when it is necessary.
+		- Functions *findAndTransFormDates* and *findAndTransformNumerics* now accept argument *cols* to limitate search.
 
 - Bug fixes:
 	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.
+	- In bijection search (internal function *fastIsBijection*) there was a bug on some rare cases. Fixed but slower.
 
 -Code quality:
 	- Improving code quality using lintr

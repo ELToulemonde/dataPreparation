@@ -33,6 +33,7 @@ dataSet <- data.table(ID = 1:5,
 test_that("private function identifyNumerics :",
           {
             expect_equal(length(identifyNumerics(dataSet, n_test = 5, verbose = verbose)), 2)
+            expect_identical(identifyNumerics(dataSet, cols = list(), n_test = 5, verbose = verbose), list(dont_strip = NULL, strip = NULL)) # Control that if told to do nothing, do nothing.
           })
 
 ## identifyNumericsFormats

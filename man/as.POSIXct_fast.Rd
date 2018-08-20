@@ -12,7 +12,8 @@ as.POSIXct_fast(x, ...)
 \item{...}{other argument to pass to  \code{\link{as.POSIXct}}}
 }
 \value{
-methods return an object of class Date
+as.POSIXct and as.POSIXlt return an object of the appropriate class. If tz was specified,
+as.POSIXlt will give an appropriate "tzone" attribute. Date-times known to be invalid will be returned as NA.
 }
 \description{
 Based on the trick that often dates are repeated in a column, we make date transformation

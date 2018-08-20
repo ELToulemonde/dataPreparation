@@ -4,11 +4,14 @@
 \alias{findAndTransformDates}
 \title{Identify date columns}
 \usage{
-findAndTransformDates(dataSet, formats = NULL, n_test = 30,
-  ambiguities = "IGNORE", verbose = TRUE)
+findAndTransformDates(dataSet, cols = "auto", formats = NULL,
+  n_test = 30, ambiguities = "IGNORE", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
+
+\item{cols}{List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+to "auto". (characters, default to "auto")}
 
 \item{formats}{List of additional Date formats to check (see \code{\link{strptime}})}
 
@@ -45,6 +48,8 @@ To answer ambiguities problem, param \code{ambiguities} is now available. It can
 \item \code{SOLVE} function will try to solve ambiguity by going through more lines, so will be slower. 
 If it is able to solve it, it will transform the column, if not it will print the various acceptable formats.
 }
+If there are some columns that have no chance to be a match think of removing them from \code{cols} 
+to save some computation time.
 }
 
 \examples{

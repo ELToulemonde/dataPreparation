@@ -356,15 +356,18 @@ fastIsBijection <- function(object1, object2){
   nrows <- length(object1)
   exp_factor <- 10
   max_power <- floor(log(nrows) / log(exp_factor)) + 1
+  type_fun_col1 = get(paste0("as.", class(object1)))(character()) # Create empty object of the write type. Genreic way (ex: for POSIXct try it)
+  type_fun_col2 = get(paste0("as.", class(object2)))(character())
+  unique_couples = data.frame(object1 = type_fun_col1, object2 = type_fun_col2)
   for (i in 1:max_power){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
-    n1 <- uniqueN(object1[I])
-    n2 <- uniqueN(object2[I])
+    n1 <- uniqueN(c(object1[I], unique_couples[["object1"]]))
+    n2 <- uniqueN(c(object2[I], unique_couples[["object2"]]))
     if (n2 != n1){
       return(FALSE)
     }
-    
-    n12 <- uniqueN(data.frame(object1 = object1[I], object2 = object2[I]))
+    unique_couples = unique(rbind(unique_couples, data.frame(object1 = object1[I], object2 = object2[I])))
+    n12 <- nrow(unique_couples)
     
     if (n12 != n1){
       return(FALSE)

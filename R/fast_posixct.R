@@ -4,7 +4,8 @@
 #'  faster by computing date transformation only on uniques.
 #' @param x	An object to be converted
 #' @param ... other argument to pass to  \code{\link{as.POSIXct}}
-#' @return methods return an object of class Date
+#' @return as.POSIXct and as.POSIXlt return an object of the appropriate class. If tz was specified,
+#' as.POSIXlt will give an appropriate "tzone" attribute. Date-times known to be invalid will be returned as NA.
 #' @details The more
 #' @examples
 #' # Work the same as as.POSIXct

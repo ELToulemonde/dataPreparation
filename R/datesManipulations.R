@@ -1,10 +1,12 @@
-###################################################################################
-########################### findAndTransformDates #################################
-###################################################################################
+###################################################################################################
+########################### findAndTransformDates #################################################
+###################################################################################################
 #' Identify date columns
 #' 
 #' Find and transform dates that are hidden in a character column. \cr
 #' It use a bunch of default formats, and you can also add your own formats.
+#' @param cols List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+#'  to "auto". (characters, default to "auto")
 #' @param dataSet Matrix, data.frame or data.table
 #' @param formats List of additional Date formats to check (see \code{\link{strptime}})
 #' @param n_test Number of non-null rows on which to test (numeric, default to 30)
@@ -28,6 +30,8 @@
 #' \item \code{SOLVE} function will try to solve ambiguity by going through more lines, so will be slower. 
 #' If it is able to solve it, it will transform the column, if not it will print the various acceptable formats.
 #' }
+#' If there are some columns that have no chance to be a match think of removing them from \code{cols} 
+#' to save some computation time.
 #' @return dataSet set (as a data.table) with identified dates transformed by \strong{reference}.
 #' @examples
 #' # Load exemple set
@@ -50,7 +54,7 @@
 #' }
 #' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @export
-findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
+findAndTransformDates <- function(dataSet, cols = "auto", formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
   ## Working environement
   function_name <- "findAndTransformDates"
   
@@ -60,12 +64,13 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
   if (!is.character(ambiguities) || ! ambiguities %in% c("IGNORE", "WARN", "SOLVE")){
     stop(paste0(function_name, ": ambiguities should be either IGNORE, WARN or SOLVE."))
   }
+  cols <- real_cols(dataSet, cols, function_name)
   ## initialization
   start_time <- proc.time()
   
   ## Computation
   # First we find dates
-  formats_found <- identifyDates(dataSet, formats = formats, n_test = n_test, 
+  formats_found <- identifyDates(dataSet, cols = cols, formats = formats, n_test = n_test, 
                                  ambiguities = ambiguities, verbose = verbose)
   if (verbose){
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), "s to identify formats")
@@ -93,6 +98,8 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
 #' 
 #' Function to identify dates columns and give there format. It use a bunch of default formats. But you can also add your own formats.
 #' @param dataSet Matrix, data.frame or data.table
+#' @param cols List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+#'  to "auto". (characters, default to "auto")
 #' @param formats List of additional Date formats to check (see \code{\link{strptime}})
 #' @param n_test Number of non-null rows on which to test (numeric, default to 30)
 #' @param ambiguities How ambiguities should be treated (see details in ambiguities section)
@@ -127,7 +134,7 @@ findAndTransformDates <- function(dataSet, formats = NULL, n_test = 30, ambiguit
 #' # using the findAndTransformDates
 #' identifyDates(messy_adult, n_test = 5)
 #' @export
-identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
+identifyDates <- function(dataSet, cols = "auto", formats = NULL, n_test = 30, ambiguities = "IGNORE", verbose = TRUE){
   ## Working environement
   function_name <- "identifyDates"
   
@@ -135,7 +142,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
   dataSet <- checkAndReturnDataTable(dataSet)
   n_test <- control_nb_rows(dataSet = dataSet, nb_rows = n_test, function_name = function_name, variable_name = "n_test")
   is.verbose(verbose)
-  
+  cols <- real_cols(dataSet, cols, function_name)
   ## Initialization
   formats_found <- list()
   format <- NULL # Initialize format to NULL to avoid considering it by mistake as the function format
@@ -143,7 +150,7 @@ identifyDates <- function(dataSet, formats = NULL, n_test = 30, ambiguities = "I
   if (verbose){ 
     pb <- initPB(function_name, names(dataSet))
   }
-  for ( col in names(dataSet) ){ 
+  for ( col in cols){ 
     # We search dates only in characters
     if (is.character(dataSet[[col]]) || is.numeric(dataSet[[col]]) || (is.factor(dataSet[[col]]) & is.character(levels(dataSet[[col]])))){
       # Look for the good format
@@ -208,7 +215,7 @@ identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGN
     data_sample <- findNFirstNonNull(levels(dataSet), n_test)
   }
   else{
-    data_sample <- unique(findNFirstNonNull(dataSet, n_test))
+    data_sample <- unique(findNFirstNonNull(dataSet, n_test))  # Take unique to avoid useless computations
   }
   
   ## Computation
@@ -416,7 +423,7 @@ getPossibleDatesFormats <- function(date_sep =  c("," , "/", "-", "_", ":"), dat
   }
   
   # Add optional time zone at the end.
-  formats <- c(formats, paste(formats, "%z"))
+  # formats <- c(formats, paste(formats, "%z"))
   
   ## Wrapp-up
   return(formats)
@@ -457,23 +464,8 @@ formatForparse_date_time<- function(){
               "dby H", "bdy HMS", "bdy HM", "bdy H", "yBd HMS", "yBd HM", "yBd H", 
               "ydB HMS", "ydB HM", "ydB H", "dBy HMS", "dBy HM", "dBy H", "Bdy HMS", 
               "Bdy HM", "Bdy H", "ymd HMS", "ymd HM", "ymd H", "ydm HMS", "ydm HM", 
-              "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H", 
-              "Ybd z", "Ydb z", "dbY z", "bdY z", "YBd z", "YdB z", "dBY z", 
-              "BdY z", "Ymd z", "Ydm z", "dmY z", "mdY z", "ybd z", "ydb z", 
-              "dby z", "bdy z", "yBd z", "ydB z", "dBy z", "Bdy z", "ymd z", 
-              "ydm z", "dmy z", "mdy z", "Ybd HMS z", "Ybd HM z", "Ybd H z", 
-              "Ydb HMS z", "Ydb HM z", "Ydb H z", "dbY HMS z", "dbY HM z", 
-              "dbY H z", "bdY HMS z", "bdY HM z", "bdY H z", "YBd HMS z", "YBd HM z", 
-              "YBd H z", "YdB HMS z", "YdB HM z", "YdB H z", "dBY HMS z", "dBY HM z", 
-              "dBY H z", "BdY HMS z", "BdY HM z", "BdY H z", "Ymd HMS z", "Ymd HM z", 
-              "Ymd H z", "Ydm HMS z", "Ydm HM z", "Ydm H z", "dmY HMS z", "dmY HM z", 
-              "dmY H z", "mdY HMS z", "mdY HM z", "mdY H z", "ybd HMS z", "ybd HM z", 
-              "ybd H z", "ydb HMS z", "ydb HM z", "ydb H z", "dby HMS z", "dby HM z", 
-              "dby H z", "bdy HMS z", "bdy HM z", "bdy H z", "yBd HMS z", "yBd HM z", 
-              "yBd H z", "ydB HMS z", "ydB HM z", "ydB H z", "dBy HMS z", "dBy HM z", 
-              "dBy H z", "Bdy HMS z", "Bdy HM z", "Bdy H z", "ymd HMS z", "ymd HM z", 
-              "ymd H z", "ydm HMS z", "ydm HM z", "ydm H z", "dmy HMS z", "dmy HM z", 
-              "dmy H z", "mdy HMS z", "mdy HM z", "mdy H z")
+              "ydm H", "dmy HMS", "dmy HM", "dmy H", "mdy HMS", "mdy HM", "mdy H"
+  )
   
   ## Wrapp-up
   return(result)
