@@ -73,10 +73,12 @@ test_that("fastIsEqual: testing various scenariis",
 ## fastIsBijection
 # -----------------
 data("adult")
+df = data.frame(col1 = c(rep(0, 9), 1), col2 = c(rep(1, 9), 1)) # Tricky non-bijection on the threshold
 test_that("private function: fastIsBijection", 
           {
             expect_true(fastIsBijection(adult[["education"]], adult[["education_num"]]))
             expect_false(fastIsBijection(adult[["education"]], adult[["income"]]))
+            expect_false(fastIsBijection(df[["col1"]], df[["col2"]]))
           })
 
 ## fastMaxNbElt

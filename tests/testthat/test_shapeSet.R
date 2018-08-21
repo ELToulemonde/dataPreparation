@@ -29,6 +29,6 @@ adult <- shapeSet(adult, verbose = FALSE, finalForm = "data.table")
 test_that("setAsNumericMatrix: ",
           {
             expect_equal(ncol(setAsNumericMatrix(adult)), 102)
-            expect_equal(ncol(setAsNumericMatrix(adult, allCols = TRUE, sparse = TRUE)), 110)
+            expect_equal(ncol(setAsNumericMatrix(adult, allCols = TRUE, sparse = TRUE, intercept = TRUE)), 111)
+            expect_error(setAsNumericMatrix("cszdez"), "setAsNumericMatrix: dataSet is not a data.table")
           })
-

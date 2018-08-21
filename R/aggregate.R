@@ -85,7 +85,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
     }
     if (verbose){
       printl(function_name, ": ", ncol(result), " columns have been constructed. It took ", 
-             round((proc.time() - start_time)[[3]], 2), " seconds. ")
+             round( (proc.time() - start_time)[[3]], 2), " seconds. ")
     }
     
     return(result)
@@ -93,7 +93,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   else{ # If there is as many unique key as lines, there is nothing to do
     return(dataSet)
   }
-}
+  }
 
 
 ###########################################################################
@@ -113,6 +113,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
 # @param thresh number of max distinct values for frequencies count
 # @
 # @export # Before exporting this function should be improved!
+#' @import data.table
 aggregateAcolumn <- function(dataSet, col, key, unique_keys, name_separator = ".", 
                              functions, thresh = 53, ...){
   ## Environement
@@ -124,24 +125,24 @@ aggregateAcolumn <- function(dataSet, col, key, unique_keys, name_separator = ".
     stop(paste0(function_name, ": dataSet should have 2 columns. (This is a private function)."))
   }
   ## Initialization
-  maxNbValuePerKey <- max(unique(dataSet)[, .N, by = key]$N)
+  max_unique_val_per_key <- max(unique(dataSet)[, .N, by = key]$N)
   
   ## Computation 
-  if (maxNbValuePerKey > 1){
+  if (max_unique_val_per_key > 1){
     result_tmp <- copy(unique_keys) # copy because it's a data.table, otherwise it append it
     ## Aggregation of numerics
     if (is.numeric(dataSet[[col]])){ 
       # To-do: if there is a constant nbr of value for each line consider make
       # them columns
       # To-do: if there is a small amount of values: factorize
-      code = "result_tmp = dataSet[, .("
+      code <- "result_tmp = dataSet[, .("
       for (fct in functions){
-        code = paste0(code, paste(fct, col, sep = name_separator), "=", fct, "(get(col)), ")
+        code <- paste0(code, paste(fct, col, sep = name_separator), "=", fct, "(get(col)), ")
       }
       if (length(functions) > 0){
-        code = substr(code, start = 1, stop = nchar(code) - 2)
+        code <- substr(code, start = 1, stop = nchar(code) - 2)
       }
-      code = paste0(code, "), by = key]")
+      code <- paste0(code, "), by = key]")
       try(eval(parse(text = code)))
       if ("sd" %in% functions){
         # Bug fixing, sd is giving NA if you only have one value while standard deviation is supposed to be 0
@@ -172,7 +173,7 @@ aggregateAcolumn <- function(dataSet, col, key, unique_keys, name_separator = ".
     }
     
   }
-  if (maxNbValuePerKey == 1){
+  if (max_unique_val_per_key == 1){
     # Only one different value by key: we put the value one time by key.
     result_tmp <- unique(dataSet)
   }

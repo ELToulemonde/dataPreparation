@@ -38,7 +38,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   num_cols <- names(col_class)[col_class %in% c("numeric", "integer")]
   if (length(num_cols) > 0){
     if (verbose) {
-      printl("Transforming numerical variables into factors when length(unique(col)) <= ",  thresh, ".")
+      printl(function_name, ": Transforming numerical variables into factors when length(unique(col)) <= ",  thresh, ".")
     }
     dataSet <- setColAsFactor(dataSet, cols = num_cols, n_levels = thresh, verbose = FALSE)
   }
@@ -47,7 +47,7 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   # LOGICAL INTO BINARY
   logical_col <- names(col_class)[which(col_class %in% c("logical"))]
   if (length(logical_col) > 0){
-    if (verbose) {printl("Transforming logical into binaries.\n")}
+    if (verbose) {printl(function_name, ": Transforming logical into binaries.\n")}
     for (col in logical_col) set(dataSet, NULL, col, as.integer(dataSet[[col]] * 1))
   }
   
@@ -55,13 +55,10 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
   if (verbose){
     col_class_end <- sapply(dataSet, class)
     col_class_end <- sapply(col_class_end, function(x){x[[1]]})
-    printl("Previous distribution of column types:")
+    printl(function_name, ": Previous distribution of column types:")
     print(table(col_class_init))
-    printl("Current distribution of column types:")
+    printl(function_name, ": Current distribution of column types:")
     print(table(col_class_end))
-    # Number of levels for each factor
-    col_class <- sapply(dataSet, class)
-    factor_cols <- names(col_class)[which(col_class %in% c("factor"))]
   }
   
   ## Wrapp-up
@@ -90,11 +87,12 @@ shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = T
 #' @export
 #' @importFrom stats as.formula model.matrix contrasts
 #' @importFrom Matrix sparse.model.matrix
+#' @import data.table
 setAsNumericMatrix <- function(dataSet, intercept = FALSE, allCols = FALSE, 
                                sparse = FALSE) {
   
   ## SANITY CHECKS
-  if (!("data.table") %in% class(dataSet)) stop("setAsNumericMatrix: dataSet is not a data.table")
+  if (!is.data.table(dataSet)) stop("setAsNumericMatrix: dataSet is not a data.table")
   # Checking that columns are of the proper type. Column type modification are
   # not done here, because we would either need to duplicate the dataSet in memory
   # (not memory efficient), or we would need to modify them by reference.

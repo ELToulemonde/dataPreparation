@@ -59,7 +59,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
       if (verbose){
         printl(function_name, ": I delete ", length(constant_cols), " constant column(s) in ", dataName, ".")
       }
-      dataSet[, (constant_cols) := NULL]
+	  set(dataSet, NULL, constant_cols, NULL)
     }
   }
   
@@ -72,8 +72,8 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
     if (length(double_cols) > 0){
       if (verbose){
         printl(function_name, ": I delete ", length(double_cols), " column(s) that are in double in ", dataName, ".")
-      }  
-      dataSet[, (double_cols) := NULL]
+      }
+	  set(dataSet, NULL, double_cols, NULL)
     }
   }
   
@@ -89,7 +89,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
         printl(function_name, ": I delete ", length(bijection_cols), 
                " column(s) that are bijections of another column in ", dataName, ".")
       }  
-      dataSet[, (bijection_cols) := NULL]
+	  set(dataSet, NULL, bijection_cols, NULL)
     }
   }
   
@@ -104,7 +104,7 @@ fastFilterVariables <- function(dataSet, level = 3, keep_cols = NULL, verbose = 
         printl(function_name, ": I delete ", length(included_cols), 
                " column(s) that are bijections of another column in ", dataName, ".")
       }  
-      dataSet[, (included_cols) := NULL]
+	  set(dataSet, NULL, included_cols, NULL)
     }
   }
   
@@ -356,15 +356,18 @@ fastIsBijection <- function(object1, object2){
   nrows <- length(object1)
   exp_factor <- 10
   max_power <- floor(log(nrows) / log(exp_factor)) + 1
+  type_fun_col1 = get(paste0("as.", class(object1)))(character()) # Create empty object of the write type. Genreic way (ex: for POSIXct try it)
+  type_fun_col2 = get(paste0("as.", class(object2)))(character())
+  unique_couples = data.frame(object1 = type_fun_col1, object2 = type_fun_col2)
   for (i in 1:max_power){
     I <- (exp_factor ^ (i - 1)):min(exp_factor ^ i - 1,  nrows)
-    n1 <- uniqueN(object1[I])
-    n2 <- uniqueN(object2[I])
+    n1 <- uniqueN(c(object1[I], unique_couples[["object1"]]))
+    n2 <- uniqueN(c(object2[I], unique_couples[["object2"]]))
     if (n2 != n1){
       return(FALSE)
     }
-    
-    n12 <- uniqueN(data.frame(object1 = object1[I], object2 = object2[I]))
+    unique_couples = unique(rbind(unique_couples, data.frame(object1 = object1[I], object2 = object2[I])))
+    n12 <- nrow(unique_couples)
     
     if (n12 != n1){
       return(FALSE)
@@ -452,4 +455,3 @@ fastMaxNbElt <- function(object, max_n_values = 1){
   # }
   # return("bijection")
 # }
-

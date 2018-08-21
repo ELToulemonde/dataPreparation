@@ -4,8 +4,8 @@
 \alias{fastFilterVariables}
 \title{Filtering useless variables}
 \usage{
-fastFilterVariables(dataSet, level = 3, keep_cols = NULL, verbose = TRUE,
-  ...)
+fastFilterVariables(dataSet, level = 3, keep_cols = NULL,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

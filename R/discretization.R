@@ -136,7 +136,7 @@ fastDiscretization <- function(dataSet, bins = NULL, verbose = TRUE){
       }
       res <- which(splits[-length(splits)] <= x & x < splits[-1])
       if (length(res) == 0){
-        res <- length(splits) -1
+        res <- length(splits) - 1
       }
       return(res)
     }
@@ -232,4 +232,3 @@ build_splits_names <- function(splits){
   
   return(split_names)
 }
-

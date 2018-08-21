@@ -5,11 +5,15 @@
 #' 
 #' Function to find and transform characters that are in fact numeric.
 #' @param dataSet Matrix, data.frame or data.table
+#' @param cols List of column(s) name(s) of dataSet to look into. To check all all columns, set it 
+#'  to "auto". (characters, default to "auto")
 #' @param n_test Number of non-null rows on which to test (numeric, default to 30)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @details 
 #' This function is looking for perfect transformation. 
-#' If there are some mistakes in dataSet, consider setting them to NA before.
+#' If there are some mistakes in dataSet, consider setting them to NA before. \cr
+#' If there are some columns that have no chance to be a match think of removing them from \code{cols} 
+#' to save some computation time.
 #' @section Warning:
 #' All these changes will happen \strong{by reference}.
 #' @return The dataSet set (as a data.table) with identified numeric transformed.
@@ -24,20 +28,20 @@
 #' findAndTransformNumerics(dataSet, n_test = 5)
 #' @import data.table
 #' @export
-findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
-  ## Working environement
+findAndTransformNumerics <- function(dataSet, cols = "auto", n_test = 30, verbose = TRUE){
+  ## Working environment
   function_name <- "findAndTransformNumerics"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  
+  cols <- real_cols(dataSet, cols, function_name)
   ## Initialization
   start_time <- proc.time()
   
   ## Computation
   # identify
-  numerics <- identifyNumerics(dataSet, n_test = n_test, verbose = verbose)
+  numerics <- identifyNumerics(dataSet, cols = cols, n_test = n_test, verbose = verbose)
   if (verbose){
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to identify ", length(numerics$dont_strip) + length(numerics$strip), 
@@ -74,7 +78,7 @@ findAndTransformNumerics <- function(dataSet, n_test = 30, verbose = TRUE){
 ############################### identifyNumerics  #################################################
 ###################################################################################################
 #' @import data.table
-identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
+identifyNumerics <- function(dataSet, cols = "auto", n_test = 30, verbose = TRUE, ...){
   ## Working environment
   function_name <- "identifyNumerics"
   
@@ -83,7 +87,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   n_test <- control_nb_rows(dataSet = dataSet, nb_rows = n_test, function_name = function_name, 
                             variable_name = "n_test")
   is.verbose(verbose)
-  
+  cols <- real_cols(dataSet, cols, function_name)
   ## Initialization
   numerics_cols_dont_strip <- NULL
   numerics_cols_strip <- NULL
@@ -92,7 +96,7 @@ identifyNumerics <- function(dataSet, n_test = 30, verbose = TRUE, ...){
   }
   
   ## Computation
-  for (col in names(dataSet)){
+  for (col in cols){
     # Something is performed only if col is in a character format
     if (is.character(dataSet[[col]])){
       # Get a few lines that aren't NA, NULL nor ""

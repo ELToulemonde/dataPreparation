@@ -74,7 +74,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   
   ## Computation
   ### 1. Correct dataSet set
-  if(verbose){
+  if (verbose){
     printl(function_name, ": step one: correcting mistakes.")
   }
   # 1.0 Filter useless vars
@@ -92,7 +92,7 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   dataSet <- findAndTransformDates(dataSet, formats = args[["dateFormats"]], verbose = verbose) 
   
   ### 2. Transform dataSet set
-  if(verbose){
+  if (verbose){
     printl(function_name, ": step two: transforming dataSet.")
   }
   
@@ -118,13 +118,13 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   result <- generateFromCharacter(result, cols = character_cols, drop = TRUE, name_separator = args[["name_separator"]], verbose = verbose)
   
   # 2.3 Aggregate by key 
-  if(!is.null(args[["key"]])){
+  if (!is.null(args[["key"]])){
     key <- args[["key"]]
     result <- aggregateByKey(result, key, verbose = verbose, functions = args[["functions"]], ...)
   }
   
   ### 3 Filter
-  if(verbose){
+  if (verbose){
     printl(function_name, ": step three: filtering dataSet.")
   }
   # 3.1 Get ride of useless variables
@@ -132,18 +132,18 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
                                 dataName = "result")
   
   # 3.2 Round
-  if(!is.null(args[["digits"]])){
+  if (!is.null(args[["digits"]])){
     result <- fastRound(result, digits = args[["digits"]], verbose = verbose)
   }
   
   ### 4 Handle NA
-  if(verbose){
+  if (verbose){
     printl(function_name, ": step four: handling NA.")
   }
   result <- fastHandleNa(result, verbose = verbose)
   
   ### 5 Shape set
-  if(verbose){
+  if (verbose){
     printl(function_name, ": step five: shaping result.")
   }
   result <- shapeSet(result, finalForm = finalForm, verbose = verbose)

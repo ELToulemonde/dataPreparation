@@ -40,6 +40,7 @@ test_that("private function: identifyDates: control result",
             expect_identical(identifyDates(dataSet, n_test = 5, verbose = verbose), 
                              list(date1 = "%Y-%m-%d", date2 = "%Y_%m_%d", date3 = "%Y_%m_%d", date4 = "%d-%B-%Y")
                              )
+			expect_identical(identifyDates(dataSet, cols = list(), n_test = 5, verbose = verbose), list()) # Control that if told to do nothing, do nothing.
           })
 
 data("messy_adult")
@@ -67,6 +68,21 @@ test_that("Private function: identifyDatesFormats ",
             expect_equal(identifyDatesFormats(format(Sys.Date(), "%Y-%m-%d"), formats = c("%m-%d-%Y", "%Y-%m-%d")), "%Y-%m-%d")
           })
 
+# Future test for auto change LC_TIME		  
+# Sys.setlocale("LC_TIME", "French_France.1252")
+# test_that("Private function: identifyDatesFormats control auto changing time lc",
+          # {
+            # expect_equal(identifyDatesFormats("2018-May-05", formats = c("%Y-%b-%d")), "%Y-%b-%d")
+          # })
+# Sys.setlocale("LC_TIME", "C")
+		  
+		  
+		  
+		  
+#test_that("Private function: identifyDatesFormats control Accepting time zone",
+#          {
+#            expect_equal(identifyDatesFormats("Tue, 26 Jun 2018 17:58:10 +0200", formats = c("%a, %d %b %Y %H:%M:%S %z")), "%a, %d %b %Y %H:%M:%S %z")
+#          })
 ## identifyTimeStampsFormats 
 # --------------------------
 test_that("private function: identifyTimeStampsFormats ",

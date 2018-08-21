@@ -4,8 +4,8 @@
 \alias{build_encoding}
 \title{Compute encoding}
 \usage{
-build_encoding(dataSet, cols = "auto", verbose = TRUE, min_frequency = 0,
-  ...)
+build_encoding(dataSet, cols = "auto", verbose = TRUE,
+  min_frequency = 0, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

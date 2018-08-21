@@ -34,7 +34,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Initialization
   constant_cols <- NULL
   if (verbose){
-	start_time <- proc.time()
+    start_time <- proc.time()
     pb <- initPB(function_name, names(dataSet))
   }
   cols <- names(dataSet)[! names(dataSet) %in% keep_cols]
@@ -109,7 +109,7 @@ whichAreConstant <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' @export
 whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   ## Working environement
-  function_name = "whichAreInDouble"
+  function_name <- "whichAreInDouble"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
@@ -120,7 +120,8 @@ whichAreInDouble <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   
   ## Computation
   double_cols <- bi_col_test(dataSet, keep_cols = keep_cols, verbose = verbose,
-                               test_function = "fastIsEqual", function_name = function_name, test_log = " is exactly equal to ")
+                             test_function = "fastIsEqual", function_name = function_name, 
+                             test_log = " is exactly equal to ")
   
   ## Wrapp-up
   return(double_cols)
@@ -170,10 +171,10 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
   keep_cols <- real_cols(dataSet, keep_cols, function_name)
   
   ## Initialization
-
+  
   ## Computation # to-do clean it
   bijection_cols <- bi_col_test(dataSet, keep_cols, verbose = verbose, 
-                                 test_function = "fastIsBijection", function_name = function_name, test_log = " is a bijection of ")
+                                test_function = "fastIsBijection", function_name = function_name, test_log = " is a bijection of ")
   
   ## Wrapp up
   return(bijection_cols)
@@ -309,14 +310,14 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
   result_list <- NULL
   col_I <- names(dataSet)[-ncol(dataSet)]
   if (verbose){
-	start_time <- proc.time()
+    start_time <- proc.time()
     pb <- initPB(function_name, names(dataSet))
   }
   
   ## Computation
   while (length(col_I) > 1){
     col_i <- col_I[1]
-    col_J <- names(dataSet)[- (1:which(col_i == names(dataSet)))]
+    col_J <- names(dataSet)[ - (1:which(col_i == names(dataSet)))]
     col_J <- col_J[!col_J %in% result_list] # Drop cols that are alreaydy found
     for (col_j in col_J){
       # If one of the couple is droppable
@@ -328,8 +329,8 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
             result_list <- c(result_list, col_j)
             if (verbose){
               printl(function_name, ": ", col_j, test_log, col_i, ". I put it in drop list.") 
-			  setPB(pb, col_j) # Add a tick since col_j is going to be dropped
-			}
+              setPB(pb, col_j) # Add a tick since col_j is going to be dropped
+            }
             col_I <- col_I[col_I != col_j] # Drop it from search list
           }
           else{ # Drop i
@@ -354,7 +355,8 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
     result_list <- sort(unique(result_list))
   }
   if (verbose){
-    printl(function_name, ": it took me ", round((proc.time() - start_time)[[3]], 2), "s to identify ", length(result_list), " column(s) to drop.")
+    printl(function_name, ": it took me ", round( (proc.time() - start_time)[[3]], 2), 
+           "s to identify ", length(result_list), " column(s) to drop.")
   }
   return(result_list)
 }

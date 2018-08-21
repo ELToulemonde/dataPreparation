@@ -31,7 +31,7 @@ build_scales <- function(dataSet, cols = "auto", verbose = TRUE){
   scales <- list()
   ## Computation
   for (col in cols){
-    scales[[col]] =  list(mean = mean(dataSet[[col]], na.rm = TRUE), sd = sd(dataSet[[col]], na.rm = TRUE))
+    scales[[col]] <-  list(mean = mean(dataSet[[col]], na.rm = TRUE), sd = sd(dataSet[[col]], na.rm = TRUE))
     # Update progress bar
     if (verbose){
       setPB(pb, col)  
