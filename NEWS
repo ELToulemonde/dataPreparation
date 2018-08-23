@@ -1,3 +1,9 @@
+V 0.3.8
+=======
+- New features:
+  	- New features in existing functions:
+  	  - Identification of bijection through internal function *fastIsBijection* is way faster (up to 40 times faster in case of bijection). So *whichArebijection* and *fastFiltervariables* are also improved.
+  	  
 V 0.3.7
 =======
 - New features:
