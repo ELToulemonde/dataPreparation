@@ -148,7 +148,6 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
   }
   
   if (verbose){ 
-    gc(verbose = FALSE)
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", length(cols), " column(s).")
   }
