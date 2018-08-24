@@ -51,7 +51,7 @@ generateFactorFromDate <- function(dataSet, cols = "auto", type = "yearmonth", d
   for (col in cols){
     new_col <- paste0(col, name_separator, type)
     new_col <- make_new_col_name(new_col, names(dataSet))
-	set(dataSet, NULL, new_col, date_factor(dataSet[[col]], type = type))
+	  set(dataSet, NULL, new_col, date_factor(dataSet[[col]], type = type))
     if (isTRUE(drop)){
 	  set(dataSet, NULL, col, NULL)
     }
@@ -61,7 +61,6 @@ generateFactorFromDate <- function(dataSet, cols = "auto", type = "yearmonth", d
     }
   }
   if (verbose){ 
-    gc(verbose = FALSE)
     printl(function_name, ": It took me ", round( (proc.time() - start_time)[[3]], 2), 
            "s to transform ", length(cols), " column(s).")
   }

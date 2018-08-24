@@ -366,7 +366,10 @@ fastIsBijection <- function(object1, object2){
     if (n2 != n1){
       return(FALSE)
     }
-    unique_couples = unique(rbind(unique_couples, data.frame(object1 = object1[I], object2 = object2[I])))
+    # Compute unique couples
+    tmp <- rbind(data.frame(object1 = object1[I], object2 = object2[I]), unique_couples)
+    setDT(tmp)
+    unique_couples = tmp[, unique(.SD), .SDcols = c("object1", "object2")]
     n12 <- nrow(unique_couples)
     
     if (n12 != n1){

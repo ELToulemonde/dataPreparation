@@ -348,7 +348,6 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
     }
     col_I <- col_I[-1]
   }
-  gc(verbose = FALSE)
   ## Wrapp-up
   result_list <- which(names(dataSet) %in% result_list) # To return indexes
   if (! is.null(result_list)){

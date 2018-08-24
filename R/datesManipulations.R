@@ -309,11 +309,10 @@ control_date_conversion <- function(un_converted, original){
   
   original_with_spaces_after_sep <- gsub("(?<=[[:punct:]]) ", "", original, perl = TRUE)
   original_trimws <- trimws(original)
-  original_with_spaces_after_sep_trimws <- trimws(original_with_spaces_after_sep)
+  original_with_spaces_after_sep_trimws <- gsub("(?<=[[:punct:]]) ", "", original_trimws, perl = TRUE)
   original_list <- list(original, original_with_spaces_after_sep, original_with_spaces_after_sep_trimws, original_trimws)
   return(any(un_con_list %in% original_list))
 }
-
 
 #######################################################################################
 ############################### Unify dates types #####################################
