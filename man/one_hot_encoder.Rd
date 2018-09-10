@@ -4,8 +4,8 @@
 \alias{one_hot_encoder}
 \title{One hot encoder}
 \usage{
-one_hot_encoder(dataSet, encoding = NULL, verbose = TRUE,
-  drop = FALSE)
+one_hot_encoder(dataSet, encoding = NULL, type = "integer",
+  verbose = TRUE, drop = FALSE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -13,6 +13,9 @@ one_hot_encoder(dataSet, encoding = NULL, verbose = TRUE,
 \item{encoding}{Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
 To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
 before. If it is kept to NULL, build_encoding will be called.}
+
+\item{type}{What class of columns is expected? "integer" (0L/1L), "numeric" (0/1), or "logical" (TRUE/FALSE), 
+(character, default to "integer")}
 
 \item{verbose}{Should the function log (logical, default to TRUE)}
 
@@ -41,4 +44,8 @@ messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
 # Apply same encoding to adult
 data(adult)
 adult <- one_hot_encoder(adult, encoding = encoding, drop = TRUE)
+
+# To have encoding as logical (TRUE/FALSE), pass it in type argument
+data(adult)
+adult <- one_hot_encoder(adult, encoding = encoding, type = "logical", drop = TRUE)
 }

@@ -4,6 +4,7 @@ V 0.3.8
   	- New features in existing functions:
 		- Identification of bijection through internal function *fastIsBijection* is way faster (up to 40 times faster in case of bijection). So *whichArebijection* and *fastFiltervariables* are also improved.
 		- Remove remaining *gc* to save time. 
+		- In *one_hot_encoder* added parameter *type* to make choise between logical or numerical results.
 	  
   	  
 V 0.3.7
