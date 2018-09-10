@@ -37,6 +37,11 @@ test_that("one_hot_encoder: ",
           })
 
 
+test_that("one_hot_encoder: expect error: ",
+          {
+            expect_error(one_hot_encoder(adult, type = "character"), ": type should either be ")
+          })
+
 
 ## build_encoding
 # ----------------

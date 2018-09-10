@@ -81,6 +81,8 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 #' @param encoding Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
 #' To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
 #' before. If it is kept to NULL, build_encoding will be called.
+#' @param type What class of columns is expected? "integer" (0L/1L), "numeric" (0/1), or "logical" (TRUE/FALSE), 
+#' (character, default to "integer")
 #' @param drop Should \code{cols} be dropped after generation (logical, default to FALSE)
 #' @param verbose Should the function log (logical, default to TRUE) 
 #' @return \code{dataSet} edited by \strong{reference} with new columns. 
@@ -99,16 +101,23 @@ generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
 #' # Apply same encoding to adult
 #' data(adult)
 #' adult <- one_hot_encoder(adult, encoding = encoding, drop = TRUE)
+#' 
+#' # To have encoding as logical (TRUE/FALSE), pass it in type argument
+#' data(adult)
+#' adult <- one_hot_encoder(adult, encoding = encoding, type = "logical", drop = TRUE)
 #' @export
 #' @import data.table
-one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FALSE){
+one_hot_encoder <- function(dataSet, encoding = NULL, type = "integer", verbose = TRUE, drop = FALSE){
   ## Working environement
   function_name <- "one_hot_encoder"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   is.verbose(verbose)
-  
+  if (! type %in% c("integer", "logical", "numeric")){
+    stop(paste0(function_name, ": type should either be 'integer', 'numeric' or 'logical.'"))
+  }
+  as_type <- get(paste0("as.", type)) # Build a_type function to transform result type
   ## Initialization
   # Transform char into factor
   if (is.null(encoding)){
@@ -134,7 +143,7 @@ one_hot_encoder <- function(dataSet, encoding = NULL, verbose = TRUE, drop = FAL
     new_cols <- encoding[[col]]$new_cols
     # Set the write value
     for (i in 1:length(new_cols)){
-      set(dataSet, NULL, new_cols[i], as.integer(dataSet[[col]] == encoding[[col]]$values[i]))
+      set(dataSet, NULL, new_cols[i], as_type(dataSet[[col]] == encoding[[col]]$values[i]))
     }
     
     # drop col if asked
