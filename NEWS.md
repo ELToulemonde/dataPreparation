@@ -1,3 +1,9 @@
+V 0.3.9
+=======
+- Integration:
+  	- Matching new devtools requierments
+  	- Starting to rewrite unittest to make it more readable
+
 V 0.3.8
 =======
 - New features:
