@@ -3,3 +3,4 @@
 README.md
 CONTRIBUTING.rst
 ^\.travis\.yml$
+^\.idea$

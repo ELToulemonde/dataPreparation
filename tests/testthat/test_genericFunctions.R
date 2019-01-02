@@ -4,43 +4,123 @@ verbose <- TRUE
 Sys.setlocale("LC_TIME", "C")
 ## findNFirstNonNull
 #-------------------
-
-
-test_that("findNFirstNonNull: test numerics", 
+test_that("findNFirstNonNull: given 1 to 50, and asking for 5 value should return 1 to 5", 
           {
-            expect_identical(findNFirstNonNull(1:50, 5), 1:5)
-            expect_identical(findNFirstNonNull(1:50, 10), 1:10)
-            expect_identical(findNFirstNonNull(c(NA, 1:50), 10), 1:10)
+            # Given 
+            numerical_values = 1:50
+            n_wanted_values = 5
+            expected_results = 1:5
+            
+            # When
+            result = findNFirstNonNull(numerical_values, n_wanted_values)
+            
+            # Then
+            expect_identical(result, expected_results)
+          })
+
+test_that("findNFirstNonNull: Given 1 to 50, asking for 10 element should return 1 to 10", 
+          {
+            # Given 
+            numerical_values = 1:50
+            n_wanted_values = 10
+            expected_results = 1:10
+            
+            # When
+            result = findNFirstNonNull(numerical_values, n_wanted_values)
+            
+            # Then
+            expect_identical(result, expected_results)
+          })
+
+test_that("findNFirstNonNull: Given a NA and then 1 to 50, asking for 10 element should return 1 to 10", 
+          {
+            # Given 
+            numerical_values = c(NA, 1:50)
+            n_wanted_values = 10
+            expected_results = 1:10
+            
+            # When
+            result = findNFirstNonNull(numerical_values, n_wanted_values)
+            
+            # Then
+            expect_identical(result, expected_results)
+          })
+
+test_that("findNFirstNonNull: Given a empty string and then the alphabet, when asking for 3 letters, should return first 3 letters", 
+          {
+            # Given 
+            letters_values = c("", LETTERS)
+            n_wanted_values = 3
+            expected_results = c("A", "B", "C")
+            
+            # When
+            result = findNFirstNonNull(letters_values, n_wanted_values)
+            
+            # Then
+            expect_identical(result, expected_results)
           })
 
 
-test_that("findNFirstNonNull: test character", 
+test_that("findNFirstNonNull: Given two not NA values, and asking for more, should return result of len two", 
           {
-            expect_identical(findNFirstNonNull(LETTERS, 3), c("A", "B", "C"))
-            expect_identical(findNFirstNonNull(LETTERS, 5), c("A", "B", "C", "D", "E"))
-            expect_identical(findNFirstNonNull(c(NA, LETTERS), 5), c("A", "B", "C", "D", "E"))
-          })
-
-
-test_that("findNFirstNonNull: not enough not NAs values", 
-          {
-            expect_equal(length(findNFirstNonNull(c("A", "B", NA, NA), 3)), 2)
+            # Given 
+            two_values_and_to_nas = c("A", "B", NA, NA)
+            n_wanted_values = 3
+            expected_results = 2
+            
+            # When
+            result = findNFirstNonNull(two_values_and_to_nas, n_wanted_values)
+            
+            # Then 
+            expect_equal(length(result), expected_results)
           })
 
 ## checkAndReturnDataTable
 #-------------------------
-data("adult")
-setDT(adult)
-test_that("checkAndReturnDataTable", 
+test_that("checkAndReturnDataTable: Given a data.table, Should return a data.table",
           {
-            expect_true(is.data.table(checkAndReturnDataTable(adult)))
-            expect_true(is.data.table(checkAndReturnDataTable(as.data.frame(adult))))
-            expect_true(is.data.table(checkAndReturnDataTable(as.matrix(adult))))
+            # Given
+            data("adult")
+            setDT(adult)
             
+            # When
+            result <- checkAndReturnDataTable(adult)
+            
+            # Then
+            expect_true(is.data.table(result))
+          })
+
+test_that("checkAndReturnDataTable: Given a data.frame, Should return a data.table",
+          {
+            # Given
+            data("adult")
+            adult <- as.data.frame(adult)
+            
+            # When
+            result <- checkAndReturnDataTable(adult)
+            
+            # Then
+            expect_true(is.data.table(result))
+          })
+
+test_that("checkAndReturnDataTable: Given a matrix, Should return a data.table",
+          {
+            # Given
+            data("adult")
+            adult <- as.matrix(adult)
+            
+            # When
+            result <- checkAndReturnDataTable(adult)
+            
+            # Then
+            expect_true(is.data.table(result))
+          })
+
+test_that("checkAndReturnDataTable: control errors", 
+          {
             expect_error(checkAndReturnDataTable("a"))
             expect_error(checkAndReturnDataTable(1))
             expect_error(checkAndReturnDataTable(list(1,2)))
-            
             expect_error(checkAndReturnDataTable(data.table()), "should have at least have 1 line")
             expect_error(checkAndReturnDataTable(data.frame(row.names = c(1,2))), "should have at least have 1 column")
           })
@@ -152,7 +232,8 @@ test_that("function.maker: warning not handling na",
             expect_warning(function.maker(max, type = "numeric"))
             expect_warning(function.maker(max, type = "character"))
             expect_warning(function.maker(function(...){sum(...) / length(list(...)) > 0.5}, type = "logical"))
-          })			
+          })
+
 test_that("function.maker: stop not aggregation function",
           {
             expect_error(function.maker(sqrt, type = "numeric"))
