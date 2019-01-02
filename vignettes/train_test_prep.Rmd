@@ -7,7 +7,7 @@ output:
     number_sections: yes
   
 vignette: >
-  %\VignetteIndexEntry{Tutorial} 
+  %\VignetteIndexEntry{Tutorial: building train and test sets with the same characteristics} 
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
