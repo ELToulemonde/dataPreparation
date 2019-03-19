@@ -116,6 +116,20 @@ test_that("checkAndReturnDataTable: Given a matrix, Should return a data.table",
             expect_true(is.data.table(result))
           })
 
+test_that("checkAndReturnDataTable: Given a data.table with not unique names, Should return a data.table with unique names",
+          {
+            # Given
+            data("adult")
+            names(adult) = rep("some_str", ncol(adult))
+            
+            # When
+            expect_warning(result <- checkAndReturnDataTable(adult))
+            
+            # Then
+            expect_equal(length(names(result)), length(unique(names(result))))
+          })
+
+
 test_that("checkAndReturnDataTable: control errors", 
           {
             expect_error(checkAndReturnDataTable("a"))

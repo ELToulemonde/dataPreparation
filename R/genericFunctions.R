@@ -60,7 +60,11 @@ checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
       dataSet <- as.data.table(dataSet)
     }
   }
-  
+  # Control col names
+  if (length(unique(names(dataSet))) < length(names(dataSet))){
+    warning(paste0(name, ": has column names in double : you should take care of it. I changed them to be unique."))
+    setDT(dataSet, check.names = TRUE)  
+  }
   # Since we are using set in all the package, we make sure that dataSet is overallocate, see data.table doc, among it 
   # see: https://github.com/Rdatatable/data.table/issues/755
   dataSet <- alloc.col(dataSet)

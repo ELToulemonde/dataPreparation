@@ -1,3 +1,9 @@
+V 0.3.10
+========
+- New features:
+  - New features in existing functions : 
+    - To avoid issues based on column names, we will check and rename columns that have same names. 
+
 V 0.3.9
 =======
 - Integration:
