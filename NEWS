@@ -4,6 +4,15 @@ V 0.3.10
   - New features in existing functions : 
     - To avoid issues based on column names, we will check and rename columns that have same names. 
 
+- Bug fixes:
+  - *whichAreBijection* and *whichAreInDouble* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
+
+- Other changes: 
+  - Changed *whichAreIncluded* example since it was to slow for CRAN. Also it might be a little bit more explicit now
+
+- Integration:
+  - Rewrite all whichFunction test to make them more readable
+
 V 0.3.9
 =======
 - Integration:
