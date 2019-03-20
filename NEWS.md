@@ -1,17 +1,24 @@
-V 0.3.10
-========
+V 0.4.0
+=======
 - New features:
   - New features in existing functions : 
     - To avoid issues based on column names, we will check and rename columns that have same names. 
+    - In *aggregateByKey* generated column names are changed to be more explicit. 
+    - In *aggregateByKey* generated from character column with more than \code{thresh} values is now count of unique instead of count.
 
 - Bug fixes:
   - *whichAreBijection* and *whichAreInDouble* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
 
 - Other changes: 
-  - Changed *whichAreIncluded* example since it was to slow for CRAN. Also it might be a little bit more explicit now
+  - Changed *whichAreIncluded* example since it was to slow for CRAN. Also it might be a little bit more explicit now.
+  - Changed *aggregateByKey* example since it was to slow for CRAN.
 
 - Integration:
-  - Rewrite all whichFunction test to make them more readable
+  - Rewrite all *whichFunction.R* and *aggregate.R* tests to make them more readable
+
+WARNING:
+- In *aggregateByKey* generated column names are changed.
+- In *aggregateByKey* generated column for character is different.
 
 V 0.3.9
 =======

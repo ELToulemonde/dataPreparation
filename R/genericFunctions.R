@@ -267,18 +267,18 @@ is.agg_function <- function(functions, function_name = "is.agg_function"){
       stop(paste0(function_name, ": functions should be a list of names (as character) of functions."))
     }
     if (!exists(x = fun)) {
-      warning(paste0(function_name, ": ", fun, " doesn't exist, it wont be used."))
+      warning(paste0(function_name, ": ", fun, " doesn't exist, it won't be used."))
       functions <- functions[functions != fun]
     }
     else{
       if (!is.function(get(fun))){
-        warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
+        warning(paste0(function_name, ": ", fun, " is not a function, it won't be used."))
         functions <- functions[functions != fun]
       }
       else{
         # check aggregation
         if (length(get(fun)(1:3)) != 1){
-          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it wont be used.", 
+          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it won't be used.", 
                          " An aggregation function is a function that for multiple input return only one, exemple: sum."))
           functions <- functions[functions != fun]
         }

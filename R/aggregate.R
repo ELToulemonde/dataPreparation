@@ -16,14 +16,18 @@
 #'     frequency count of values is performed,
 #'   \item If column is character or factor with more than \code{thresh} different values, number 
 #'     of different values for each \code{key} is performed,
-#'   \item If column is logical, count of number and rate of positive is performed.
+#'   \item If column is logical, number of TRUE is computed.
 #' }
+#' 
+#' In all cases, if the set as more rows than unique \code{key}, a number of lines will be computed.
+#' 
 #' Be careful using functions argument, given functions should be an aggregation function, 
 #' meaning that for multiple values it should only return one value.
 #' @return A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
 #' @examples
 #' # Get generic dataset from R
 #' data("adult")
+#' adult <- adult[1:500, ] # reduce it to go faster (but you can run it on full dataset)
 #'
 #' # Aggregate it using aggregateByKey, in order to extract characteristics for each country
 #' adult_aggregated <- aggregateByKey(adult, key = 'country')
@@ -63,7 +67,7 @@ aggregateByKey <- function(dataSet, key, verbose = TRUE, thresh = 53, ...){
   # If there are more lines than unique key: we aggregate
   if (nrow(dataSet) != uniqueN(dataSet[[key]])){ 
     result <- dataSet[, .N, by = key]
-    setnames(result, "N", "nbrLines")
+    setnames(result, "N", "nbr_lines")
     unique_keys <- result[, key, with = FALSE]
     if (verbose){
       printl(function_name, ": I start to aggregate")
@@ -162,14 +166,14 @@ aggregateAcolumn <- function(dataSet, col, key, unique_keys, name_separator = ".
         setnames(result_tmp, c(key, paste(col, colnames(result_tmp)[-1], sep = name_separator)))
       }
       else{
-        result_tmp <- dataSet[, .N, by = key]
-        setnames(result_tmp, c(key, paste("nbr", col, sep = name_separator)))
+        result_tmp <- dataSet[, uniqueN(col), by = key]
+        setnames(result_tmp, c(key, paste("n_unique", col, sep = name_separator)))
       }
     }
     ## Aggregation of logicals
     if (is.logical(dataSet[[col]])){
       result_tmp <- dataSet[, sum(get(col)), by = key]
-      setnames(result_tmp, c(key, paste("nbr", col, sep = name_separator)))
+      setnames(result_tmp, c(key, paste("nbr_true", col, sep = name_separator)))
     }
     
   }
