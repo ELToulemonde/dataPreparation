@@ -181,13 +181,48 @@ test_that("Private function: parse_date_cols",
 
 ## setColAsFactor
 #----------------
-data("messy_adult")
-messy_adult <- setColAsCharacter(messy_adult, cols = "education", verbose = FALSE) # Unfactor education
+test_that("setColAsFactor: Behave with default n_levels", 
+          {
+            # Given
+            dataSet <- data.table(col = c("A", "B", "C"))
+            
+            # When
+            result <- setColAsFactor(dataSet, cols = "col", verbose = verbose)
+            
+            # Then
+            expect_true(is.factor(result[["col"]])) 
+          })
 
+test_that("setColAsFactor: behave with n_levels = -1", 
+          {
+            # Given
+            dataSet <- data.table(col = c("A", "B", "C"))
+            
+            # When
+            result <- setColAsFactor(dataSet, cols = "col", n_levels = -1, verbose = verbose)
+            
+            # Then
+            expect_true(is.factor(result[["col"]])) 
+            
+          })
+test_that("setColAsFactor: column is unchanged if number of values greatter than n_levels", 
+          {
+            # Given
+            dataSet <- data.table(col = c("A", "B", "C"))
+            
+            # When
+            result <- setColAsFactor(dataSet, cols = "col", n_levels = 2, verbose = verbose)
+            
+            # Then
+            expect_false(is.factor(result[["col"]])) 
+            expect_true(is.character(result[["col"]]))
+          })
 test_that("setColAsFactor:", 
           {
-            expect_true(is.factor(setColAsFactor(copy(messy_adult), cols = "education", verbose = verbose)[["education"]])) # Behave with default n_levels
-            expect_true(is.factor(setColAsFactor(copy(messy_adult), cols = "education", n_levels = -1, verbose = verbose)[["education"]])) # behave with n_levels = -1
-            expect_true(is.character(setColAsFactor(copy(messy_adult), cols = "education", n_levels = 2, verbose = verbose)[["education"]])) # Unchanged if too many factors
-            expect_error(setColAsFactor(copy(messy_adult), cols = "education", n_levels = "a", verbose = verbose), ": n_levels should be an integer.") #N_levels not integer
+            # Given
+            dataSet <- data.table(col = c("A", "B", "C"))
+            
+            # When + Then
+            expect_error(setColAsFactor(dataSet, cols = "col", n_levels = "a", verbose = verbose), 
+                         ": n_levels should be an integer.") #N_levels not integer
           })
