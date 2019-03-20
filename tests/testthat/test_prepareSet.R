@@ -3,13 +3,20 @@ verbose <- TRUE
 
 ## prepareSet
 # -----------
-data("adult")
-adult <- adult[1:500, ]
-adult_agg <-  prepareSet(adult, key = "country", digits = 2, n_unfactor = 10, verbose = verbose, functions = c("mean", "max"))
-
-test_that("prepareSet:", 
+test_that("prepareSet: functionnal test: test full pipeline. Should give result with as many rows as unique key.", 
           {
-            expect_equal(length(unique(adult_agg$country)), nrow(adult_agg))
+            # Given
+            data("adult")
+            adult <- adult[1:500, ]
+            key <- "country"
+            n_unique_keys <- uniqueN(adult[[key]])
+            
+            # When
+            adult_agg <-  prepareSet(adult, key = key, digits = 2, n_unfactor = 10, verbose = verbose, 
+                                     functions = c("mean", "max"))
+            
+            # Then
+            expect_equal(n_unique_keys, nrow(adult_agg))
           })
 
 

@@ -4,43 +4,146 @@ verbose <- TRUE
 
 ## sameShape
 #------------
-function_name <- "sameShape"
-
-# Correct computation
-data("messy_adult")
-messy_adult <- messy_adult[1:150, ] # reduce to save time
-data("adult")
-adult <- adult[1:150, ]
-
-messy_adult <- findAndTransformDates(messy_adult, verbose = FALSE)
-messy_adult <- findAndTransformNumerics(messy_adult, verbose = FALSE)
-messy_adult[, age := NULL] # drop it to check column droping
-class(messy_adult[["education_num"]]) <- "weirdClass" # Weird class transformation warning
-class(messy_adult[["education"]]) <- "weirdClass2" # Weird class transformation warning
-as.weirdClass2 <- function(x){as.numeric(x)}
-attach(list(as.weirdClass2=as.weirdClass2))
-
-
-test_that(paste0( function_name, ": "),
+test_that("sameShape: find and create missing column",
           {
-            expect_warning(adult_redone <- sameShape(copy(adult), copy(messy_adult), verbose = verbose), " and i don't know how to transform it.")
-            expect_equal(ncol(adult_redone), ncol(messy_adult))
-            expect_identical(names(adult_redone), names(messy_adult))
-            expect_true(is.numeric(adult_redone$constant))
-            expect_true(is.POSIXct(adult_redone$date1))
-            expect_identical(levels(adult_redone$mail), levels(messy_adult$mail))
-            expect_null(adult_redone$age)
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3),
+                                        col_2 = c(2, 3, 4))
+            dataSet <- data.table(col_1 = c(1, 2)) 
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_true("col_2" %in% colnames(dataSet_redone))
+          })
+
+test_that("sameShape: find and remove unwanted column",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3))
+            dataSet <- data.table(col_1 = c(1, 2),
+                                  col_2 = c(2, 3)) 
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_false("col_2" %in% colnames(dataSet_redone))
+          })
+
+test_that("sameShape: find and and transform to numeric misstyped character col",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3))
+            dataSet <- data.table(col_1 = c("1", "2")) 
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_true(is.numeric(dataSet_redone[["col_1"]]))
+          })
+
+test_that("sameShape: find and and transform to POSIXct misstyped character col",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = as.POSIXct(c("2018-01-31", "2019-07-12")))
+            dataSet <- data.table(col_1 = c("2018-02-12", "2018-09-26")) 
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_true(is.POSIXct(dataSet_redone[["col_1"]]))
+          })
+
+test_that("sameShape: find and and add missing levels on factors",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = as.factor(c(1, 2, 3)))
+            dataSet <- data.table(col_1 = as.factor(c(1, 2)))
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_true("3" %in% levels(dataSet_redone[["col_1"]]))
+          })
+
+test_that("sameShape: find and and remove unwanted levels on factors",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = as.factor(c(1, 2)))
+            dataSet <- data.table(col_1 = as.factor(c(1, 2, 3)))
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_false("3" %in% levels(dataSet_redone[["col_1"]]))
+          })
+
+test_that("sameShape: throw warning when column is in a weird class that we don't know how to transform",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3))
+            class(referenceSet[["col_1"]]) <- "weirdClass" 
+            dataSet <- data.table(col_1 = c(1, 2, 3)) 
+            
+            # When + Then
+            expect_warning(sameShape(dataSet, referenceSet, verbose = verbose), 
+                           " and i don't know how to transform it.")
+          })
+
+test_that("sameShape: throw warning when column is in a weird class if method to transform exist",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3))
+            class(referenceSet[["col_1"]]) <- "weirdClass" 
+            as.weirdClass <- function(x){class(x) <- "weirdClass"; return(x)}
+            attach(list(as.weirdClass=as.weirdClass))
+            dataSet <- data.table(col_1 = c(1, 2, 3)) 
+            
+            # When
+            dataSet_redone <- sameShape(dataSet, referenceSet, verbose = verbose)
+            
+            # Then
+            expect_equal(class(dataSet_redone[["col_1"]]), "weirdClass")
+            
+            # Clean up
+            detach(list(as.weirdClass=as.weirdClass))
+          })
+
+# test df
+test_that("sameShape: transform shape into numerical matrix",
+          {
+            # Given
+            data("adult")
+            adult <- adult[1:150, ] # reduce it to save time
+            adult2 <- copy(adult)
+            setDT(adult2)
+            adult_num <- shapeSet(adult2, finalForm = "numerical_matrix", verbose = FALSE)
+            
+            # When
+            adult_reshaped <- sameShape(adult, adult_num, verbose = verbose)
+            
+            # Then
+            expect_true(is.matrix(adult_reshaped))
           })
 
 
-# test df
-data("adult")
-setDF(adult)
-adult2 <- copy(adult)
-setDT(adult2)
-adult_num <- shapeSet(adult2, finalForm = "numerical_matrix", verbose = FALSE)
-test_that(paste0( function_name, ": transform shape"),
+test_that("sameShape: transform shape into data.frame",
           {
-            expect_equal(class(sameShape(copy(adult2), copy(adult), verbose = verbose)), "data.frame")
-            expect_true(is.matrix(sameShape(adult, adult_num, verbose = verbose)))
+            # Given
+            data("adult")
+            adult <- adult[1:150, ] # reduce it to save time
+            adult2 <- copy(adult)
+            setDT(adult2)
+            
+            # When
+            adult_frame <- sameShape(adult2, adult, verbose = verbose)
+            
+            # Then
+            expect_true(is.data.frame(adult_frame))
           })

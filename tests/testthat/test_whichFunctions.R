@@ -134,6 +134,20 @@ test_that("whichAreIncluded: education and education_num are duplicated so shoul
             expect_equal(included_cols, 1L)
           })
 
+test_that("whichAreIncluded: education and education_num are duplicated so should be spoted as included even if education is specified in keep cols",
+          {
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            cols <- c("education", "education_num")
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult[, c(cols), with=FALSE], keep_cols = "education", verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, 2L)
+          })
+
 test_that("whichAreIncluded: when a column is derivated from another, it should be spotted as included",
           {
             # Given

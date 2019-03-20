@@ -220,15 +220,49 @@ test_that("control_nb_rows:",
 
 ## is.agg_function
 # -----------------
-b = 1
-attach(list(b=b)) # A bit ugly, but i don't know how to do it another way.
-test_that("is.agg_function:", 
+test_that("is.agg_function: thow error when functions doesn't contains only character",
           {
-            expect_error(result <- is.agg_function(list(sum, "sum")),  "functions should be a list of names")
-            expect_warning(result <- is.agg_function(list("sum", "a")), " doesn't exist, it wont be used.")
-            expect_warning(result <- is.agg_function(list("sum", "b")), " is not a function, it wont be used.")
-            expect_equal(length(result), 1)
-            expect_warning(is.agg_function("sqrt"), " sqrt is not an aggregation function")
+            # Given
+            functions <- list(sum, "sum")
+            
+            # When + Then
+            expect_error(is.agg_function(functions),  "functions should be a list of names")
+          })
+
+test_that("is.agg_function: thow warning when function is not found",
+          {
+            # Given
+            functions <- list("sum", "a")
+            
+            # When + Then
+            expect_warning(is.agg_function(functions), " doesn't exist, it won't be used.")
+          })
+
+test_that("is.agg_function: thow warning when a function is not a function. And remove it from the list",
+          {
+            # Given
+            b = 1
+            attach(list(b=b)) # A bit ugly, but i don't know how to do it another way.
+            functions <- list("sum", "b")
+            
+            # When + Then
+            expect_warning(result <- is.agg_function(functions),  
+                           " is not a function, it won't be used.")
+            expect_equal(list("sum"), result)
+            
+            # Clean up
+            detach(list(b=b))
+          })
+
+test_that("is.agg_function: thow warning when a function is not an aggregation function. And remove it from the list",
+          {
+            # Given
+            functions <- list("sum", "sqrt")
+            
+            # When + Then
+            expect_warning(result <- is.agg_function(functions),  
+                           " sqrt is not an aggregation function")
+            expect_equal(list("sum"), result)
           })
 
 ## function.maker

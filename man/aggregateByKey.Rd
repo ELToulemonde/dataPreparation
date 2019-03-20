@@ -33,14 +33,18 @@ Perform aggregation depending on column type:
     frequency count of values is performed,
   \item If column is character or factor with more than \code{thresh} different values, number 
     of different values for each \code{key} is performed,
-  \item If column is logical, count of number and rate of positive is performed.
+  \item If column is logical, number of TRUE is computed.
 }
+
+In all cases, if the set as more rows than unique \code{key}, a number of lines will be computed.
+
 Be careful using functions argument, given functions should be an aggregation function, 
 meaning that for multiple values it should only return one value.
 }
 \examples{
 # Get generic dataset from R
 data("adult")
+adult <- adult[1:500, ] # reduce it to go faster (but you can run it on full dataset)
 
 # Aggregate it using aggregateByKey, in order to extract characteristics for each country
 adult_aggregated <- aggregateByKey(adult, key = 'country')
