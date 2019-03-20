@@ -35,6 +35,24 @@ test_that("setColAsCharacter: Set numCol and factorCol as character",
 
 ## setColAsDate
 #-----------------------
+test_that("setColAsDate: transform using correct element if format list", 
+          {
+            # Given
+            dataSet <- data.table(ID = 1:6, 
+                                  date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31", ""), 
+                                  date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31", ""))
+            )
+            
+            # When
+            dataSet_transformed <- setColAsDate(dataSet, cols = c("date1", "date2"), format = list(date1 ="%Y-%m-%d", "%Y_%m_%d"), verbose = verbose)
+            
+            # Then
+            expect_true(is.integer(dataSet_transformed$ID))
+            expect_true(is.POSIXct(dataSet_transformed$date1))
+            expect_true(is.POSIXct(dataSet_transformed$date2))
+          })
+
+
 test_that("setColAsDate: only transform columns it is told to transform even if they are factor", 
           {
             # Given

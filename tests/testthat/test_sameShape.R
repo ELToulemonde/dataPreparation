@@ -88,7 +88,7 @@ test_that("sameShape: throw warning when column is in a weird class that we don'
           {
             # Given
             referenceSet <- data.table(col_1 = c(1, 2, 3))
-            class(referenceSet[["col_1"]]) <- "weirdClass" 
+            class(referenceSet[["col_1"]]) <- "a_weird_class" 
             dataSet <- data.table(col_1 = c(1, 2, 3)) 
             
             # When + Then
@@ -96,7 +96,7 @@ test_that("sameShape: throw warning when column is in a weird class that we don'
                            " and i don't know how to transform it.")
           })
 
-test_that("sameShape: throw warning when column is in a weird class if method to transform exist",
+test_that("sameShape: when column is in a weird class if method to transform exist",
           {
             # Given
             referenceSet <- data.table(col_1 = c(1, 2, 3))
@@ -113,6 +113,20 @@ test_that("sameShape: throw warning when column is in a weird class if method to
             
             # Clean up
             detach(list(as.weirdClass=as.weirdClass))
+          })
+
+test_that("sameShape: throw warning when column is in a weird class if method to transform exist but doesn't perform correctly.",
+          {
+            # Given
+            referenceSet <- data.table(col_1 = c(1, 2, 3))
+            class(referenceSet[["col_1"]]) <- "weirdClass" 
+            as.weirdClass <- function(x){x}
+            attach(list(as.weirdClass=as.weirdClass))
+            dataSet <- data.table(col_1 = c(1, 2, 3)) 
+            
+            # When + Then 
+            expect_warning(sameShape(dataSet, referenceSet, verbose = verbose),
+                           ": transformation didn't work. Please control that function ")
           })
 
 # test df

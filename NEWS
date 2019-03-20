@@ -14,8 +14,9 @@ V 0.4.0
   - Changed *aggregateByKey* example since it was to slow for CRAN.
 
 - Integration:
-  - Rewrite all *whichFunction.R*, *aggregate.R*, *numericsManuipulations.R*, *sameShape.R*, "prepareSet.R" tests to make them more readable
-  - Rewrite some of *generericFunctions.R* tests to make them more readable
+  - Rewrite all *whichFunction.R*, *aggregate.R*, *numericsManuipulations.R*, *sameShape.R*, *prepareSet.R*, *discretization.R* tests to make them more readable
+  - Rewrite some of *generericFunctions.R*, *setColAs* tests to make them more readable
+  - Code coverage is improved
 
 WARNING:
 - In *aggregateByKey* generated column names are changed.
