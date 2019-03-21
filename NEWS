@@ -16,7 +16,7 @@ V 0.4.0
 - Integration:
   - Rewrite all *whichFunction.R*, *aggregate.R*, *numericsManuipulations.R*, *sameShape.R*, *prepareSet.R*, *discretization.R* tests to make them more readable
   - Rewrite some of *generericFunctions.R*, *setColAs* tests to make them more readable
-  - Code coverage is improved
+  - Code coverage is improved, depencies on *messy_adult* set is lowered
 
 WARNING:
 - In *aggregateByKey* generated column names are changed.
