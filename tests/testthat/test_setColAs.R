@@ -205,6 +205,7 @@ test_that("setColAsFactor: behave with n_levels = -1",
             expect_true(is.factor(result[["col"]])) 
             
           })
+
 test_that("setColAsFactor: column is unchanged if number of values greatter than n_levels", 
           {
             # Given
@@ -217,6 +218,7 @@ test_that("setColAsFactor: column is unchanged if number of values greatter than
             expect_false(is.factor(result[["col"]])) 
             expect_true(is.character(result[["col"]]))
           })
+
 test_that("setColAsFactor:", 
           {
             # Given

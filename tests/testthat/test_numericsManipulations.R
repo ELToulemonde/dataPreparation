@@ -25,7 +25,7 @@ test_that("findAndTransformNumerics: doesn't transform to numeric character cols
             dataSet <- data.table(character_col = c("A", "B"))
             
             # When
-            data_transformed <- findAndTransformNumerics(dataSet, n_test = 5, verbose = verbose)
+            data_transformed <- findAndTransformNumerics(dataSet, n_test = 2, verbose = verbose)
             
             # Then
             expect_true(is.character(data_transformed[["character_col"]]))

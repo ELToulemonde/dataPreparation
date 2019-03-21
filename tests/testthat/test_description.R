@@ -23,7 +23,8 @@ test_that("description: functionnal test: code should not fail",
                                   character_col = c("A", "B"),
                                   factor_col = as.factor(c("A", "B")))
             # When + Then
-            description(toydata, path_to_write="report.txt", verbose = verbose)
+            expect_null(description(toydata, path_to_write="report.txt", verbose = verbose))
+            
             
             # Clean up
             if (file.exists("report.txt")) file.remove("report.txt")   
