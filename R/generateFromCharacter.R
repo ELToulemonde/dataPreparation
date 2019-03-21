@@ -27,7 +27,7 @@
 #' messy_adult <- generateFromCharacter(messy_adult, cols = "auto")
 #' @import data.table
 #' @export
-generateFromCharacter <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...){
+generateFromCharacter <- function(dataSet, cols = "auto", verbose = TRUE, drop = FALSE, ...){
   ## Working environement 
   function_name <- "generateFromCharacter"
   

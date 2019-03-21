@@ -26,7 +26,7 @@
 #' messy_adult <- generateFromFactor(messy_adult, cols = "auto")
 #' @import data.table
 #' @export
-generateFromFactor <- function(dataSet, cols, verbose = TRUE, drop = FALSE, ...){
+generateFromFactor <- function(dataSet, cols = "auto", verbose = TRUE, drop = FALSE, ...){
   ## Working environement 
   function_name <- "generateFromFactor"
   

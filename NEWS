@@ -5,6 +5,7 @@ V 0.4.0
     - To avoid issues based on column names, we will check and rename columns that have same names. 
     - In *aggregateByKey* generated column names are changed to be more explicit. 
     - In *aggregateByKey* generated from character column with more than \code{thresh} values is now count of unique instead of count.
+    - Added missing *auto* default values on cols
 
 - Bug fixes:
   - *whichAreBijection* and *whichAreInDouble* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
