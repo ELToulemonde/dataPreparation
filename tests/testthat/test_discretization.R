@@ -217,11 +217,11 @@ test_that("private function: splits_sanity_check: control sanity check n_bins sh
 test_that("fastDiscretization: after discretisation there are no more numerics",
           {
             # Given
-            data("adult")
-            adult$age[1] <- NA # add a NA
+            dataSet <- data.table(col = runif(10))
+            dataSet[["col"]][1] <- NA # add a NA
             
             # When
-            discretized_adult <- fastDiscretization(adult, bins = NULL, verbose = verbose)
+            discretized_adult <- fastDiscretization(dataSet, bins = NULL, verbose = verbose)
             
             # Then
             expect_false(any(sapply(discretized_adult, is.numeric)))

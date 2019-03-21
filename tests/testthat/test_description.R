@@ -1,18 +1,31 @@
 context("test_description.R")
 requireNamespace("data.table")
 verbose <- TRUE
-## Load data set
-data(messy_adult)
 
-description(messy_adult, level = 1, verbose = verbose)
-description(messy_adult, level = 1, path_to_write="report.txt", verbose = verbose)
-if (file.exists("report.txt")) file.remove("report.txt")
-
-test_that("description: errors: ",
+# Description
+# -----------
+test_that("description: errors: control level",
          {
-           expect_error(description(messy_adult, level = -1, verbose = verbose))
+           # Given
+           data("messy_adult")
+           wrong_level <- -1
+           
+           # When + Then
+           expect_error(description(messy_adult, level = wrong_level, verbose = verbose))
          })
 
+test_that("description: functionnal test: code should not fail",
+          {
+            # Given
+            toydata <- data.table(int_col = 1:2,
+                                  logical_col = c(TRUE, FALSE),
+                                  date_col = c(Sys.Date(), Sys.Date()),
+                                  character_col = c("A", "B"),
+                                  factor_col = as.factor(c("A", "B")))
+            # When + Then
+            description(toydata, path_to_write="report.txt", verbose = verbose)
+            
+            # Clean up
+            if (file.exists("report.txt")) file.remove("report.txt")   
+          })
 
-toydata <- data.table(col1 = 1:2, col2 = c(TRUE, FALSE), col3 = c(Sys.Date(), Sys.Date()))
-description(toydata)

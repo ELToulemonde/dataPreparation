@@ -13,10 +13,8 @@ test_that("whichAreConstant: should find string constant column",
             constant_cols <- whichAreConstant(dataSet, verbose = verbose)
             
             # Then
-            expect_equal(constant_cols, 1)
+            expect_equal(constant_cols, 1L)
           })
-
-
 
 ## whichAreInDouble
 #------------------
