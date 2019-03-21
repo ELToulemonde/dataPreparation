@@ -2,17 +2,6 @@ context("test_datesManipulation.R")
 requireNamespace("data.table")
 verbose <- TRUE
 Sys.setlocale("LC_TIME", "C")
-## Build a testing set
-# --------------------
-# Please make sure to send a copy of it to not transform it
-dataSet <- data.table(ID = 1:5, 
-                      date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
-                      date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")), 
-                      date3 = c("2015_1_1", "2016_1_1", "2015_9_1", "2015_3_1", "2015_1_31"),
-                      date4 = c("01-january-2015", "01-january-2016", "01-september-2015", "01-march-2015", "31-january-2015"),
-                      hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "01:22")
-)
-
 
 ## findAndTransformDates
 #-----------------------
@@ -52,25 +41,6 @@ test_that("findAndTransformDates: check exceptions : ambiguities not in expected
 
 ## identifyDates
 #---------------
-test_that("private function: identifyDates: control result",
-          {
-            # Given
-            dataSet <- data.table(ID = 1:5, 
-                                  date1 = c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31"), 
-                                  date2 = as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31")), 
-                                  date3 = c("2015_1_1", "2016_1_1", "2015_9_1", "2015_3_1", "2015_1_31"),
-                                  date4 = c("01-january-2015", "01-january-2016", "01-september-2015", "01-march-2015", "31-january-2015"),
-                                  hour1 = c("23:51",     "22:08",     "10:03",     "25:33",     "01:22")
-            )
-            expected_dates_cols <- list(date1 = "%Y-%m-%d", date2 = "%Y_%m_%d", date3 = "%Y_%m_%d", date4 = "%d-%B-%Y")
-            
-            # When
-            dates_found <- identifyDates(dataSet, n_test = 5, verbose = verbose)
-            
-            # Then
-            expect_identical(dates_found, expected_dates_cols)
-          })
-
 test_that("private function: identifyDates: do nothing if told so",
           {
             # Given
@@ -112,6 +82,71 @@ test_that("private function: identifyDates: ambiguities, SOLVE find ambiguity an
 
 ## identifyDatesFormats 
 # ---------------------
+test_that("private function: identifyDatesFormats: standard format ",
+          {
+            # Given 
+            searched_format <- "%Y-%m-%d"
+            dataSet <- c("2015-01-01", "2016-01-01", "2015-09-01", "2015-03-01", "2015-01-31")
+            
+            # When
+            format_found <- identifyDatesFormats(dataSet)
+            
+            # Then
+            expect_equal(format_found, searched_format)
+          })
+
+test_that("private function: identifyDatesFormats: standard format ",
+          {
+            # Given 
+            searched_format <- "%Y_%m_%d"
+            dataSet <- as.factor(c("2015_01_01", "2016_01_01", "2015_09_01", "2015_03_01", "2015_01_31"))
+            
+            # When
+            format_found <- identifyDatesFormats(dataSet)
+            
+            # Then
+            expect_equal(format_found, searched_format)
+          })
+
+test_that("private function: identifyDatesFormats: standard format ",
+          {
+            # Given 
+            searched_format <- "%Y_%m_%d"
+            dataSet <- c("2015_1_1", "2016_1_1", "2015_9_1", "2015_3_1", "2015_1_31")
+            
+            # When
+            format_found <- identifyDatesFormats(dataSet)
+            
+            # Then
+            expect_equal(format_found, searched_format)
+          })
+
+test_that("private function: identifyDatesFormats: standard format ",
+          {
+            # Given 
+            searched_format <-  "%d-%B-%Y"
+            dataSet <- c("01-january-2015", "01-january-2016", "01-september-2015", "01-march-2015", "31-january-2015")
+            
+            # When
+            format_found <- identifyDatesFormats(dataSet)
+            
+            # Then
+            expect_equal(format_found, searched_format)
+          })
+
+test_that("private function: identifyDatesFormats: standard format ",
+          {
+            # Given 
+            searched_format <- "%Y-%m-%d %H:%M"
+            dataSet <- c("2018-01-31 23:51", "2018-02-12 22:08", "2018-03-10 10:03", "2018-04-05 23:33", "2019-01-02 01:22")
+            
+            # When
+            format_found <- identifyDatesFormats(dataSet)
+            
+            # Then
+            expect_equal(format_found, searched_format)
+          })
+
 test_that("private function: identifyDatesFormaats: throw error on unexpected format",
           {
             # Given
@@ -203,14 +238,41 @@ test_that("private function: identifyTimeStampsFormats: throw errors on non nume
 
 ## control_date_conversion
 # ------------------------
-test_that("private function: control_date_conversion ",
+test_that("private function: control_date_conversion: conversion is ok even with lower / upper differences ",
           {
-            expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-1-2", "1-september-2017")))
-            expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-01-02", "01-september-2017")))
-            expect_true(control_date_conversion( c("2017-01-02", "01-September-2017"), c("2017-01-02", "1-september-2017")))
+            # Given
+            un_converted <- "01-September-2017"
+            original <- "01-september-2017"
+            
+            # When
+            control_result <- control_date_conversion(un_converted, original)
+            # Then
+            expect_true(control_result)
           })
 
+test_that("private function: control_date_conversion: conversion is ok even if all 0 are dropped ",
+          {
+            # Given
+            un_converted <- "2017-01-02"
+            original <- "2017-1-2"
+            
+            # When
+            control_result <- control_date_conversion(un_converted, original)
+            # Then
+            expect_true(control_result)
+          })
 
+test_that("private function: control_date_conversion: conversion is ok with list of converion ok ",
+          {
+            # Given
+            un_converted <- c("2017-01-02", "01-September-2017")
+            original <- c("2017-1-2", "1-september-2017")
+            
+            # When
+            control_result <- control_date_conversion(un_converted, original)
+            # Then
+            expect_true(control_result)
+          })
 
 ## dateFormatUnifier
 #-------------------
@@ -225,13 +287,28 @@ test_that("dateFormatUnifier:",
 
 ## is.date
 #---------
-dateAsDate <- as.Date("2016-01-01")
-dateAsPOSIXct <- as.POSIXct("2016-01-01")
-
-test_that("is.date:", 
+test_that("is.date: a date is a date", 
           {
-            expect_true(is.date(dateAsDate))
-            expect_true(is.date(dateAsPOSIXct))
+            # Given
+            dateAsDate <- as.Date("2016-01-01")
+            
+            # When
+            result <- is.date(dateAsDate)
+            
+            # Then
+            expect_true(result)
+          })
+
+test_that("is.date: a POSIXct is a date", 
+          {
+            # Given
+            dateAsPOSIXct <- as.POSIXct("2016-01-01")
+            
+            # When
+            result <- is.date(dateAsPOSIXct)
+            
+            # Then
+            expect_true(result)
           })
 
 
