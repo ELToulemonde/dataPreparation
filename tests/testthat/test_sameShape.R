@@ -150,14 +150,13 @@ test_that("sameShape: transform shape into numerical matrix",
 test_that("sameShape: transform shape into data.frame",
           {
             # Given
-            data("adult")
-            adult <- adult[1:150, ] # reduce it to save time
-            adult2 <- copy(adult)
-            setDT(adult2)
+            dataSet_1 <-data.frame(col = 1:10)
+            dataSet_2 <- copy(dataSet_1)
+            setDT(dataSet_2)
             
             # When
-            adult_frame <- sameShape(adult2, adult, verbose = verbose)
+            reshaped_dataSet_2 <- sameShape(dataSet_2, dataSet_1, verbose = verbose)
             
             # Then
-            expect_true(is.data.frame(adult_frame))
+            expect_true(is.data.frame(reshaped_dataSet_2))
           })

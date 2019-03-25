@@ -9,14 +9,14 @@ V 0.4.0
 
 - Bug fixes:
   - *whichAreBijection* and *whichAreInDouble* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
+  - *prepareSet* optinal argumennt *factor_date_type* was not working. It is fixed.
 
 - Other changes: 
   - Changed *whichAreIncluded* example since it was to slow for CRAN. Also it might be a little bit more explicit now.
   - Changed *aggregateByKey* example since it was to slow for CRAN.
 
 - Integration:
-  - Rewrite all *whichFunction.R*, *aggregate.R*, *numericsManuipulations.R*, *sameShape.R*, *prepareSet.R*, *discretization.R* tests to make them more readable
-  - Rewrite some of *generericFunctions.R*, *setColAs* tests to make them more readable
+  - Rewrite all tests to make them more readable
   - Code coverage is improved, depencies on *messy_adult* set is lowered
 
 WARNING:

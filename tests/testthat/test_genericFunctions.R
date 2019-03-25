@@ -503,10 +503,50 @@ test_that("is.agg_function: thow warning when a function is not an aggregation f
 # ---------------
 test_that("function.maker: ",
           {
-            expect_true(is.function(function.maker(function(x){sum(x, na.rm = TRUE)}, type = "numeric")))
-            expect_true(is.function(function.maker(1, type = "numeric")))
-            expect_true(is.function(function.maker("a", type = "character")))
-            expect_true(is.function(function.maker(TRUE, type = "logical")))
+            # Given
+            a_function <- function(x){sum(x, na.rm = TRUE)}
+            
+            # When
+            built_function <- function.maker(a_function, type = "numeric")
+            
+            # Then
+            expect_true(is.function(built_function))
+          })
+
+test_that("function.maker: ",
+          {
+            # Given
+            a_numeric <- 1
+            
+            # When
+            built_function <- function.maker(a_numeric, type = "numeric")
+            
+            # Then
+            expect_true(is.function(built_function))
+          })
+
+test_that("function.maker: ",
+          {
+            # Given
+            a_character <- "a"
+            
+            # When
+            built_function <- function.maker(a_character, type = "character")
+            
+            # Then
+            expect_true(is.function(built_function))
+          })
+
+test_that("function.maker: ",
+          {
+            # Given
+            a_logical <- TRUE
+            
+            # When
+            built_function <- function.maker(a_logical, type = "logical")
+            
+            # Then
+            expect_true(is.function(built_function))
           })
 
 test_that("function.maker: warning not handling na",
@@ -535,33 +575,150 @@ test_that("function.maker: error wrong type",
 
 ## make_new_col_name
 # -------------------
-test_that("function.maker: error wrong type",
+test_that("make_new_col_name: when col already exist add a 1 at the end of the name",
           {
-            expect_equal(make_new_col_name("a", c("a", "b")), "a1")
-            expect_equal(make_new_col_name("a", c("a", "a1")), "a2")
-            expect_equal(make_new_col_name("c", c("a", "b")), "c")
-            expect_error(make_new_col_name(1, c("a", "b")), "new_col and col_names should be character.")
+            # Given
+            a_col_list <- c("a", "b")
+            a_col <- "a"
+            expected_col_name <- "a1"
+            
+            # When
+            col_name <- make_new_col_name(a_col, a_col_list)
+            
+            # Then
+            expect_equal(col_name, expected_col_name)
+          })
+
+test_that("make_new_col_name: when col and col1 already exist, add a 2 at the end of the name",
+          {
+            # Given
+            a_col_list <- c("a", "a1")
+            a_col <- "a"
+            expected_col_name <- "a2"
+            
+            # When
+            col_name <- make_new_col_name(a_col, a_col_list)
+            
+            # Then
+            expect_equal(col_name, expected_col_name)
+          })
+
+test_that("make_new_col_name: when col doesn't exist yet, keep name",
+          {
+            # Given
+            a_col_list <- c("a", "b")
+            a_col <- "c"
+            expected_col_name <- a_col
+            
+            # When
+            col_name <- make_new_col_name(a_col, a_col_list)
+            
+            # Then
+            expect_equal(col_name, expected_col_name)
+          })
+
+test_that("make_new_col_name: throw error col should be a character",
+          {
+            # Given
+            a_col_list <- c("a", "b")
+            a_col <- 1
+            
+            # When + Then
+            expect_error(make_new_col_name(a_col, a_col_list),
+                         "new_col and col_names should be character.")
           })
 
 
 ## build_name_separator
 # --------------------
-test_that("build_name_separator: ",
+test_that("build_name_separator: without name_separator in args return  default value",
           {
-            expect_equal(build_name_separator(list()), ".")
-            expect_equal(build_name_separator(list(name_separator = ",")), ",")
-            expect_error(build_name_separator(list(name_separator = 1)), "name_separator should be a character.")
-            expect_error(build_name_separator(list(name_separator = c(".", ";"))), "name_separator should be a character.")
+            # Given 
+            args <- list()
             
+            # When
+            name_separator <- build_name_separator(args)
+            
+            # Then
+            expect_equal(name_separator, ".")
           })
+
+test_that("build_name_separator: with name_separator in args return name separator",
+          {
+            # Given 
+            args <- list(name_separator = ",")
+            
+            # When
+            name_separator <- build_name_separator(args)
+            
+            # Then
+            expect_equal(name_separator, ",")
+          })
+
+test_that("build_name_separator: with name_separator in args but not a string throw error",
+          {
+            # Given 
+            args <- list(name_separator = 1)
+            
+            # When
+            expect_error(build_name_separator(args), 
+                         "name_separator should be a character.")
+          })
+
+test_that("build_name_separator: with name_separator in args with multiple values throw error",
+          {
+            # Given 
+            args <- list(name_separator = c(".", ";"))
+            
+            # When
+            expect_error(build_name_separator(args), 
+                                              "name_separator should be a character.")
+          })
+
 
 ## build_factor_date_type
 # -----------------------
-test_that("build_factor_date_type: ",
+test_that("build_factor_date_type: without factor_date_type as arguments throw default value",
           {
-            expect_equal(build_factor_date_type(list()), "yearmonth")
-            expect_equal(build_factor_date_type(list(factor_date_type = "yearmonth")), "yearmonth")
-            expect_error(build_factor_date_type(list(factor_date_type = 1)), "factor_date_type should be a character.")
-            expect_error(build_factor_date_type(list(factor_date_type = c(".", ";"))), "factor_date_type should be a character.")
+            # Given
+            args <- list()
             
+            # When
+            factor_date_type <- build_factor_date_type(args)
+            
+            # Then
+            expect_equal(factor_date_type, "yearmonth")
+          })
+
+test_that("build_factor_date_type: with factor_date_type as arguments return value",
+          {
+            # Given
+            args <- list(factor_date_type ="a")
+            
+            # When
+            factor_date_type <- build_factor_date_type(args)
+            
+            # Then
+            expect_equal(factor_date_type, "a")
+          })
+
+test_that("build_factor_date_type: throw error when factor_date_type is not character",
+          {
+            # Given
+            args <- list(factor_date_type = 1)
+            
+            # When + Then
+            expect_error(build_factor_date_type(args), 
+                         "factor_date_type should be a character.")          
+            })
+
+
+test_that("build_factor_date_type: throw error when factor_date_type is of length greater than 1",
+          {
+            # Given
+            args <- list(factor_date_type = 1)
+            
+            # When + Then
+            expect_error(build_factor_date_type(args), 
+                         "factor_date_type should be a character.")          
           })

@@ -405,7 +405,7 @@ build_factor_date_type <- function(args){
   factor_date_type <- "yearmonth"
   if (! is.null(args[["factor_date_type"]])){
     if (is.character(args[["factor_date_type"]]) & length(args[["factor_date_type"]]) == 1){
-      name_separator <- args[["factor_date_type"]]
+      factor_date_type <- args[["factor_date_type"]]
     }
     else{
       stop("factor_date_type should be a character.")

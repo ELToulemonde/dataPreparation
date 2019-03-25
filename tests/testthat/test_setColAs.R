@@ -162,22 +162,69 @@ test_that("setColAsDate: with ms time stamps",
 
 ## is.format
 # ------------
-test_that("Private function: is.format: control errors",
+test_that("Private function: is.format: control errors: 1st level error not a list not a character",
           {
-            expect_error(is.format(1), ": format should either be list of formats or a character.")
-            expect_error(is.format(list(1)), ": format should either be list of character or a character.")
+            # Given
+            wrong_format <- 1
+            
+            # When + Then
+            expect_error(is.format(wrong_format), 
+                         ": format should either be list of formats or a character.")
+            
+          })
+
+
+test_that("Private function: is.format: control errors: 2nd level error a list but not of character",
+          {
+            # Given
+            wrong_format <- list(1)
+            
+            # When + Then
+            expect_error(is.format(wrong_format), 
+                         ": format should either be list of character or a character.")
+            
           })
 
 
 ## parse_date_cols
 # ----------------
-test_that("Private function: parse_date_cols",
+test_that("Private function: parse_date_cols: with cols == NULL, return names of format list",
           {
-            expect_identical(parse_date_cols(cols = NULL, format = list(a ="1", b = "2")), c("a","b"))
-            expect_identical(parse_date_cols(cols = c("a", "b"), format = list(a ="1", b = "2")), c("a","b"))
-            expect_error(parse_date_cols(cols = c("c", "d"), format = list(a ="1", b = "2", e ="3")), "you provide cols and format but I'm not able to match them, please feed format as named list.")
+            # Given
+            cols <- NULL
+            format <- list(a = "something", b = "someotherthing")
+            
+            # When
+            cols_parsed <- parse_date_cols(cols = cols, format = format)
+            
+            # Then
+            expect_identical(names(format), cols_parsed)
           })
 
+test_that("Private function: parse_date_cols: with cols and format not null return cols",
+          {
+            # Given
+            cols <- c("a", "b")
+            format <- list(a = "something", b = "someotherthing")
+            
+            # When
+            cols_parsed <- parse_date_cols(cols = cols, format = format)
+            
+            # Then
+            expect_identical(cols, cols_parsed)
+          })
+
+test_that("Private function: parse_date_cols: throw error if cols is not NULL and format has not same length as cols 
+          and one of the columns ar in format",
+          {
+            # Given
+            cols <- c("a", "b")
+            format <- list(a = "something", c = "someotherthing", d = "yetanoherthing")
+            
+            # When + Then
+            expect_error(parse_date_cols(cols = cols, format = format),
+                         "you provide cols and format but I'm not able to match them, please feed format as named list.")
+          })
 
 ## setColAsFactor
 #----------------
