@@ -42,9 +42,9 @@ Be careful using functions argument, given functions should be an aggregation fu
 meaning that for multiple values it should only return one value.
 }
 \examples{
+\dontrun{
 # Get generic dataset from R
 data("adult")
-adult <- adult[1:500, ] # reduce it to go faster (but you can run it on full dataset)
 
 # Aggregate it using aggregateByKey, in order to extract characteristics for each country
 adult_aggregated <- aggregateByKey(adult, key = 'country')
@@ -54,4 +54,6 @@ power <- function(x){sum(x^2)}
 adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c("power", "sqrt"))
 
 # sqrt is not an aggregation function, so it wasn't used.
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }
