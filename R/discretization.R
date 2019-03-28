@@ -29,7 +29,7 @@ build_bins <- function(dataSet, cols = "auto", n_bins = 10, type = "equal_width"
   is.verbose(verbose)
   cols <- real_cols(dataSet, cols, function_name, types = "numeric")
   if (!type %in% c("equal_width", "equal_freq")){
-    stop(paste0(function_name, ": type should either be equal_width or equal_freq"))
+    stop(paste0(function_name, ": type should either be 'equal_width' or 'equal_freq'."))
   }
   n_bins <- round(n_bins) # Just to be safe
   
@@ -163,10 +163,9 @@ fastDiscretization <- function(dataSet, bins = NULL, verbose = TRUE){
 equal_width_splits <- function(dataSet, n_bins, col = "dataSet", verbose = TRUE){
   ## Working environement
   function_name <- "equal_width_splits"
+  
   ## Sanity check
-  if (!is.numeric(dataSet) || ! is.numeric(n_bins)){
-    stop(paste0(function_name, ": dataSet should be a vector of numerics and n_bins a numeric."))
-  }
+  splits_sanity_check(function_name = function_name, dataSet = dataSet, n_bins = n_bins)
   is.verbose(verbose)
   
   ## Computation
@@ -194,9 +193,7 @@ equal_freq_splits <- function(dataSet, n_bins, col = "dataSet", verbose = TRUE){
   function_name <- "equal_freq_splits"
   
   ## Sanity check
-  if (!is.numeric(dataSet) || ! is.numeric(n_bins)){
-    stop(paste0(function_name, ": dataSet should be a vector of numerics and n_bins a numeric."))
-  }
+  splits_sanity_check(function_name = function_name, dataSet = dataSet, n_bins = n_bins)
   is.verbose(verbose)
   
   ## Computation
@@ -231,4 +228,12 @@ build_splits_names <- function(splits){
   split_names[length(split_names)] <- gsub("+Inf\\]$", "+Inf[", split_names[length(split_names)])
   
   return(split_names)
+}
+
+# splits_sanity_check
+# -------------------
+splits_sanity_check <- function(dataSet, n_bins, function_name = "splits_sanity_check"){
+  if (!is.numeric(dataSet) || ! is.numeric(n_bins)){
+    stop(paste0(function_name, ": dataSet should be a vector of numerics and n_bins a numeric."))
+  }
 }

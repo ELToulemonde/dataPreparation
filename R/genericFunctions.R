@@ -60,7 +60,11 @@ checkAndReturnDataTable <- function(dataSet, name = "dataSet"){
       dataSet <- as.data.table(dataSet)
     }
   }
-  
+  # Control col names
+  if (length(unique(names(dataSet))) < length(names(dataSet))){
+    warning(paste0(name, ": has column names in double : you should take care of it. I changed them to be unique."))
+    setDT(dataSet, check.names = TRUE)  
+  }
   # Since we are using set in all the package, we make sure that dataSet is overallocate, see data.table doc, among it 
   # see: https://github.com/Rdatatable/data.table/issues/755
   dataSet <- alloc.col(dataSet)
@@ -263,18 +267,18 @@ is.agg_function <- function(functions, function_name = "is.agg_function"){
       stop(paste0(function_name, ": functions should be a list of names (as character) of functions."))
     }
     if (!exists(x = fun)) {
-      warning(paste0(function_name, ": ", fun, " doesn't exist, it wont be used."))
+      warning(paste0(function_name, ": ", fun, " doesn't exist, it won't be used."))
       functions <- functions[functions != fun]
     }
     else{
       if (!is.function(get(fun))){
-        warning(paste0(function_name, ": ", fun, " is not a function, it wont be used."))
+        warning(paste0(function_name, ": ", fun, " is not a function, it won't be used."))
         functions <- functions[functions != fun]
       }
       else{
         # check aggregation
         if (length(get(fun)(1:3)) != 1){
-          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it wont be used.", 
+          warning(paste0(function_name, ": ", fun, " is not an aggregation function, it won't be used.", 
                          " An aggregation function is a function that for multiple input return only one, exemple: sum."))
           functions <- functions[functions != fun]
         }
@@ -401,7 +405,7 @@ build_factor_date_type <- function(args){
   factor_date_type <- "yearmonth"
   if (! is.null(args[["factor_date_type"]])){
     if (is.character(args[["factor_date_type"]]) & length(args[["factor_date_type"]]) == 1){
-      name_separator <- args[["factor_date_type"]]
+      factor_date_type <- args[["factor_date_type"]]
     }
     else{
       stop("factor_date_type should be a character.")

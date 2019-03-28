@@ -4,81 +4,207 @@ verbose <- TRUE
 
 ## whichAreConstant
 #------------------
-dataSet <- data.table(constantCol = rep("a", 100), nonConstantCol = rnorm(100))
-
-test_that("whichAreConstant:", 
+test_that("whichAreConstant: should find string constant column", 
           {
-            expect_equal(whichAreConstant(dataSet, verbose = verbose), 1)
+            # Given
+            dataSet <- data.table(constantCol = rep("a", 100), nonConstantCol = rnorm(100))
+            
+            # When
+            constant_cols <- whichAreConstant(dataSet, verbose = verbose)
+            
+            # Then
+            expect_equal(constant_cols, 1L)
           })
-
-
 
 ## whichAreInDouble
 #------------------
-# Simple matrix
-M <- matrix(1, nrow = 1e6, ncol = 3)
-
-# Matrix with NA
-M1 <- M
-M1[1, 2] <- NA
-
-M2 <- M1
-M2[1, 1] <- NA
-
-
-test_that("whichAreInDouble give correct RESULTS", 
+test_that("whichAreInDouble: should give col 2 and 3 on a 3 column matrix full of a constant",
           {
-            expect_identical(whichAreInDouble(M, verbose = verbose), as.integer(c(2, 3)))
-            expect_identical(whichAreInDouble(M1, verbose = verbose), as.integer(c(3)))
-            expect_identical(whichAreInDouble(M2, verbose = verbose), as.integer(c(2)))
+            # Given
+            M <- matrix(1, nrow = 1e3, ncol = 3)
+            
+            # When
+            double_columns <- whichAreInDouble(M, verbose = verbose)
+            
+            # Then
+            expect_equal(double_columns, c(2L, 3L))
           })
 
-data("messy_adult")
-test_that("whichAreInDouble: exceptions", 
+
+test_that("whichAreInDouble: should give 3 on a 3 column matrix full of a constant with some NA on col 2",
           {
-            expect_null(whichAreInDouble(messy_adult[,.(date1)], verbose = verbose))
+            # Given
+            M <- matrix(1, nrow = 1e3, ncol = 3)
+            M[1, 2] <- NA
+            
+            # When
+            double_columns <- whichAreInDouble(M, verbose = verbose)
+            
+            # Then
+            expect_equal(double_columns, c(3L))
+          })
+
+
+test_that("whichAreInDouble: should give 2 on a 3 column matrix full of a constant with same NA on col 1 and col 2",
+          {
+            # Given
+            M <- matrix(1, nrow = 1e3, ncol = 3)
+            M[1, 1] <- NA
+            M[1, 2] <- NA
+            
+            # When
+            double_columns <- whichAreInDouble(M, verbose = verbose)
+            
+            # Then
+            expect_equal(double_columns, c(2L))
+          })
+
+test_that("whichAreInDouble: should give nothing on a single column matrix",
+          {
+            # Given
+            M <- matrix(1, nrow = 1e3, ncol = 1)
+            
+            # When
+            double_columns <- whichAreInDouble(M, verbose = verbose)
+            
+            # Then
+            expect_null(double_columns)
           })
 
 
 ## whichAreBijection
 # ------------------
 data("adult")
-test_that("whichAreBijection", 
+
+
+test_that("whichAreBijection: adult set contains on bijection eduction and education_num should be spotted",
           {
-            expect_equal(whichAreBijection(adult, verbose = verbose), 5)
-            expect_equal(whichAreBijection(adult, keep_cols = "education_num", verbose = verbose), 4)
-            # Nothing if one column
-            expect_null(whichAreBijection(adult[,c("education"), drop = FALSE], verbose = verbose))
+            # Given
+            data("adult")
+            cols <- c("education", "education_num")
+            
+            # When
+            bijection_cols <- whichAreBijection(adult[, cols], verbose = verbose)
+            
+            # Then
+            expect_equal(bijection_cols, 2)
+          })
+
+test_that("whichAreBijection: adult set contains on bijection eduction and education_num should be spotted. When second one is asked to be kept, the other one is returned",
+          {
+            # Given
+            data("adult")
+            cols <- c("education", "education_num")
+            
+            # When
+            bijection_cols <- whichAreBijection(adult[, cols], keep_cols = "education_num", verbose = verbose)
+            
+            # Then
+            expect_equal(bijection_cols, 1)
+          })
+
+test_that("whichAreBijection: one column data set has no bijection", 
+          {
+            # Given
+            data("adult")
+            cols <- c("education")
+            
+            # When
+            bijection_cols <- whichAreBijection(adult[, cols, drop = FALSE], verbose = verbose)
+            
+            # Then
+            expect_null(bijection_cols)
           })
 
 ## whichAreIncluded
 # ------------------
-data("messy_adult")
-# Reduce it to make it faster
-messy_adult <- messy_adult[1:5000, ]
-messy_adult$are50OrMore <- messy_adult$age > 50
-test_that("whichAreIncluded: build column", 
+test_that("whichAreIncluded: education and education_num are duplicated so should be spoted as included",
           {
-            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), as.integer(c(3, 5, 7, 13, 25)))
-            expect_identical(whichAreIncluded(messy_adult, keep_cols = "education", verbose = verbose), as.integer(c(3, 5, 7, 14, 25)))
-            expect_null(whichAreIncluded(messy_adult[, .(age)], verbose = verbose))
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            cols <- c("education", "education_num")
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult[, c(cols), with=FALSE], verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, 1L)
           })
 
-# As one can, see this column that doesn't have additional info than age is spotted.
-
-# But you should be carefull, if there is a column id, every column will be dropped:
-rm(messy_adult)
-data("messy_adult")
-messy_adult$id <- 1:nrow(messy_adult) # build id
-test_that("whichAreIncluded: id at the end", 
+test_that("whichAreIncluded: education and education_num are duplicated so should be spoted as included even if education is specified in keep cols",
           {
-            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), 1:24)
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            cols <- c("education", "education_num")
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult[, c(cols), with=FALSE], keep_cols = "education", verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, 2L)
           })
-# Set id as first column
-setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id"))) 
-test_that("whichAreIncluded: id at the beginning", 
+
+test_that("whichAreIncluded: when a column is derivated from another, it should be spotted as included",
           {
-            expect_identical(whichAreIncluded(messy_adult, verbose = verbose), 2:25)
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            messy_adult$are50OrMore <- messy_adult$age > 50
+            cols <- c("age", "are50OrMore")
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult[, c(cols), with=FALSE], verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, 2L)
+          })
+
+test_that("whichAreIncluded: a single column set should not have included columns",
+          {
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            messy_adult$are50OrMore <- messy_adult$age > 50
+            cols <- c("age")
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult[, c(cols), with=FALSE], verbose = verbose)
+            
+            # Then
+            expect_null(included_cols)
+          })
+
+test_that("whichAreIncluded: when a column with unique value on each row is added, all other column are included",
+          {
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            messy_adult$id <- 1:nrow(messy_adult) # build id
+            existing_cols_index = (1:ncol(messy_adult))[names(messy_adult) != "id"]
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult, verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, existing_cols_index)
+          })
+
+test_that("whichAreIncluded: when a column with unique value on each row is added, all other column are included even if id is 1st col (order doesn't mawtter)",
+          {
+            # Given
+            data("messy_adult")
+            messy_adult <- messy_adult[1:500, ] # reduce it to compute faster
+            messy_adult$id <- 1:nrow(messy_adult) # build id
+            setcolorder(messy_adult, c("id", setdiff(names(messy_adult), "id")))             
+            existing_cols_index = (1:ncol(messy_adult))[names(messy_adult) != "id"]
+            
+            # When
+            included_cols <- whichAreIncluded(messy_adult, verbose = verbose)
+            
+            # Then
+            expect_equal(included_cols, existing_cols_index)
           })
 
 

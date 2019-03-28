@@ -200,7 +200,7 @@ identifyDates <- function(dataSet, cols = "auto", formats = NULL, n_test = 30, a
 ############################################################################################################
 # 
 # 
-identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGNORE"){
+identifyDatesFormats <- function(dataSet, formats = NULL, n_test = 30, ambiguities="IGNORE"){
   ## Working environement
   function_name <- "identifyDatesFormats"
   ## Sanity check
@@ -251,7 +251,7 @@ identifyDatesFormats <- function(dataSet, formats, n_test = 30, ambiguities="IGN
         converted <- as.POSIXct(data_sample, format = format)
         un_converted <- format(converted, format = format)
         if (control_date_conversion(un_converted, data_sample)){
-		  temp_format <- c(temp_format, format)
+          temp_format <- c(temp_format, format)
           if (ambiguities == "IGNORE"){ # If don't care about possible ambiguities: return found format
             break
           }

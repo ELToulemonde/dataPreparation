@@ -36,6 +36,10 @@ and "help wanted" is open to whoever wants to implement it.
 If you have some new features ideas, you can also open an issue and tag it with 
 "enhancement".
 
+All implementation should 
+- respect code conventions listed bellow,
+- should be testted (using same testing schema as other tests).
+
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 

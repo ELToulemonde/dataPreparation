@@ -3,24 +3,30 @@ requireNamespace("data.table")
 verbose <- TRUE
 ## generateFromCharacter
 # -------------------
-data("messy_adult")
-messy_adult <- unFactor(messy_adult, verbose = FALSE)
-store_ncol <- ncol(messy_adult)
-n_char <- sum(sapply(messy_adult, is.character))
-messy_adult <- generateFromCharacter(messy_adult, cols = "mail")
-
-test_that("generateFromCharacter: don't drop: ",
+test_that("generateFromCharacter: don't drop so generate 3 new cols",
           {
-            expect_equal(ncol(messy_adult), store_ncol + 3)
+            # Given
+            dataSet <- data.table(character_col = LETTERS,
+                                  other_col = LETTERS)
+            store_ncol <- ncol(dataSet)
+            
+            # When
+            dataSet_transformed <- generateFromCharacter(dataSet, cols = "character_col")
+            
+            # Then
+            expect_equal(ncol(dataSet_transformed), store_ncol + 3)
           })
 
-data("messy_adult")
-messy_adult <- unFactor(messy_adult, verbose = FALSE)
-store_ncol <- ncol(messy_adult)
-n_char <- sum(sapply(messy_adult, is.character))
-messy_adult <- generateFromCharacter(messy_adult, cols = "auto", drop = TRUE)
 
-test_that("generateFromCharacter: drop: ",
+test_that("generateFromCharacter: drop generate 3 col and suppress one",
           {
-            expect_equal(ncol(messy_adult), store_ncol + 2 * n_char)
+            # Given
+            dataSet <- data.table(character_col = LETTERS)
+            store_ncol <- ncol(dataSet)
+            
+            # When
+            dataSet_transformed <- generateFromCharacter(dataSet, drop = TRUE)
+            
+            # Then
+            expect_equal(ncol(dataSet_transformed), store_ncol + 2)
           })

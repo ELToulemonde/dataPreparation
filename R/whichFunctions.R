@@ -212,13 +212,16 @@ whichAreBijection <- function(dataSet, keep_cols = NULL, verbose = TRUE){
 #' require(data.table)
 #' data(messy_adult)
 #' 
+#' # Reduce set size to save time (you can run it on full set)
+#' messy_adult = messy_adult[1:100, ]
+#' 
 #' # Check for included columns
 #' whichAreIncluded(messy_adult)
 #' 
 #' # Return columns that are also constant, double and bijection
 #' # Let's add a truly just included column
 #' messy_adult$are50OrMore <- messy_adult$age > 50
-#' whichAreIncluded(messy_adult)
+#' whichAreIncluded(messy_adult[, .(age, are50OrMore)])
 #' 
 #' # As one can, see this column that doesn't have additional info than age is spotted.
 #' 
@@ -315,7 +318,7 @@ bi_col_test <- function(dataSet, keep_cols = NULL, verbose = TRUE, test_function
   }
   
   ## Computation
-  while (length(col_I) > 1){
+  while (length(col_I) >= 1){
     col_i <- col_I[1]
     col_J <- names(dataSet)[ - (1:which(col_i == names(dataSet)))]
     col_J <- col_J[!col_J %in% result_list] # Drop cols that are alreaydy found

@@ -96,7 +96,8 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
         
         # Control
         if (! all(class(dataSet[[col]]) == ref_class)){
-           warning(paste0(function_name, ": bug in transformation please report it."))
+           warning(paste0(function_name, ": transformation didn't work. Please control that function ", 
+                          transfo_function, " indeed transform into ", ref_class, "."))
         }
       }
       else {

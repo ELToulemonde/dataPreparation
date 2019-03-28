@@ -209,8 +209,10 @@ setColAsDate <- function(dataSet, cols = NULL, format = NULL, verbose = TRUE){
       col_format <- format
     }
     if (is.list(format)){
+      # Try if list is names
       col_format <- format[[col]]
       if (is.null(col_format)){
+        # If it is not named : get it by index
         col_format <- format[col == cols]
       }
     }

@@ -33,12 +33,16 @@ Perform aggregation depending on column type:
     frequency count of values is performed,
   \item If column is character or factor with more than \code{thresh} different values, number 
     of different values for each \code{key} is performed,
-  \item If column is logical, count of number and rate of positive is performed.
+  \item If column is logical, number of TRUE is computed.
 }
+
+In all cases, if the set as more rows than unique \code{key}, a number of lines will be computed.
+
 Be careful using functions argument, given functions should be an aggregation function, 
 meaning that for multiple values it should only return one value.
 }
 \examples{
+\dontrun{
 # Get generic dataset from R
 data("adult")
 
@@ -50,4 +54,6 @@ power <- function(x){sum(x^2)}
 adult_aggregated <- aggregateByKey(adult, key = 'country', functions = c("power", "sqrt"))
 
 # sqrt is not an aggregation function, so it wasn't used.
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

@@ -1,7 +1,18 @@
 context("test_fast_dates")
 
-test_that("Function as.POSIXct_fast:",
+# as.POSIXct_fast
+# ----------------
+test_that("Function as.POSIXct_fast: give same result as as.POSIXct",
           {
-            expect_equal(as.POSIXct_fast("2018-06-12", format="%Y-%m-%d"), as.POSIXct("2018-06-12", format="%Y-%m-%d"))
+            # Given
+            date_character <-"2018-06-12"
+            format <- "%Y-%m-%d"
+            expected_result <- as.POSIXct(date_character, format=format)
+            
+            # When
+            result <- as.POSIXct_fast(date_character, format=format)
+            
+            # Then
+            expect_equal(result, expected_result)
           })
 

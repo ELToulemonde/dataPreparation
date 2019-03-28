@@ -21,7 +21,7 @@
 #' @export
 shapeSet <- function(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE){
   ## Working environement
-  function_name <- "prepareSet"
+  function_name <- "shapeSet"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)

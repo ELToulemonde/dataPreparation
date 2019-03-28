@@ -4,7 +4,8 @@
 \alias{generateFromFactor}
 \title{Recode factor}
 \usage{
-generateFromFactor(dataSet, cols, verbose = TRUE, drop = FALSE, ...)
+generateFromFactor(dataSet, cols = "auto", verbose = TRUE,
+  drop = FALSE, ...)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
