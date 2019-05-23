@@ -89,4 +89,70 @@ test_that("build_encoding: min_frequency allows to drop rare values",
             expect_equal(encoding[["factor_col"]]$values, "A")
           })
 
+# Target encoding
+# ---------------
+test_that("target_encode: should set correct value for each student",
+          {
+            # Given
+            dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+                                  grades = c(1, 1, 2, 3, 4))
+            target_encoding <- build_target_encoding(dataSet, col_to_encode = "student", 
+                                                     target_col = "grades", functions = c("mean"))
+            
+            expected_result <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+                                          grades = c(1, 1, 2, 3, 4),
+                                          grades_mean_by_student = c(1, 1, 2, 3.5, 3.5))
+            # When
+            result <- target_encode(dataSet, col_to_encode = "student", target_encoding)
+            
+            # Then
+            expect_equal(result, expected_result)
+          })
 
+test_that("target_encode: if drop is asked col_to_encode should not be in columns anymore",
+          {
+            # Given
+            col_to_encode <- "student"
+            dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+                                  grades = c(1, 1, 2, 3, 4))
+            target_encoding <- build_target_encoding(dataSet, col_to_encode = col_to_encode, 
+                                                     target_col = "grades", functions = c("mean"))
+            
+            # When
+            result <- target_encode(dataSet, col_to_encode = col_to_encode, target_encoding, drop = TRUE)
+            
+            # Then
+            expect_false(col_to_encode %in% names(result))
+          })
+
+# Build target encoding
+# ---------------------
+test_that("build_target_encoding: build_target_encoding should return a data.table with for each unique value mean of target",
+          {
+            # Given
+            dataSet <- data.table(col1 = c("a", "a", "b", "c", "c"),
+                             target = c(1, 1, 2, 3, 4))
+            expected_target_encoded <- data.table(col1 = c("a", "b", "c"),
+                                                  target_mean_by_col1 = c(1, 2, 3.5))
+            # When
+            target_encoded <- build_target_encoding(dataSet, col_to_encode="col1", target_col="target", functions="mean")
+            
+            # Then
+            expect_equal(target_encoded, expected_target_encoded)
+          })
+
+
+test_that("build_target_encoding: build_target_encoding should return length and mean when asked for",
+          {
+            # Given
+            dataSet <- data.table(col1 = c("a", "a", "b", "c", "c"),
+                                  target = c(1, 1, 2, 3, 4))
+            expected_target_encoded <- data.table(col1 = c("a", "b", "c"),
+                                                  target_mean_by_col1 = c(1, 2, 3.5),
+                                                  target_length_by_col1 = c(2, 1, 2))
+            # When
+            target_encoded <- build_target_encoding(dataSet, col_to_encode="col1", target_col="target", functions=c("mean", "length"))
+            
+            # Then
+            expect_equal(target_encoded, expected_target_encoded)
+          })

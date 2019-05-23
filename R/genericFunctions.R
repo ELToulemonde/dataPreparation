@@ -101,7 +101,7 @@ is.share <- function(object, object_name = "variable", function_name = "is.share
 ########################################## check if col is in dataset #############################
 ###################################################################################################
 # Check if a column or a list of column is in a data.table
-is.col <- function(dataSet, cols = NULL, function_name = "is.col"){
+is.col <- function(dataSet, cols = NULL, function_name = "is.col", table_name = "dataSet"){
   ## Sanity check
   if (! (is.data.table(dataSet) || is.data.frame(dataSet) || is.matrix(dataSet))){
     stop("is.col: dataSet should be a data.table, data.frame or matrix")
@@ -113,7 +113,7 @@ is.col <- function(dataSet, cols = NULL, function_name = "is.col"){
   ## Computation
   for (col in cols){
     if (!col %in% colnames(dataSet)){
-      stop(paste(function_name, ": ", col, " should be column of dataSet"))
+      stop(paste(function_name, ":", col, " should be column of", table_name))
     }
   }
 }

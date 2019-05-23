@@ -249,3 +249,103 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
   return(encoder)
 }
 
+#' Target encode
+#' 
+#' Target encoding is the process of replacing a categorical value with the aggregation of the target variable. 
+#' the target variable. \code{target_encode} is used to apply this transformations on a data set. 
+#' Function \code{\link{build_target_encoding}} must be used first to compute aggregations.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param col_to_encode column to encode (character)
+#' @param target_encoding result of function \code{\link{build_target_encoding}} (data.table)
+#' @param drop Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)
+#' @return \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
+#' using \code{col_to_encode} as merging key. \code{dataSet} is edited by \strong{reference}.
+#' @examples 
+#' # Build a data set
+#' require(data.table)
+#' dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+#'                       grades = c(1, 1, 2, 3, 4))
+#' 
+#' # Construct encoding
+#' target_encoding <- build_target_encoding(dataSet, col_to_encode = "student", 
+#'                                          target_col = "grades", functions = c("mean", "sum"))
+#' 
+#' # Apply them
+#' target_encode(dataSet, col_to_encode = "student", target_encoding)
+#' @import data.table
+#' @export
+target_encode <- function(dataSet, col_to_encode, target_encoding, drop = FALSE){
+  ## Working environement
+  function_name <- "target_encode"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.col(dataSet, cols = c(col_to_encode), function_name = function_name)
+  is.col(target_encoding, cols = c(col_to_encode), function_name = function_name, table_name = "target_encoding")
+  
+  ## Computation
+  dataSet <- merge(dataSet, target_encoding, by = col_to_encode, all.x = TRUE, sort = FALSE)
+  
+  # drop col if asked
+  if (isTRUE(drop)){
+    set(dataSet, NULL, col_to_encode, NULL)
+  }
+  
+  ## Wrapp-up
+  return(dataSet)
+}
+
+
+#' Build target encoding
+#' 
+#' Target encoding is the process of replacing a categorical value with the aggregation of the  
+#' target variable. \code{build_target_encoding} is used to compute aggregations.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param col_to_encode column to aggregate according to (character)
+#' @param target_col column to aggregate (character)
+#' @param functions functions of aggregation (list or character, default to "mean")
+#' @return A \code{\link{data.table}} with a line by unique value of \code{col_to_encode} and 
+#' \code{len(functions) + 1} columns.
+#' @examples 
+#' # Build a data set
+#' require(data.table)
+#' dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+#'                       grades = c(1, 1, 2, 3, 4))
+#' 
+#' # Perform target_encoding construction
+#' build_target_encoding(dataSet, col_to_encode = "student", target_col = "grades", 
+#'                       functions = c("mean", "sum"))
+#' @import data.table
+#' @export 
+build_target_encoding <- function(dataSet, col_to_encode, target_col, functions = "mean"){
+  ## Working environement
+  function_name <- "build_target_encoding"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  is.col(dataSet, cols = c(col_to_encode, target_col), function_name = function_name)
+  if (is.character(functions)){functions = c(functions)}
+  functions <- is.agg_function(functions, function_name)
+  
+  ## Initialization
+  result <- NULL
+  result_tmp <- NULL
+  
+  ## Computation
+  for (fun in functions){
+    new_col_name <- paste0(target_col, "_", fun, "_by_", col_to_encode)
+    code <- paste0("result_tmp <- dataSet[, .(", new_col_name, 
+                   "= get(fun)(get(target_col))), by = c(col_to_encode), with=TRUE]")
+    try(eval(parse(text = code)))
+    if (is.null(result)){
+      result <- result_tmp
+    }
+    else{
+      set(result, NULL, new_col_name, result_tmp[[new_col_name]])
+    }
+  }
+  
+  ## Wrapp-up
+  return(result)
+}
+

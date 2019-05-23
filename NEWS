@@ -1,3 +1,9 @@
+V 0.4.1
+=======
+- New features:
+  - New functions:
+    - Functions *target_encode* and *build_target_encoding* have been implemented to provide target encoding which is the process of replacing a categorical value with the aggregation of the target variable.
+
 V 0.4.0
 =======
 - New features:

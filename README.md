@@ -38,7 +38,7 @@ findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    | f
 setColAsCharacter           | generateFromFactor       | whichAreBijection   |                       | one_hot_encoder
 setColAsNumeric             | generateFromCharacter    |                     |                       |
 setColAsDate                | fastRound                |                     |                       |
-setColAsFactor              |                          |                     |                       |
+setColAsFactor              | target_encode            |                     |                       |
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
