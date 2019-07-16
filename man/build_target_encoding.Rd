@@ -5,7 +5,7 @@
 \title{Build target encoding}
 \usage{
 build_target_encoding(dataSet, cols_to_encode, target_col,
-  functions = "mean")
+  functions = "mean", verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -15,6 +15,8 @@ build_target_encoding(dataSet, cols_to_encode, target_col,
 \item{target_col}{column to aggregate (character)}
 
 \item{functions}{functions of aggregation (list or character, default to "mean")}
+
+\item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
 A \code{\link{data.table}} with a line by unique value of \code{col_to_encode} and 

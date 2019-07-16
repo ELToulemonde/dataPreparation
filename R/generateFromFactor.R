@@ -257,6 +257,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
 #' @param dataSet Matrix, data.frame or data.table
 #' @param target_encoding result of function \code{\link{build_target_encoding}} (list)
 #' @param drop Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
 #' using \code{col_to_encode} as merging key. \code{dataSet} is edited by \strong{reference}.
 #' @examples 
@@ -273,18 +274,29 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
 #' target_encode(dataSet, target_encoding = target_encoding)
 #' @import data.table
 #' @export
-target_encode <- function(dataSet, target_encoding, drop = FALSE){
+target_encode <- function(dataSet, target_encoding, drop = FALSE, verbose = TRUE){
   ## Working environement
   function_name <- "target_encode"
   
   ## Sanity check
   dataSet <- checkAndReturnDataTable(dataSet)
   cols_to_encode <- real_cols(dataSet, cols = names(target_encoding), function_name = function_name)
+  is.verbose(verbose)
+  
+  ## Initialization
+  if (verbose){ 
+    pb <- initPB(function_name, names(dataSet))
+    printl(function_name, ": Start to encode columns according to target.")
+  }
   
   ## Computation
   for (col in cols_to_encode){
     target_encoding_this_col <- target_encoding[[col]]
     dataSet <- merge(dataSet, target_encoding_this_col, by = col, all.x = TRUE, sort = FALSE)  
+    
+    if (verbose){
+      setPB(pb, col)
+    }
   }
   
   
@@ -306,6 +318,7 @@ target_encode <- function(dataSet, target_encoding, drop = FALSE){
 #' @param cols_to_encode columns to aggregate according to (list)
 #' @param target_col column to aggregate (character)
 #' @param functions functions of aggregation (list or character, default to "mean")
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return A \code{\link{data.table}} with a line by unique value of \code{col_to_encode} and 
 #' \code{len(functions) + 1} columns.
 #' @examples 
@@ -319,7 +332,7 @@ target_encode <- function(dataSet, target_encoding, drop = FALSE){
 #'                       functions = c("mean", "sum"))
 #' @import data.table
 #' @export 
-build_target_encoding <- function(dataSet, cols_to_encode, target_col, functions = "mean"){
+build_target_encoding <- function(dataSet, cols_to_encode, target_col, functions = "mean", verbose = TRUE){
   ## Working environement
   function_name <- "build_target_encoding"
   
@@ -329,9 +342,15 @@ build_target_encoding <- function(dataSet, cols_to_encode, target_col, functions
   is.col(dataSet, cols = c(target_col), function_name = function_name)
   if (is.character(functions)){functions = c(functions)}
   functions <- is.agg_function(functions, function_name)
+  is.verbose(verbose)
   
   ## Initialization
   result <- list()
+  if (verbose){ 
+    pb <- initPB(function_name, names(dataSet))
+    printl(function_name, ": Start to compute encoding for target_encoding according to col: ",
+           target_col, ".")
+  }
   
   ## Computation
   for (col in cols_to_encode){
@@ -350,6 +369,10 @@ build_target_encoding <- function(dataSet, cols_to_encode, target_col, functions
       }
     }
     result[[col]] <- result_this_col
+    
+    if (verbose){
+      setPB(pb, col)
+    }
   }
 
   

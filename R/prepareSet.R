@@ -124,19 +124,19 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   # 2.3 Perform target encoding
   if (!is.null(args[["target_col"]])){
     target_col <- args[["target_col"]]
-    if (!is.null(args[["target_encoding_functions"]])){  
-      target_encoding_functions <-  args[["target_encoding_functions"]]
-    }
-    else{
+    target_encoding_functions <-  args[["target_encoding_functions"]]
+    if (is.null(args[["target_encoding_functions"]])){  
       target_encoding_functions <- c("mean")
     }
     cols_to_encode <- names(result)[sapply(result, is.factor)]
     target_encoding <- build_target_encoding(dataSet = result, 
                                              cols_to_encode = cols_to_encode, 
                                              target_col = target_col, 
-                                             functions = target_encoding_functions)
+                                             functions = target_encoding_functions,
+                                             verbose = verbose)
     result <- target_encode(dataSet = result,
-                             target_encoding = target_encoding)
+                            target_encoding = target_encoding,
+                            verbose = verbose)
   }
   
   # 2.4 Aggregate by key 

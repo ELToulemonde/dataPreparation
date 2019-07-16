@@ -4,7 +4,7 @@
 \alias{target_encode}
 \title{Target encode}
 \usage{
-target_encode(dataSet, target_encoding, drop = FALSE)
+target_encode(dataSet, target_encoding, drop = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
@@ -12,6 +12,8 @@ target_encode(dataSet, target_encoding, drop = FALSE)
 \item{target_encoding}{result of function \code{\link{build_target_encoding}} (list)}
 
 \item{drop}{Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)}
+
+\item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
 \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
