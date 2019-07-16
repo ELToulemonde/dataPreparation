@@ -259,7 +259,7 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
 #' @param drop Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
-#' using \code{col_to_encode} as merging key. \code{dataSet} is edited by \strong{reference}.
+#' using \code{target_encoding} names as merging key. \code{dataSet} is edited by \strong{reference}.
 #' @examples 
 #' # Build a data set
 #' require(data.table)
@@ -319,8 +319,8 @@ target_encode <- function(dataSet, target_encoding, drop = FALSE, verbose = TRUE
 #' @param target_col column to aggregate (character)
 #' @param functions functions of aggregation (list or character, default to "mean")
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
-#' @return A \code{\link{data.table}} with a line by unique value of \code{col_to_encode} and 
-#' \code{len(functions) + 1} columns.
+#' @return A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
+#' each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
 #' @examples 
 #' # Build a data set
 #' require(data.table)

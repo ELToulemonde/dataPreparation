@@ -17,7 +17,7 @@ target_encode(dataSet, target_encoding, drop = FALSE, verbose = TRUE)
 }
 \value{
 \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
-using \code{col_to_encode} as merging key. \code{dataSet} is edited by \strong{reference}.
+using \code{target_encoding} names as merging key. \code{dataSet} is edited by \strong{reference}.
 }
 \description{
 Target encoding is the process of replacing a categorical value with the aggregation of the target variable. 

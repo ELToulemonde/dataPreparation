@@ -19,8 +19,8 @@ build_target_encoding(dataSet, cols_to_encode, target_col,
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-A \code{\link{data.table}} with a line by unique value of \code{col_to_encode} and 
-\code{len(functions) + 1} columns.
+A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
+each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
 }
 \description{
 Target encoding is the process of replacing a categorical value with the aggregation of the  
