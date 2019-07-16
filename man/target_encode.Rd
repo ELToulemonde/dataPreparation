@@ -4,14 +4,12 @@
 \alias{target_encode}
 \title{Target encode}
 \usage{
-target_encode(dataSet, col_to_encode, target_encoding, drop = FALSE)
+target_encode(dataSet, target_encoding, drop = FALSE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{col_to_encode}{column to encode (character)}
-
-\item{target_encoding}{result of function \code{\link{build_target_encoding}} (data.table)}
+\item{target_encoding}{result of function \code{\link{build_target_encoding}} (list)}
 
 \item{drop}{Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)}
 }
@@ -31,9 +29,9 @@ dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"),
                       grades = c(1, 1, 2, 3, 4))
 
 # Construct encoding
-target_encoding <- build_target_encoding(dataSet, col_to_encode = "student", 
+target_encoding <- build_target_encoding(dataSet, cols_to_encode = "student", 
                                          target_col = "grades", functions = c("mean", "sum"))
 
 # Apply them
-target_encode(dataSet, col_to_encode = "student", target_encoding)
+target_encode(dataSet, target_encoding = target_encoding)
 }

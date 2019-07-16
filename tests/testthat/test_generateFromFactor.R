@@ -96,14 +96,14 @@ test_that("target_encode: should set correct value for each student",
             # Given
             dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
                                   grades = c(1, 1, 2, 3, 4))
-            target_encoding <- build_target_encoding(dataSet, col_to_encode = "student", 
+            target_encoding <- build_target_encoding(dataSet, cols_to_encode = "student", 
                                                      target_col = "grades", functions = c("mean"))
             
             expected_result <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
                                           grades = c(1, 1, 2, 3, 4),
                                           grades_mean_by_student = c(1, 1, 2, 3.5, 3.5))
             # When
-            result <- target_encode(dataSet, col_to_encode = "student", target_encoding)
+            result <- target_encode(dataSet, target_encoding = target_encoding)
             
             # Then
             expect_equal(result, expected_result)
@@ -115,11 +115,11 @@ test_that("target_encode: if drop is asked col_to_encode should not be in column
             col_to_encode <- "student"
             dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
                                   grades = c(1, 1, 2, 3, 4))
-            target_encoding <- build_target_encoding(dataSet, col_to_encode = col_to_encode, 
+            target_encoding <- build_target_encoding(dataSet, cols_to_encode = col_to_encode, 
                                                      target_col = "grades", functions = c("mean"))
             
             # When
-            result <- target_encode(dataSet, col_to_encode = col_to_encode, target_encoding, drop = TRUE)
+            result <- target_encode(dataSet, target_encoding, drop = TRUE)
             
             # Then
             expect_false(col_to_encode %in% names(result))
@@ -135,10 +135,11 @@ test_that("build_target_encoding: build_target_encoding should return a data.tab
             expected_target_encoded <- data.table(col1 = c("a", "b", "c"),
                                                   target_mean_by_col1 = c(1, 2, 3.5))
             # When
-            target_encoded <- build_target_encoding(dataSet, col_to_encode="col1", target_col="target", functions="mean")
+            target_encoded <- build_target_encoding(dataSet, cols_to_encode = "col1", 
+                                                    target_col = "target", functions = "mean")
             
             # Then
-            expect_equal(target_encoded, expected_target_encoded)
+            expect_equal(target_encoded[[1]], expected_target_encoded)
           })
 
 
@@ -151,8 +152,27 @@ test_that("build_target_encoding: build_target_encoding should return length and
                                                   target_mean_by_col1 = c(1, 2, 3.5),
                                                   target_length_by_col1 = c(2, 1, 2))
             # When
-            target_encoded <- build_target_encoding(dataSet, col_to_encode="col1", target_col="target", functions=c("mean", "length"))
+            target_encoded <- build_target_encoding(dataSet, cols_to_encode = "col1", 
+                                                    target_col = "target", functions = c("mean", "length"))
             
             # Then
-            expect_equal(target_encoded, expected_target_encoded)
+            expect_equal(target_encoded[[1]], expected_target_encoded)
+          })
+
+
+test_that("build_target_encoding: build_target_encoding should return a list of data.table one for each col to encode",
+          {
+            # Given
+            dataSet <- data.table(col1 = c("a", "a", "b", "c", "c"),
+                                  col2 = c("z", "z", "z", "y", "y"),
+                                  target = c(1, 1, 2, 3, 4))
+            cols_to_encode = c("col1", "col2")
+            # When
+            target_encoded <- build_target_encoding(dataSet, cols_to_encode = cols_to_encode, 
+                                                    target_col="target", functions=c("mean", "length"))
+            
+            # Then
+            expect_true(is.list(target_encoded))
+            expect_equal(length(target_encoded), length(cols_to_encode))
+            expect_true(all(sapply(target_encoded, is.data.table)))
           })

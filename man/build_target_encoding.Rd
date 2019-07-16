@@ -4,13 +4,13 @@
 \alias{build_target_encoding}
 \title{Build target encoding}
 \usage{
-build_target_encoding(dataSet, col_to_encode, target_col,
+build_target_encoding(dataSet, cols_to_encode, target_col,
   functions = "mean")
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
 
-\item{col_to_encode}{column to aggregate according to (character)}
+\item{cols_to_encode}{columns to aggregate according to (list)}
 
 \item{target_col}{column to aggregate (character)}
 
@@ -31,6 +31,6 @@ dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"),
                       grades = c(1, 1, 2, 3, 4))
 
 # Perform target_encoding construction
-build_target_encoding(dataSet, col_to_encode = "student", target_col = "grades", 
+build_target_encoding(dataSet, cols_to_encode = "student", target_col = "grades", 
                       functions = c("mean", "sum"))
 }
