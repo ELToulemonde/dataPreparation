@@ -47,6 +47,10 @@ Additional arguments are available to tune pipeline:
   \item \code{functions}  Aggregation functions for numeric columns, see \code{\link{aggregateByKey}} (list of functions names (character))
   \item \code{factor_date_type} Aggregation level to factorize date (see 
      \code{\link{generateFactorFromDate}}) (character, default to "yearmonth")
+  \item \code{target_col} A target column to perform target encoding, see \code{\link{target_encode}}
+  (character)
+  \item \code{target_encoding_functions} Functions to perform target encoding, see \code{\link{build_target_encoding}},
+  if \code{target_col} is not given will not do anything, (list, default to \code{"mean"})
 }
 }
 \examples{
