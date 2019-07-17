@@ -86,14 +86,14 @@ Before using any machine learning (ML) algorithm, one needs to prepare its data.
 Here are the functions available in this package to tackle those issues:
 
 Correct                     | Transform                | Filter              | Pre model manipulation| Shape              
----------                   |-----------               |--------             |---------------------- | ------------------------
+---------                   |-----------               |--------             |-----------            |------------------------
 unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa          | shapeSet           
 findAndTransformDates       | generateFactorFromDate   | whichAreConstant    | fastDiscretization    | sameShape          
 findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    | fastScale             | setAsNumericMatrix 
 setColAsCharacter           | generateFromFactor       | whichAreBijection   |                       | one_hot_encoder
 setColAsNumeric             | generateFromCharacter    |                     |                       |
 setColAsDate                | fastRound                |                     |                       |
-setColAsFactor              |                          |                     |                       |
+setColAsFactor              | target_encode            |                     |                       |
 							
 All of those functions are integrated in the **full pipeline** function `prepareSet`.
 

@@ -12,8 +12,8 @@ test_that("prepareSet: functionnal test: test full pipeline. Should give result 
             n_unique_keys <- uniqueN(adult[[key]])
             
             # When
-            adult_agg <-  prepareSet(adult, key = key, digits = 2, n_unfactor = 10, verbose = verbose, 
-                                     functions = c("mean", "max"))
+            adult_agg <- prepareSet(adult, key = key, digits = 2, n_unfactor = 10, verbose = verbose, 
+                                    functions = c("mean", "max"), target_col = "capital_gain")
             
             # Then
             expect_equal(n_unique_keys, nrow(adult_agg))

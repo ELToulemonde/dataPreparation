@@ -24,6 +24,10 @@
 #'   \item \code{functions}  Aggregation functions for numeric columns, see \code{\link{aggregateByKey}} (list of functions names (character))
 #'   \item \code{factor_date_type} Aggregation level to factorize date (see 
 #'      \code{\link{generateFactorFromDate}}) (character, default to "yearmonth")
+#'   \item \code{target_col} A target column to perform target encoding, see \code{\link{target_encode}}
+#'   (character)
+#'   \item \code{target_encoding_functions} Functions to perform target encoding, see \code{\link{build_target_encoding}},
+#'   if \code{target_col} is not given will not do anything, (list, default to \code{"mean"})
 #' }
 #' @return A data.table or a numerical matrix (according to \code{finalForm}). \cr
 #' It will perform the following steps:
@@ -117,7 +121,25 @@ prepareSet <- function(dataSet, finalForm = "data.table", verbose = TRUE, ...){
   }
   result <- generateFromCharacter(result, cols = character_cols, drop = TRUE, name_separator = args[["name_separator"]], verbose = verbose)
   
-  # 2.3 Aggregate by key 
+  # 2.3 Perform target encoding
+  if (!is.null(args[["target_col"]])){
+    target_col <- args[["target_col"]]
+    target_encoding_functions <-  args[["target_encoding_functions"]]
+    if (is.null(args[["target_encoding_functions"]])){  
+      target_encoding_functions <- c("mean")
+    }
+    cols_to_encode <- names(result)[sapply(result, is.factor)]
+    target_encoding <- build_target_encoding(dataSet = result, 
+                                             cols_to_encode = cols_to_encode, 
+                                             target_col = target_col, 
+                                             functions = target_encoding_functions,
+                                             verbose = verbose)
+    result <- target_encode(dataSet = result,
+                            target_encoding = target_encoding,
+                            verbose = verbose)
+  }
+  
+  # 2.4 Aggregate by key 
   if (!is.null(args[["key"]])){
     key <- args[["key"]]
     result <- aggregateByKey(result, key, verbose = verbose, functions = args[["functions"]], ...)

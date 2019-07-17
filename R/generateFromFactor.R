@@ -249,3 +249,134 @@ build_encoding <- function(dataSet, cols = "auto", verbose = TRUE, min_frequency
   return(encoder)
 }
 
+#' Target encode
+#' 
+#' Target encoding is the process of replacing a categorical value with the aggregation of the target variable. 
+#' the target variable. \code{target_encode} is used to apply this transformations on a data set. 
+#' Function \code{\link{build_target_encoding}} must be used first to compute aggregations.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param target_encoding result of function \code{\link{build_target_encoding}} (list)
+#' @param drop Should \code{col_to_encode} be dropped after generation (logical, default to FALSE)
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return \code{dataSet} with new cols of \code{target_encoding} merged to \code{dataSet} 
+#' using \code{target_encoding} names as merging key. \code{dataSet} is edited by \strong{reference}.
+#' @examples 
+#' # Build a data set
+#' require(data.table)
+#' dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+#'                       grades = c(1, 1, 2, 3, 4))
+#' 
+#' # Construct encoding
+#' target_encoding <- build_target_encoding(dataSet, cols_to_encode = "student", 
+#'                                          target_col = "grades", functions = c("mean", "sum"))
+#' 
+#' # Apply them
+#' target_encode(dataSet, target_encoding = target_encoding)
+#' @import data.table
+#' @export
+target_encode <- function(dataSet, target_encoding, drop = FALSE, verbose = TRUE){
+  ## Working environement
+  function_name <- "target_encode"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  cols_to_encode <- real_cols(dataSet, cols = names(target_encoding), function_name = function_name)
+  is.verbose(verbose)
+  
+  ## Initialization
+  if (verbose){ 
+    pb <- initPB(function_name, names(dataSet))
+    printl(function_name, ": Start to encode columns according to target.")
+  }
+  
+  ## Computation
+  for (col in cols_to_encode){
+    target_encoding_this_col <- target_encoding[[col]]
+    dataSet <- merge(dataSet, target_encoding_this_col, by = col, all.x = TRUE, sort = FALSE)  
+    
+    if (verbose){
+      setPB(pb, col)
+    }
+  }
+  
+  
+  # drop col if asked
+  if (isTRUE(drop)){
+    set(dataSet, NULL, cols_to_encode, NULL)
+  }
+  
+  ## Wrapp-up
+  return(dataSet)
+}
+
+
+#' Build target encoding
+#' 
+#' Target encoding is the process of replacing a categorical value with the aggregation of the  
+#' target variable. \code{build_target_encoding} is used to compute aggregations.
+#' @param dataSet Matrix, data.frame or data.table
+#' @param cols_to_encode columns to aggregate according to (list)
+#' @param target_col column to aggregate (character)
+#' @param functions functions of aggregation (list or character, default to "mean")
+#' @param verbose Should the algorithm talk? (Logical, default to TRUE)
+#' @return A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
+#' each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
+#' @examples 
+#' # Build a data set
+#' require(data.table)
+#' dataSet <- data.table(student = c("Marie", "Marie", "Pierre", "Louis", "Louis"), 
+#'                       grades = c(1, 1, 2, 3, 4))
+#' 
+#' # Perform target_encoding construction
+#' build_target_encoding(dataSet, cols_to_encode = "student", target_col = "grades", 
+#'                       functions = c("mean", "sum"))
+#' @import data.table
+#' @export 
+build_target_encoding <- function(dataSet, cols_to_encode, target_col, functions = "mean", verbose = TRUE){
+  ## Working environement
+  function_name <- "build_target_encoding"
+  
+  ## Sanity check
+  dataSet <- checkAndReturnDataTable(dataSet)
+  cols_to_encode <- real_cols(dataSet = dataSet, cols = cols_to_encode, function_name = function_name)
+  is.col(dataSet, cols = c(target_col), function_name = function_name)
+  if (is.character(functions)){functions = c(functions)}
+  functions <- is.agg_function(functions, function_name)
+  is.verbose(verbose)
+  
+  ## Initialization
+  result <- list()
+  if (verbose){ 
+    pb <- initPB(function_name, names(dataSet))
+    printl(function_name, ": Start to compute encoding for target_encoding according to col: ",
+           target_col, ".")
+  }
+  
+  ## Computation
+  for (col in cols_to_encode){
+    result_this_col <- NULL
+    result_tmp <- NULL
+    for (fun in functions){
+      new_col_name <- paste0(target_col, "_", fun, "_by_", col)
+      code <- paste0("result_tmp <- dataSet[, .(", new_col_name, 
+                     "= get(fun)(get(target_col))), by = c(col), with=TRUE]")
+      try(eval(parse(text = code)))
+      if (is.null(result_this_col)){
+        result_this_col <- result_tmp
+      }
+      else{
+        set(result_this_col, NULL, new_col_name, result_tmp[[new_col_name]])
+      }
+    }
+    result[[col]] <- result_this_col
+    
+    if (verbose){
+      setPB(pb, col)
+    }
+  }
+
+  
+  ## Wrapp-up
+  return(result)
+}
+

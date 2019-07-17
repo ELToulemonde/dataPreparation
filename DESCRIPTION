@@ -1,6 +1,6 @@
 Package: dataPreparation
 Title: Automated Data Preparation
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: person("Emmanuel-Lin", "Toulemonde", email = "el.toulemonde@protonmail.com", role = c("aut", "cre"))
 Description: Do most of the painful data preparation for a data science project with a minimum amount of code; Take advantages of data.table efficiency and use some algorithmic trick in order to perform data preparation in a time and RAM efficient way.
 Depends:
