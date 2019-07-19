@@ -24,6 +24,12 @@ If you don't want to edit by reference please provide set \code{dataSet = copy(d
 \description{
 Filter rows that have a rare occurences
 }
+\details{
+Filtering is made column by column, meaning that extrem values from first element
+of \code{cols} are removed, then extrem values from second element of \code{cols} are removed, 
+... \cr
+So if filtering is perfomed on too many column, there ia high risk that a lot of rows will be dropped.
+}
 \examples{
 # Given a set with rare "C"
 library(data.table)

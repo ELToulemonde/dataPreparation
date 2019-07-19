@@ -50,3 +50,30 @@ test_that("remove_rare_categorical: should remove categorical that happen less t
             expect_false("C" %in% dataSet[["cat_col"]])
             expect_equal(nrow(dataSet), n_rows - 1)
           })
+
+
+## remove_percentile_outlier
+# --------------------------
+test_that("remove_percentile_outlier: should remove value that are to extreme",
+          {
+            # Given
+            dataSet <- data.table(num_col = 1:100)
+            
+            # When
+            dataSet <- remove_percentile_outlier(dataSet, cols = "auto", percentile = 1, verbose = verbose)
+            
+            # Then
+            expect_false(1 %in% dataSet[["num_col"]])
+          })
+
+test_that("remove_percentile_outlier: edge case, value shoudl be kept if it is equal to mean + n_sigmas * sd",
+          {
+            # Given
+            dataSet <- data.table(num_col = 1:100)
+            
+            # When
+            dataSet <- remove_percentile_outlier(dataSet, cols = "auto", percentile = 1, verbose = verbose)
+            
+            # Then
+            expect_true(2 %in% dataSet[["num_col"]])
+          })

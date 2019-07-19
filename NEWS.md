@@ -4,6 +4,7 @@ V 0.4.1
   - New functions:
     - Functions *target_encode* and *build_target_encoding* have been implemented to provide target encoding which is the process of replacing a categorical value with the aggregation of the target variable.
     - Function *remove_sd_outlier* helps to remove rows that have numerical values to extrem.
+    - Function *remove_percentile_outlier* helps to remove rows that have numerical values to extrem (based on percentile analysis).
     - Function *remove_rare_categorical* helps to remove rows that have categorial values to rare.
   - New features in existing functions : 
     - Function *prepareSet* integrate *target_encode* function. It is called by providing *target_col* and *target_encoding_functions*.

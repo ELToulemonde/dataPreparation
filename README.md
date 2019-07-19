@@ -30,15 +30,15 @@ Before using any machine learning (ML) algorithm, one need to prepare its data. 
   
 Here are the functions available in this package to tackle those issues:
 
-Correct                     | Transform                | Filter              | Pre model manipulation| Shape              
----------                   |-----------               |--------             |-----------            |------------------------
-unFactor                    | generateDateDiffs        | fastFilterVariables | fastHandleNa          | shapeSet           
-findAndTransformDates       | generateFactorFromDate   | whichAreConstant    | fastDiscretization    | sameShape          
-findAndTransformNumerics    | aggregateByKey           | whichAreInDouble    | fastScale             | setAsNumericMatrix 
-setColAsCharacter           | generateFromFactor       | whichAreBijection   |                       | one_hot_encoder
-setColAsNumeric             | generateFromCharacter    |                     |                       |
-setColAsDate                | fastRound                |                     |                       |
-setColAsFactor              | target_encode            |                     |                       |
+Correct                     | Transform                | Filter                  | Pre model manipulation| Shape              
+---------                   |-----------               |--------                 |-----------            |------------------------
+unFactor                    | generateDateDiffs        | fastFilterVariables     | fastHandleNa          | shapeSet           
+findAndTransformDates       | generateFactorFromDate   | whichAreConstant        | fastDiscretization    | sameShape          
+findAndTransformNumerics    | aggregateByKey           | whichAreInDouble        | fastScale             | setAsNumericMatrix 
+setColAsCharacter           | generateFromFactor       | whichAreBijection       |                       | one_hot_encoder
+setColAsNumeric             | generateFromCharacter    |remove_sd_outlier        |                       |
+setColAsDate                | fastRound                |remove_rare_categorical  |                       |
+setColAsFactor              | target_encode            |remove_percentile_outlier|                       |
 
 All of those functions are integrated in the __full pipeline__ function `prepareSet`.
 
