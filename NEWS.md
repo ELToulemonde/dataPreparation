@@ -1,3 +1,8 @@
+V 0.4.2
+=======
+- Fix test :
+  - Case in "build_encoding: min_frequency allows to drop rare values" was not built correctly.
+  
 V 0.4.1
 =======
 - New features:

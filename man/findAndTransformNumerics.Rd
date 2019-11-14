@@ -4,8 +4,7 @@
 \alias{findAndTransformNumerics}
 \title{Identify numeric columns in a dataSet set}
 \usage{
-findAndTransformNumerics(dataSet, cols = "auto", n_test = 30,
-  verbose = TRUE)
+findAndTransformNumerics(dataSet, cols = "auto", n_test = 30, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

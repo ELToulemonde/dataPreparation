@@ -4,8 +4,7 @@
 \alias{shapeSet}
 \title{Final preparation before ML algorithm}
 \usage{
-shapeSet(dataSet, finalForm = "data.table", thresh = 10,
-  verbose = TRUE)
+shapeSet(dataSet, finalForm = "data.table", thresh = 10, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

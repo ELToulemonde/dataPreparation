@@ -4,8 +4,13 @@
 \alias{generateFromCharacter}
 \title{Recode character}
 \usage{
-generateFromCharacter(dataSet, cols = "auto", verbose = TRUE,
-  drop = FALSE, ...)
+generateFromCharacter(
+  dataSet,
+  cols = "auto",
+  verbose = TRUE,
+  drop = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

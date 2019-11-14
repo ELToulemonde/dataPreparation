@@ -4,8 +4,14 @@
 \alias{identifyDates}
 \title{Identify date columns}
 \usage{
-identifyDates(dataSet, cols = "auto", formats = NULL, n_test = 30,
-  ambiguities = "IGNORE", verbose = TRUE)
+identifyDates(
+  dataSet,
+  cols = "auto",
+  formats = NULL,
+  n_test = 30,
+  ambiguities = "IGNORE",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
