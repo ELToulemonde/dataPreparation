@@ -4,8 +4,15 @@
 \alias{generateDateDiffs}
 \title{Date difference}
 \usage{
-generateDateDiffs(dataSet, cols = "auto", analysisDate = NULL,
-  units = "years", drop = FALSE, verbose = TRUE, ...)
+generateDateDiffs(
+  dataSet,
+  cols = "auto",
+  analysisDate = NULL,
+  units = "years",
+  drop = FALSE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

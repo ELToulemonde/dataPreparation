@@ -4,8 +4,13 @@
 \alias{build_bins}
 \title{Compute bins}
 \usage{
-build_bins(dataSet, cols = "auto", n_bins = 10, type = "equal_width",
-  verbose = TRUE)
+build_bins(
+  dataSet,
+  cols = "auto",
+  n_bins = 10,
+  type = "equal_width",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

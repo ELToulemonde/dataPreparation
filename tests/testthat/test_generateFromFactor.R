@@ -80,7 +80,7 @@ test_that("build_encoding: ",
 test_that("build_encoding: min_frequency allows to drop rare values",
           {
             # Given
-            dataSet <- data.table(factor_col = c(rep("A", 100, "B")))
+            dataSet <- data.table(factor_col = c(rep("A", 100), "B"))
             
             # When
             encoding <- build_encoding(dataSet, verbose = verbose, min_frequency = 0.1)

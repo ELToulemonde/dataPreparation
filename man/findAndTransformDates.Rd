@@ -4,8 +4,14 @@
 \alias{findAndTransformDates}
 \title{Identify date columns}
 \usage{
-findAndTransformDates(dataSet, cols = "auto", formats = NULL,
-  n_test = 30, ambiguities = "IGNORE", verbose = TRUE)
+findAndTransformDates(
+  dataSet,
+  cols = "auto",
+  formats = NULL,
+  n_test = 30,
+  ambiguities = "IGNORE",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

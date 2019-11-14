@@ -4,8 +4,7 @@
 \alias{remove_sd_outlier}
 \title{Standard deviation outlier filtering}
 \usage{
-remove_sd_outlier(dataSet, cols = "auto", n_sigmas = 3,
-  verbose = TRUE)
+remove_sd_outlier(dataSet, cols = "auto", n_sigmas = 3, verbose = TRUE)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

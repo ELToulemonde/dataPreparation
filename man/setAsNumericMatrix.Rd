@@ -4,8 +4,7 @@
 \alias{setAsNumericMatrix}
 \title{Numeric matrix preparation for Machine Learning.}
 \usage{
-setAsNumericMatrix(dataSet, intercept = FALSE, allCols = FALSE,
-  sparse = FALSE)
+setAsNumericMatrix(dataSet, intercept = FALSE, allCols = FALSE, sparse = FALSE)
 }
 \arguments{
 \item{dataSet}{data.table}

@@ -4,8 +4,12 @@
 \alias{remove_rare_categorical}
 \title{Filter rare categoricals}
 \usage{
-remove_rare_categorical(dataSet, cols = "auto", threshold = 0.01,
-  verbose = TRUE)
+remove_rare_categorical(
+  dataSet,
+  cols = "auto",
+  threshold = 0.01,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

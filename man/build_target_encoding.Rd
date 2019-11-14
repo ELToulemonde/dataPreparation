@@ -4,8 +4,13 @@
 \alias{build_target_encoding}
 \title{Build target encoding}
 \usage{
-build_target_encoding(dataSet, cols_to_encode, target_col,
-  functions = "mean", verbose = TRUE)
+build_target_encoding(
+  dataSet,
+  cols_to_encode,
+  target_col,
+  functions = "mean",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}

@@ -4,8 +4,12 @@
 \alias{remove_percentile_outlier}
 \title{Percentile outlier filtering}
 \usage{
-remove_percentile_outlier(dataSet, cols = "auto", percentile = 1,
-  verbose = TRUE)
+remove_percentile_outlier(
+  dataSet,
+  cols = "auto",
+  percentile = 1,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{dataSet}{Matrix, data.frame or data.table}
