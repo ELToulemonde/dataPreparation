@@ -1,6 +1,11 @@
 language: r
 dist: trusty
 cache: packages
+r:
+  - oldrel
+  - release
+  - devel
+
 addons:
   apt:
     packages:
