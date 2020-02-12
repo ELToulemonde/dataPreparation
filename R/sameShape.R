@@ -50,7 +50,6 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   # Store class of reference set and transform it into data.table to make computation faster
   referenceSet_class <- class(referenceSet)
   referenceSet <- checkAndReturnDataTable(referenceSet, name = "referenceSet")
-  
   ## Computation
   # Complete list of columns
   if (verbose){
@@ -93,7 +92,6 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
                  ref_class, ".")
         }
         set(dataSet, NULL, col, get(transfo_function)(dataSet[[col]]))
-        
         # Control
         if (! all(class(dataSet[[col]]) == ref_class)){
            warning(paste0(function_name, ": transformation didn't work. Please control that function ", 
@@ -110,16 +108,17 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     }    
   }
   gc(verbose = FALSE)
-  
   # Factor levels
   if (verbose){
     printl(function_name, ": verify that every factor as the right number of levels.")
     pb <- initPB(function_name, names(dataSet))
   }
   for (col in names(dataSet)){
+    print(is.factor(dataSet[[col]]))
     if (is.factor(dataSet[[col]])){
       transfo_levels <- levels(dataSet[[col]])
       ref_levels <- levels(referenceSet[[col]])
+      print( identical(transfo_levels, ref_levels))
       if (! identical(transfo_levels, ref_levels)){
         set(dataSet, NULL, col, factor(dataSet[[col]], levels = ref_levels))
         if (verbose){
@@ -138,10 +137,10 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   
   # Set class
   if (! identical(referenceSet_class, class(dataSet))){
-    if (referenceSet_class == "data.frame"){
+    if (is_class_dataframe(referenceSet_class)){
       setDF(dataSet)
     }
-    if (referenceSet_class == "matrix"){
+    if (is_class_matrix(referenceSet_class)){
       dataSet <- as.matrix(dataSet)
     }
   }
@@ -149,4 +148,28 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   ## Wrapp-up
   return(dataSet)
 }
-  
+
+is_class_dataframe <- function(some_class){
+  if (length(some_class) > 1){
+    return(FALSE)
+  }
+  if (some_class == "data.frame"){
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+is_class_matrix <- function(some_class){
+  if (length(some_class) > 1){ # Might be future matrix
+    if (all(some_class == c("matrix", "array"))){
+      return(TRUE)
+    }
+    else{
+      return(FALSE)
+    }
+  }
+  if (some_class == "matrix"){
+    return(TRUE)
+  }
+  return(FALSE)
+}

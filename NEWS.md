@@ -1,7 +1,12 @@
+V 0.4.3
+=======
+- Fix  :
+  - In *sameShape*:  there was a future bug due to change in class "matrix". Fixed it by implementing 2 functions to check class
+  
 V 0.4.2
 =======
 - Fix test :
-  - Case in "build_encoding: min_frequency allows to drop rare values" was not built correctly.
+  - Case in *build_encoding*: min_frequency allows to drop rare values" was not built correctly.
   
 V 0.4.1
 =======

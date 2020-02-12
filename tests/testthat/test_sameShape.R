@@ -160,3 +160,48 @@ test_that("sameShape: transform shape into data.frame",
             # Then
             expect_true(is.data.frame(reshaped_dataSet_2))
           })
+
+# Internal class check function
+test_that("is_class_dataframe: matrix and data.table are not data.frame",
+          {
+            # Given
+            some_class = "matrix"
+            future_matrix_class = c("matrix", "array")
+            data_table_class = c("data.table", "data.frame")
+            
+            # When + Then
+            expect_false(is_class_dataframe(some_class))
+            expect_false(is_class_dataframe(future_matrix_class))
+            expect_false(is_class_dataframe(data_table_class))
+          })
+
+test_that("is_class_dataframe: data.frame is data.frame",
+          {
+            # Given
+            some_class = "data.frame"
+            
+            # When + Then
+            expect_true(is_class_dataframe(some_class))
+          })
+
+test_that("is_class_matrix: data.frame and data.table are not matrix",
+          {
+            # Given
+            some_class = "data.frame"
+            data_table_class = c("data.table", "data.frame")
+            
+            # When + Then
+            expect_false(is_class_matrix(some_class))
+            expect_false(is_class_matrix(data_table_class))
+          })
+
+test_that("is_class_matrix: matrix and future matrix is matrix",
+          {
+            # Given
+            some_class = "matrix"
+            future_matrix_class = c("matrix", "array")
+            
+            # When + Then
+            expect_true(is_class_matrix(some_class))
+            expect_true(is_class_matrix(future_matrix_class))
+          })
