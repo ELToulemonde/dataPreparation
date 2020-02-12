@@ -92,7 +92,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   for (col in names(dataSet)){
     trans_class <- class(dataSet[[col]])
     ref_class <- class(referenceSet[[col]])
-    print("Debug : 10 : " + col)
+    print(paste("Debug : 10 : ", str(col)))
     if (! all(trans_class == ref_class)){
       print("Debug : 11")
       transfo_function <- paste0("as.", ref_class[[1]])
@@ -110,11 +110,11 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
                           transfo_function, " indeed transform into ", ref_class, "."))
         }
       }
-      print("Debug : 14")
       else {
         warning(paste0(function_name, ": ", col, " class is ", trans_class, " but should be ", ref_class,
                        " and i don't know how to transform it."))
       }
+      print("Debug : 14")
     }
     if (verbose){
       setPB(pb, col)
@@ -128,7 +128,7 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     pb <- initPB(function_name, names(dataSet))
   }
   for (col in names(dataSet)){
-    print("Debug : 16" + col)
+    print(paste("Debug : 16", str(col)))
     print(is.factor(dataSet[[col]]))
     if (is.factor(dataSet[[col]])){
       print("Debug : 17")
