@@ -158,6 +158,8 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   # Set class
   print("Debug 22")
   print(! identical(referenceSet_class, class(dataSet)))
+  print(referenceSet_class)
+  print(class(dataSet))
   if (! identical(referenceSet_class, class(dataSet))){
     if (referenceSet_class == "data.frame"){
       setDF(dataSet)

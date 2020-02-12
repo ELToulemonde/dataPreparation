@@ -141,7 +141,7 @@ test_that("sameShape: transform shape into numerical matrix",
             
             # When
             adult_reshaped <- sameShape(adult, adult_num, verbose = verbose)
-            
+            print("Here")
             # Then
             expect_true(is.matrix(adult_reshaped))
           })
