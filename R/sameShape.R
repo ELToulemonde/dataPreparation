@@ -161,14 +161,17 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   print(referenceSet_class)
   print(class(dataSet))
   if (! identical(referenceSet_class, class(dataSet))){
+    print("Here 1")
     if (referenceSet_class == "data.frame"){
+      print("Here 2")
       setDF(dataSet)
     }
     if (referenceSet_class == "matrix"){
+      print("Here 3")
       dataSet <- as.matrix(dataSet)
     }
   }
-  
+  print("End of functions")
   ## Wrapp-up
   return(dataSet)
 }
