@@ -43,19 +43,22 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   function_name <- "sameShape"
   
   ## Sanity check
+  print("Debug : 1")
   dataSet <- checkAndReturnDataTable(dataSet)
+  print("Debug : 2")
   is.verbose(verbose)
   
   ## Initialization
   # Store class of reference set and transform it into data.table to make computation faster
   referenceSet_class <- class(referenceSet)
   referenceSet <- checkAndReturnDataTable(referenceSet, name = "referenceSet")
-  
+  print("Debug : 3")
   ## Computation
   # Complete list of columns
   if (verbose){
     printl(function_name, ": verify that every column is present.")
   }
+  print("Debug : 4")
   create_list <- names(referenceSet)[! names(referenceSet) %in% names(dataSet)]
   if (length(create_list) > 0){
     if (verbose){
@@ -63,12 +66,14 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     }
 	set(dataSet, NULL, create_list, NA)
   }
-  
+  print("Debug : 5")
   # Drop unwanted columns
   if (verbose){
     printl(function_name, ": drop unwanted columns.")
   }
+  print("Debug : 6")
   drop_list <- names(dataSet)[! names(dataSet) %in% names(referenceSet)]
+  print("Debug : 7")
   if (length(drop_list) > 0){
     if (verbose){
       printl(function_name, ": the folowing columns are in dataSet but not in referenceSet: I drop them: ")
@@ -76,30 +81,36 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     }
 	set(dataSet, NULL, drop_list, NULL)
   }
+  print("Debug : 8")
   
   # Class of columns
   if (verbose){
     printl(function_name, ": verify that every column is in the right type.")
     pb <- initPB(function_name, names(dataSet))
   }
+  print("Debug : 9")
   for (col in names(dataSet)){
     trans_class <- class(dataSet[[col]])
     ref_class <- class(referenceSet[[col]])
+    print("Debug : 10 : " + col)
     if (! all(trans_class == ref_class)){
+      print("Debug : 11")
       transfo_function <- paste0("as.", ref_class[[1]])
       if (exists(transfo_function)){
+        print("Debug : 12")
         if (verbose){
           printl(function_name, ": ", col, " class was ", trans_class, " i set it to ",
                  ref_class, ".")
         }
         set(dataSet, NULL, col, get(transfo_function)(dataSet[[col]]))
-        
+        print("Debug : 13")
         # Control
         if (! all(class(dataSet[[col]]) == ref_class)){
            warning(paste0(function_name, ": transformation didn't work. Please control that function ", 
                           transfo_function, " indeed transform into ", ref_class, "."))
         }
       }
+      print("Debug : 14")
       else {
         warning(paste0(function_name, ": ", col, " class is ", trans_class, " but should be ", ref_class,
                        " and i don't know how to transform it."))
@@ -110,17 +121,24 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
     }    
   }
   gc(verbose = FALSE)
-  
+  print("Debug : 15")
   # Factor levels
   if (verbose){
     printl(function_name, ": verify that every factor as the right number of levels.")
     pb <- initPB(function_name, names(dataSet))
   }
   for (col in names(dataSet)){
+    print("Debug : 16" + col)
+    print(is.factor(dataSet[[col]]))
     if (is.factor(dataSet[[col]])){
+      print("Debug : 17")
       transfo_levels <- levels(dataSet[[col]])
+      print("Debug : 18")
       ref_levels <- levels(referenceSet[[col]])
+      print("Debug : 19")
+      print( identical(transfo_levels, ref_levels))
       if (! identical(transfo_levels, ref_levels)){
+        print("Debug : 20")
         set(dataSet, NULL, col, factor(dataSet[[col]], levels = ref_levels))
         if (verbose){
           printl(function_name, ": ", col, " class had different levels than in referenceSet I change it.")
@@ -134,9 +152,12 @@ sameShape <- function(dataSet, referenceSet, verbose = TRUE){
   gc(verbose = FALSE)
   
   # Re-order columns
+  print("Debug 21")
   setcolorder(dataSet, names(referenceSet))
   
   # Set class
+  print("Debug 22")
+  print(! identical(referenceSet_class, class(dataSet)))
   if (! identical(referenceSet_class, class(dataSet))){
     if (referenceSet_class == "data.frame"){
       setDF(dataSet)
