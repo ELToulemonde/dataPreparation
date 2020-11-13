@@ -33,10 +33,10 @@ Implement Features
 Look through the GitHub issues for features. Anything tagged with "enhancement"
 and "help wanted" is open to whoever wants to implement it.
 
-If you have some new features ideas, you can also open an issue and tag it with 
+If you have some new features ideas, you can also open an issue and tag it with
 "enhancement".
 
-All implementation should 
+All implementation should
 - respect code conventions listed bellow,
 - should be testted (using same testing schema as other tests).
 
@@ -59,13 +59,13 @@ If you are proposing a feature:
 * Remember that this is a volunteer-driven project, and that contributions
   are welcome :)
 
-  
+
 Controlling your developments
 -----------------------------
 
 1. Build new functionality in the best R file
 
-2. Document function. Make sure every param is commented. 
+2. Document function. Make sure every param is commented.
 
 3. Change package version in DESCRIPTION and add what's new in NEWS.md
 
@@ -83,8 +83,8 @@ Controlling your developments
 9. If everything passed: create a Pull Request.
 
 10. Thank you very much for your contributions! :)
-  
-  
+
+
 Code conventions
 -----------------
 

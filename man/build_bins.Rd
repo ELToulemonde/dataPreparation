@@ -5,7 +5,7 @@
 \title{Compute bins}
 \usage{
 build_bins(
-  dataSet,
+  data_set,
   cols = "auto",
   n_bins = 10,
   type = "equal_width",
@@ -13,9 +13,9 @@ build_bins(
 )
 }
 \arguments{
-\item{dataSet}{Matrix, data.frame or data.table}
+\item{data_set}{Matrix, data.frame or data.table}
 
-\item{cols}{List of numeric column(s) name(s) of dataSet to transform. To transform all 
+\item{cols}{List of numeric column(s) name(s) of data_set to transform. To transform all
 characters, set it to "auto".  (character, default to "auto")}
 
 \item{n_bins}{Number of group to compute (numeric, default to 10)}
@@ -25,7 +25,7 @@ characters, set it to "auto".  (character, default to "auto")}
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-A list where each element name is a column name of data set and each element contains 
+A list where each element name is a column name of data set and each element contains
 bins to discretize this column.
 }
 \description{
