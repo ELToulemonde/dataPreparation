@@ -1,7 +1,7 @@
 ## Documentation for unit testing
 #--------------------------------
-# http://r-pkgs.had.co.nz/tests.html
-# http://stat545.com/packages05_foofactors-package-02.html
+# https://r-pkgs.had.co.nz/tests.html
+# https://stat545.com/packages05_foofactors-package-02.html
 context("test_shape_set.R")
 verbose <- TRUE
 ## prepare_set

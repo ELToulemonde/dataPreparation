@@ -59,7 +59,7 @@ This vignette introduces *dataPreparation* package (v1.0.0), what it offers, how
 
 # Introduction
 ## Package presentation
-Based on  [data.table](http://r-datatable.com) package, **dataPreparation** will allow you to do most of the painful data preparation for a data science project with a minimum amount of code.
+Based on  [data.table](https://rdatatable.gitlab.io/data.table/) package, **dataPreparation** will allow you to do most of the painful data preparation for a data science project with a minimum amount of code.
 
 
 This package is
