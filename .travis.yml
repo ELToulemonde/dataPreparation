@@ -1,6 +1,11 @@
 language: r
 dist: trusty
 cache: packages
+r:
+- oldrel
+- release
+- devel
+
 addons:
   apt:
     packages:
@@ -13,9 +18,9 @@ before_install:
 
 
 r_packages:
-  - covr
-  - drat
+- covr
+- drat
 
 after_success:
-  - travis_wait Rscript -e 'library(covr);codecov()'
-  - test $TRAVIS_REPO_SLUG == "ELToulemonde/dataPreparation" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
+- travis_wait Rscript -e 'library(covr);codecov()'
+- test $TRAVIS_REPO_SLUG == "ELToulemonde/dataPreparation" && test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh

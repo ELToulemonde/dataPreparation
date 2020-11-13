@@ -27,20 +27,20 @@ Before using any machine learning (ML) algorithm, one need to prepare its data. 
   * __Filter__: get rid of useless information in order to speed up computation
   * __Pre model transformation__: Specific manipulation for the chosen model (handling NA, discretization, one hot encoding, scaling...)
   * __Shape__: put your data set in a nice shape usable by a ML algorithm
-  
+ 
 Here are the functions available in this package to tackle those issues:
 
-Correct                     | Transform                | Filter                  | Pre model manipulation| Shape              
+Correct                     | Transform                | Filter                  | Pre model manipulation| Shape             
 ---------                   |-----------               |--------                 |-----------            |------------------------
-unFactor                    | generateDateDiffs        | fastFilterVariables     | fastHandleNa          | shapeSet           
-findAndTransformDates       | generateFactorFromDate   | whichAreConstant        | fastDiscretization    | sameShape          
-findAndTransformNumerics    | aggregateByKey           | whichAreInDouble        | fastScale             | setAsNumericMatrix 
-setColAsCharacter           | generateFromFactor       | whichAreBijection       |                       | one_hot_encoder
-setColAsNumeric             | generateFromCharacter    |remove_sd_outlier        |                       |
-setColAsDate                | fastRound                |remove_rare_categorical  |                       |
-setColAsFactor              | target_encode            |remove_percentile_outlier|                       |
+un_factor                    | generate_date_diffs        | fast_filter_variables     | fast_handle_na          | shape_set          
+find_and_transform_dates       | generate_factor_from_date   | which_are_constant        | fast_discretization    | same_shape         
+find_and_transform_numerics    | aggregate_by_key           | which_are_in_double        | fast_scale             | set_as_numeric_matrix
+set_col_as_character           | generate_from_factor       | which_are_bijection       |                       | one_hot_encoder
+set_col_as_numeric             | generate_from_character    |remove_sd_outlier        |                       |
+set_col_as_date                | fast_round                |remove_rare_categorical  |                       |
+set_col_as_factor              | target_encode            |remove_percentile_outlier|                       |
 
-All of those functions are integrated in the __full pipeline__ function `prepareSet`.
+All of those functions are integrated in the __full pipeline__ function `prepare_set`.
 
 
 For more details on how it work go check our [tutorial](https://cran.r-project.org/web/packages/dataPreparation/vignettes/dataPreparation.html).
@@ -70,11 +70,11 @@ head(messy_adult)
 
 Perform full pipeline function
 ```R
-clean_adult <- prepareSet(messy_adult)
+clean_adult <- prepare_set(messy_adult)
 head(clean_adult)
 ```
 
-__That's it.__ For all functions, you can check out documentation and/or tutorial vignette. 
+__That's it.__ For all functions, you can check out documentation and/or tutorial vignette.
 
 How to Contribute
 =================

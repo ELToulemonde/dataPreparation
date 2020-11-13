@@ -1,8 +1,29 @@
+V 1.0.0
+=======
+For this version 1.0.0 there are a lot of changes, and version is not compatible with previous version of the paclage. 
+
+Also there might be some rework to do on code using previous version of this package (and we are orry about it), we strongly believe that this version will be easier to use, faster, and more maintanable in time.
+
+In this version : 
+  - All function names and variables are snake_case (there used to be a mix of camel case and snake case)
+  - We remove a lost of useless code that was slowing done the package (particularly garbage collection)
+  - We made the code more readable so that it is easier to contribute to this package
+  - Logging is more explicit and cleaner.
+  - We took into account linting. 
+  - A few more functions are availables.
+  
+We hope that you will like even more this new version of the package. Please don't hesitate to provide feedback, warn us about bug, suggest improvements or even better developp some improvements on this package. To do so please go to github (https://github.com/ELToulemonde/dataPreparation/).
+
+V 0.4.3
+=======
+- Fix  :
+  - In *same_shape*:  there was a future bug due to change in class "matrix". Fixed it by implementing 2 functions to check class
+ 
 V 0.4.2
 =======
 - Fix test :
-  - Case in "build_encoding: min_frequency allows to drop rare values" was not built correctly.
-  
+  - Case in *build_encoding*: min_frequency allows to drop rare values" was not built correctly.
+ 
 V 0.4.1
 =======
 - New features:
@@ -11,33 +32,33 @@ V 0.4.1
     - Function *remove_sd_outlier* helps to remove rows that have numerical values to extrem.
     - Function *remove_percentile_outlier* helps to remove rows that have numerical values to extrem (based on percentile analysis).
     - Function *remove_rare_categorical* helps to remove rows that have categorial values to rare.
-  - New features in existing functions : 
-    - Function *prepareSet* integrate *target_encode* function. It is called by providing *target_col* and *target_encoding_functions*.
+  - New features in existing functions :
+    - Function *prepare_set* integrate *target_encode* function. It is called by providing *target_col* and *target_encoding_functions*.
 
 V 0.4.0
 =======
 - New features:
-  - New features in existing functions : 
-    - To avoid issues based on column names, we will check and rename columns that have same names. 
-    - In *aggregateByKey* generated column names are changed to be more explicit. 
-    - In *aggregateByKey* generated from character column with more than \code{thresh} values is now count of unique instead of count.
+  - New features in existing functions :
+    - To avoid issues based on column names, we will check and rename columns that have same names.
+    - In *aggregate_by_key* generated column names are changed to be more explicit.
+    - In *aggregate_by_key* generated from character column with more than \code{thresh} values is now count of unique instead of count.
     - Added missing *auto* default values on cols
 
 - Bug fixes:
-  - *whichAreBijection* and *whichAreInDouble* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
-  - *prepareSet* optinal argumennt *factor_date_type* was not working. It is fixed.
+  - *which_are_bijection* and *which_are_in_double* are using *bi_col_test* which was not working with 2 column data set. It is fixed.
+  - *prepare_set* optinal argumennt *factor_date_type* was not working. It is fixed.
 
-- Other changes: 
-  - Changed *whichAreIncluded* example since it was to slow for CRAN. Also it might be a little bit more explicit now.
-  - Changed *aggregateByKey* example since it was to slow for CRAN.
+- Other changes:
+  - Changed *which_are_included* example since it was to slow for CRAN. Also it might be a little bit more explicit now.
+  - Changed *aggregate_by_key* example since it was to slow for CRAN.
 
 - Integration:
   - Rewrite all tests to make them more readable
   - Code coverage is improved, depencies on *messy_adult* set is lowered
 
 WARNING:
-- In *aggregateByKey* generated column names are changed.
-- In *aggregateByKey* generated column for character is different.
+- In *aggregate_by_key* generated column names are changed.
+- In *aggregate_by_key* generated column for character is different.
 
 V 0.3.9
 =======
@@ -49,11 +70,11 @@ V 0.3.8
 =======
 - New features:
   	- New features in existing functions:
-		- Identification of bijection through internal function *fastIsBijection* is way faster (up to 40 times faster in case of bijection). So *whichArebijection* and *fastFiltervariables* are also improved.
-		- Remove remaining *gc* to save time. 
+		- Identification of bijection through internal function *fast_is_bijection* is way faster (up to 40 times faster in case of bijection). So *whichArebijection* and *fastFiltervariables* are also improved.
+		- Remove remaining *gc* to save time.
 		- In *one_hot_encoder* added parameter *type* to make choise between logical or numerical results.
-	  
-  	  
+	 
+  	 
 V 0.3.7
 =======
 - New features:
@@ -62,11 +83,11 @@ V 0.3.7
 	- New features in existing functions:
 		- In dates identifications, we make it faster by computing search of format only on unique values.
 		- In date transformation, we made it faster by using *as.POSIXct_fast* when it is necessary.
-		- Functions *findAndTransFormDates*, *findAndTransformNumerics* and *unFactor* now accept argument *cols* to limitate search.
+		- Functions *findAndTransFormDates*, *find_and_transform_numerics* and *un_factor* now accept argument *cols* to limitate search.
 
 - Bug fixes:
 	- Control that over-allocate option is activated on every data.table to avoid issues with set. Package should be more robust.
-	- In bijection search (internal function *fastIsBijection*) there was a bug on some rare cases. Fixed but slower.
+	- In bijection search (internal function *fast_is_bijection*) there was a bug on some rare cases. Fixed but slower.
 
 -Code quality:
 	- Improving code quality using lintr
@@ -77,7 +98,7 @@ V 0.3.7
 V 0.3.6
 =======
 - Bug fixes:
-	- *identifyDates* had a weird bug. Solved
+	- *identify_dates* had a weird bug. Solved
 	
 - Integration:
 	- Making dataPreparation compatible with testthat 2.0.0
@@ -88,41 +109,41 @@ V 0.3.5
 	- New features in existing functions:
 		- *findAndTransFormDates* now as an *ambiguities* parameter, IGNORE to work as before, WARN to check for ambiguities and print them, SOLVE to try to solve ambiguities on more lines.
 		- *one_hot_encoder* now uses a *build_encoding* functions to be able to build same encoding on train and on test.
-		- *aggregateByKey* is now way faster on numerics. But it changed the way it gets input functions.
-		- *fastScale* now as a *way* parameter which allow you to either scale or unscale. Unscaling numeric values can be very usefull for most post-model analysis.
-		- *setColAsDate* now accept multiple formats in a single call.
+		- *aggregate_by_key* is now way faster on numerics. But it changed the way it gets input functions.
+		- *fast_scale* now as a *way* parameter which allow you to either scale or unscale. Unscaling numeric values can be very usefull for most post-model analysis.
+		- *set_col_as_date* now accept multiple formats in a single call.
 	- New functions:
 		- *build_encoding* build a list of encoding to be used by *one_hot_encoder*, it also has a parameter *min_frequency* to control that rare values doesn't result in new columns.
-		- Previously private function *identifyDates* is now exported. To be able to perform same transformation on train and on test.
-		- Adding *dataPrepNews* function to open NEWS file (inspired from rfNews() of randomForest package)
+		- Previously private function *identify_dates* is now exported. To be able to perform same transformation on train and on test.
+		- Adding *dataPreparationNews* function to open NEWS file (inspired from rfNews() of randomForest package)
 		
 - Bug fixes:
 	- *findAndTransFormDates*: bug fixed: user formats weren't used.
-	- *identifyDates*: some formats where tested but would never work. They have been removed.
+	- *identify_dates*: some formats where tested but would never work. They have been removed.
 	
-- Refactoring: 
+- Refactoring:
 	- Unit test partly reviewed to be more readable and more efficient. Unit test time as been divided by 3.
 	- Improving input control for more robust functions
 	
 WARNING:
 - *one_hot_encoder* now requires you to run *build_encoding* first.
-- *aggregateByKey* now require functions to be passed by character name
+- *aggregate_by_key* now require functions to be passed by character name
 		
 This version is making (as much as possible) transformation reproducible on train and test set. This is to prepare future pipeline feature.
 
 V 0.3.4
 ========
-- Improvement of function 
-	- *whichAreBijection*: It is 2 to 15 time faster than previous version.
-	- *whichAreIncluded*: It is a bit faster.
+- Improvement of function
+	- *which_are_bijection*: It is 2 to 15 time faster than previous version.
+	- *which_are_included*: It is a bit faster.
 - Bug fixes:
-	- *generateFactorFromDate*: default value was missing. Fixed.
+	- *generate_factor_from_date*: default value was missing. Fixed.
 - New features:
 	- New features in existing functions:
-		- *fastFilterVariables* has a new parameter (level) to choose which types of filtering to perform
+		- *fast_filter_variables* has a new parameter (level) to choose which types of filtering to perform
 		
 WARNING:
-- *whichAreIncluded*: in case of bijection (col1 is a bijection of col2), they are both included in the other, but the choice of the one to drop might have changed in this version.
+- *which_are_included*: in case of bijection (col1 is a bijection of col2), they are both included in the other, but the choice of the one to drop might have changed in this version.
 
 V 0.3.3
 ========
@@ -148,16 +169,16 @@ v 0.3
 - New features:
 	- New features in existing functions:
 		- *findAndTransFormDates* now recognize date character even if "0" are not present in month or day part and month as lower strings.
-		- *findAndTransFormDates* and *setColAsDate* now work with *factors*.
+		- *findAndTransFormDates* and *set_col_as_date* now work with *factors*.
 	- New functions:
-		- *fastDiscretization*: to perform equal freq or equal width discretization on a data set using *data.table* power.
-		- *fastScale*: to perform scaling on a data set using *data.table* power.
+		- *fast_discretization*: to perform equal freq or equal width discretization on a data set using *data.table* power.
+		- *fast_scale*: to perform scaling on a data set using *data.table* power.
 		- *one_hot_encoder*: to perform one_hot encoding on a data set using *data.table* power.
 	- New documentation:
 		- A new vignette to illustrate how to build a correct *train* and *test* set unising data preparation
 - Minor changes in log (in particular regarding progress bars and typos)
 	- Due to dependencies issues with *tcltk*, we stop using it and start using *progress*
-- Refactoring: 
+- Refactoring:
 	- Private function *real_cols* take more importance to control that columns have the correct types and handling "auto" value.
 	- Making code faster: some functions are up to **30% faster**
 	- Review unit testing to be faster
@@ -172,27 +193,27 @@ v 0.2
 - Improving unit testing and code coverage
 - Improving documentation
 - Solving minor bug in date conversion and in which functions
-- New features: 
+- New features:
 	- New functions:
-		- *unFactor* to unfactor columns, when reading wasn't performed in expected way.
-		- *sameShape* to make ure that train and test set have exactly the same shape.
+		- *un_factor* to unfactor columns, when reading wasn't performed in expected way.
+		- *same_shape* to make ure that train and test set have exactly the same shape.
 		- generate new columns from existing columns (generate functions)
-			- generate factor from dates: *generateFactorFromDate*
-			- diffDates becomes *generateDateDiffs* (for better name understanding).
-			- generate numerics and booleans from character of fators (using *generateFromFactor* and *generateFromCharacter*)
+			- generate factor from dates: *generate_factor_from_date*
+			- diffDates becomes *generate_date_diffs* (for better name understanding).
+			- generate numerics and booleans from character of fators (using *generate_from_factor* and *generate_from_character*)
 			
-		- *setColAsFactor* a function to make multiple columns as factor and controling number of unique elements
+		- *set_col_as_factor* a function to make multiple columns as factor and controling number of unique elements
 		
 	- New features in existing functions:	
 		- which functions: add *keep_cols* argument to make sure that they are not dropped
-		- fastFilterVariables: *verbose* can be T/F or 0, 1, 2 in order to control level of verbosity
-		- *findAndTransFormDates* and *setColAsDates* now recognize and accept timestamp.
+		- fast_filter_variables: *verbose* can be T/F or 0, 1, 2 in order to control level of verbosity
+		- *findAndTransFormDates* and *set_col_as_dates* now recognize and accept timestamp.
 
 WARNING:
-- If you were using *diffDates*, it is now called *generateDateDiffs*
+- If you were using *diffDates*, it is now called *generate_date_diffs*
 - *date2* column in *messy_adult* data set have changed in order to illustrate new timestamp features
-- *setColAsFactorOrLogical* doesn't exist anymore: it as been splitted between *setColAsFactor* and *generateFromCat*
-- Considering all those changes: *shapeSet* and *prepareSet* don't give the same result anymore.
+- *set_col_as_factorOrLogical* doesn't exist anymore: it as been splitted between *set_col_as_factor* and *generateFromCat*
+- Considering all those changes: *shape_set* and *prepare_set* don't give the same result anymore.
 
 
 v 0.1: release on CRAN July 2017

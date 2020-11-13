@@ -1,14 +1,14 @@
 ---
-title: "Tutorial to prepare train and test set using dataPreparation"
+title: "Tutorial: building train and test sets with the same characteristics"
 header-includes: \usepackage{booktabs}
 date: '`r Sys.Date()`'
 output:
   rmarkdown::html_vignette:
     number_sections: yes
-  
+
 vignette: >
-  %\VignetteIndexEntry{Tutorial: building train and test sets with the same characteristics} 
-  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteIndexEntry{"Tutorial: building train and test sets with the same characteristics"}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -19,29 +19,33 @@ library(data.table)
 library(knitr)
 library(kableExtra)
 library(pander)
-options(knitr.table.format = "html") 
+options(knitr.table.format = "html")
 Sys.setlocale("LC_TIME", "C")
 ```
 
 # Introduction
 
-## Purpouse of this vignette
+## Purpose of this vignette
 This vignette is a tutorial to prepare a `train` and a `test` set using `dataPreparation` package.
 
 In this tutorial the following points are going to be viewed:
 
-- Preparing a training set,
-- Applying the same preparation to a testing set,
-- Controling that train and test sets have the same shape.
+  * Preparing a training set,
+  * Applying the same preparation to a testing set,
+  * Controling that train and test sets have the same shape.
 
 Using [dataPreparation](https://CRAN.R-project.org/package=dataPreparation/index.html) package, those sets will be
 
-- fast (since dataPreparation is based on data.table framework and uses some computational tricks)
-- easy (since those functions are packaged and handle most of the situations)
-- robust (since it has been extensivly tested)
+This package is
+
+  * fast (use `data.table` and exponential search)
+  * RAM efficient (perform operations by reference and column-wise to avoid copying data)
+  * stable (most exceptions are handled)
+  * easy (since those functions are packaged and handle most of the situations)
+  * verbose (log a lot)
 
 ## Data set
-For this tutorial, UCI [adult](https://archive.ics.uci.edu/ml/datasets/adult) data set will be used. 
+For this tutorial, UCI [adult](https://archive.ics.uci.edu/ml/datasets/adult) data set will be used.
 
 The goal with this data set is to predict the income of individuals based on 14 variables.
 
@@ -83,9 +87,9 @@ The first thing to do, in order to make computation fast, would be to filter use
 
 Let's id them:
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-constant_cols <- whichAreConstant(adult)
-double_cols <- whichAreInDouble(adult)
-bijections_cols <- whichAreBijection(adult)
+constant_cols <- which_are_constant(adult)
+double_cols <- which_are_in_double(adult)
+bijections_cols <- which_are_bijection(adult)
 ```
 
 We only found, one bijection: variable `education_num` which is an index for variable `education`. Let's drop it:
@@ -100,19 +104,19 @@ X_test$education_num = NULL
 ## Scaling
 Most machine learning algorithm rather handle scaled data instead of unscaled data.
 
-To perform scaling (meaning setting mean to 0 and standard deviation to 1), function `fastScale` is available. 
+To perform scaling (meaning setting mean to 0 and standard deviation to 1), function `fast_scale` is available.
 
 Since it is highly recommended to apply same scaling on train and test, you should compute the scales first using the function `build_scales`:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-scales <- build_scales(dataSet = X_train, cols = c("capital_gain", "capital_loss"), verbose = TRUE)
+scales <- build_scales(data_set = X_train, cols = c("capital_gain", "capital_loss"), verbose = TRUE)
 print(scales)
 ```
 As one can see, those to columns have very different mean and standard deviation. Let's apply scaling on those:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_train <- fastScale(dataSet = X_train, scales = scales, verbose = TRUE)
-X_test <- fastScale(dataSet = X_test, scales = scales, verbose = TRUE)
+X_train <- fast_scale(data_set = X_train, scales = scales, verbose = TRUE)
+X_test <- fast_scale(data_set = X_test, scales = scales, verbose = TRUE)
 ```
 
 And now let's have a look at the result:
@@ -126,21 +130,21 @@ One might want to discretize the variable age, either using an equal freq/width 
 
 To compute equal freq bins, `build_bins` is available:
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-bins <- build_bins(dataSet = X_train, cols = "age", n_bins = 10, type = "equal_freq")
+bins <- build_bins(data_set = X_train, cols = "age", n_bins = 10, type = "equal_freq")
 print(bins)
 ```
 
 To make it easy to use, in this package:
 
-- `dataSet` will always denote the data.table on which you want to perform something. 
+- `data_set` will always denote the data.table on which you want to perform something.
 - `cols` will always denote the columns on which you want to apply the function. It could also be set to "auto" to apply it on all relevant columns.
 - Some spefic argument could be needed and will be presented in the documentation of each functions.
 
 
 Let's apply our own bins:
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_train <- fastDiscretization(dataSet = X_train, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
-X_test <- fastDiscretization(dataSet = X_test, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
+X_train <- fast_discretization(data_set = X_train, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
+X_test <- fast_discretization(data_set = X_test, bins = list(age = c(0, 18, 25, 45, 62, +Inf)))
 ```
 
 Here bins have been defined to compute groups :
@@ -170,15 +174,15 @@ Would become:
 
 ID | var.A | var.B | var.C
 ---|-------|-------|-------
-1  | 1     | 0     | 0     
-2  | 0     | 1     | 0     
-3  | 0     | 0     | 1     
-4  | 0     | 0     | 1    
+1  | 1     | 0     | 0
+2  | 0     | 1     | 0
+3  | 0     | 0     | 1
+4  | 0     | 0     | 1
 
 To perform it, one could use `dataPreparation::one_hot_encoder` which uses data.table power to do it in a fast and RAM efficient way.
 Since it is important to have the same columns in train and test first, one will compute the encoding:
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-encoding <- build_encoding(dataSet = X_train, cols = "auto", verbose = TRUE)
+encoding <- build_encoding(data_set = X_train, cols = "auto", verbose = TRUE)
 ```
 
 The argument cols = "auto" means that build_encoding will automatically select all columns that are either character or factor to prepare encoding.
@@ -186,13 +190,13 @@ The argument cols = "auto" means that build_encoding will automatically select a
 And then one can apply them to both tables:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_train <- one_hot_encoder(dataSet = X_train, encoding = encoding, drop = TRUE, verbose = TRUE)
-X_test <- one_hot_encoder(dataSet = X_test, encoding = encoding, drop = TRUE, verbose = TRUE)
+X_train <- one_hot_encoder(data_set = X_train, encoding = encoding, drop = TRUE, verbose = TRUE)
+X_test <- one_hot_encoder(data_set = X_test, encoding = encoding, drop = TRUE, verbose = TRUE)
 ```
 
 This function is called the following way:
 
-- dataSet = X_train: means that it will perform transformation on X_train
+- data_set = X_train: means that it will perform transformation on X_train
 - encoding = encoding: means that we use previously built encoding
 - drop = TRUE: means that it will drop original columns
 - verbose = TRUE: means that it will log to tell you what it is doing.
@@ -213,14 +217,19 @@ print(dim(X_test))
 Since a lot of columns have been created, a filtering could be relevant:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-bijections <- whichAreBijection(dataSet = X_train, verbose = TRUE)
+bijections <- which_are_bijection(data_set = X_train, verbose = TRUE)
+print(names(X_train)[bijections])
 ```
 
-It found that column Male is a bijection of column female, that is not surprinsing. Let's drop one of them:
+Thanks to optimisations (such as exponential search), it takes only 7s to compare 111 columns together and identify bijections. Without those optimisations it can be minutes long.
+
+`which_are_bijection` found that column sex.Male is a bijection of column sex.Female.
+
+Let's drop one of them:
 
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_train$Male = NULL
-X_test$Male = NULL
+set(X_train, NULL, names(X_train)[bijections], NULL)
+set(X_test, NULL, names(X_train)[bijections], NULL)
 ```
 
 
@@ -229,10 +238,10 @@ Last but not least, it is very important to make sure that `train` and `test` se
 
 To make sure of that one could perform the following function:
 ```{r warning = FALSE, comment="#",  null_prefix=TRUE}
-X_test <- sameShape(X_test, referenceSet = X_test, verbose = TRUE)
+X_test <- same_shape(X_test, reference_set = X_test, verbose = TRUE)
 ```
 
-No warning have been raised it's all is ok. 
+No warning have been raised it's all is ok.
 
 
 
@@ -244,4 +253,3 @@ We hope that this package is helpful, that it helped you prepare your data in a 
 
 
 If you would like to give us some feedback, report some issues, add some features to this package, please tell us on [GitHub](https://github.com/ELToulemonde/dataPreparation/issues). Also if you want to contribute, please don't hesitate to contact us.
-

@@ -4,12 +4,12 @@
 \alias{description}
 \title{Describe data set}
 \usage{
-description(dataSet, level = 1, path_to_write = NULL, verbose = TRUE)
+description(data_set, level = 1, path_to_write = NULL, verbose = TRUE)
 }
 \arguments{
-\item{dataSet}{Matrix, data.frame or data.table}
+\item{data_set}{Matrix, data.frame or data.table}
 
-\item{level}{Level of description (0: generic, 1: column by column) 
+\item{level}{Level of description (0: generic, 1: column by column)
 (numeric, default to 1)}
 
 \item{path_to_write}{Path where the report should be written (character, default to NULL)}

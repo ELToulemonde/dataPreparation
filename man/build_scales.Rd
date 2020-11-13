@@ -4,12 +4,12 @@
 \alias{build_scales}
 \title{Compute scales}
 \usage{
-build_scales(dataSet, cols = "auto", verbose = TRUE)
+build_scales(data_set, cols = "auto", verbose = TRUE)
 }
 \arguments{
-\item{dataSet}{Matrix, data.frame or data.table}
+\item{data_set}{Matrix, data.frame or data.table}
 
-\item{cols}{List of numeric column(s) name(s) of dataSet to transform. To transform all 
+\item{cols}{List of numeric column(s) name(s) of data_set to transform. To transform all
 characters, set it to "auto". (character, default to "auto")}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
