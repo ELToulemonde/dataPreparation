@@ -5,6 +5,10 @@ r:
 - release
 - devel
 
+compiler:
+  - clang
+  - gcc
+
 addons:
   apt:
     packages:
