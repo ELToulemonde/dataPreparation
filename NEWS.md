@@ -1,3 +1,8 @@
+V 1.0.1
+=======
+
+Based on CRAN feedbacks removed problematic vignettes.
+
 V 1.0.0
 =======
 For this version 1.0.0 there are a lot of changes, and version is not compatible with previous version of the paclage. 
