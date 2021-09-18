@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        r-version: [4.1]
+        r-version:  [3.3, 3.4,  3.5, 3.6, 4.0, 4.1]
 
     steps:
       - uses: actions/checkout@v2
