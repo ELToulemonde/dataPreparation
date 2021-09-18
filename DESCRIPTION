@@ -13,10 +13,6 @@ License: GPL-3 | file LICENSE
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 7.1.1
-Suggests: knitr,
-    rmarkdown,
-	kableExtra,
-	pander,
-	testthat (>= 2.0.0)
+Suggests: testthat (>= 2.0.0)
 Imports: data.table
 BugReports: https://github.com/ELToulemonde/dataPreparation/issues

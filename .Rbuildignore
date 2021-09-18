@@ -2,6 +2,5 @@
 ^\.Rproj\.user$
 README.md
 CONTRIBUTING.rst
-^\.travis\.yml$
 ^\.idea$
 .github/
