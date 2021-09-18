@@ -43,5 +43,6 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
       - name: Test coverage
+        if: runner.os == 'Linux'
         run: covr::codecov()
         shell: Rscript {0}
