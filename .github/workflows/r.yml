@@ -38,9 +38,7 @@ jobs:
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          needs: |
-            covr
-            rcmdcheck
+          extra-packages: covr, rcmdcheck
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
