@@ -1,3 +1,9 @@
+V 1.0.2
+=======
+
+Remove useless dependencies.
+Make sure library works on windows, macos, ubuntu, and R versions from 3.3 to 4.1.
+
 V 1.0.1
 =======
 
