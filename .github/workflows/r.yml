@@ -39,7 +39,6 @@ jobs:
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
-      - name: Coverage
-        run:
-          Rscript -e 'remotes::install_github("r-lib/covr@gh-actions")'
-          Rscript -e 'covr::codecov'
+      - name: Test coverage
+        run: covr::codecov()
+        shell: Rscript {0}
