@@ -25,6 +25,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - if: runner.os == 'macOS'
         run: brew install --cask xquartz
       - name: Set up R ${{ matrix.r-version }}
