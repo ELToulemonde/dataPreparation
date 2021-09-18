@@ -39,6 +39,10 @@ jobs:
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
+      - name: Install covr
+        run:
+        remotes::install_cran("covr")
+        shell: Rscript {0}
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
