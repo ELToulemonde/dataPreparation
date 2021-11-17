@@ -350,8 +350,8 @@ fast_is_bijection <- function(object1, object2) {
     exp_factor <- 10
     max_power <- floor(log(nrows) / log(exp_factor)) + 1
     # Create empty object of the correct class. Genreic way (ex: for POSIXct try it)
-    empty_object_of_class_1 <- get(paste0("as.", class(object1)))(character())
-    empty_object_of_class_2 <- get(paste0("as.", class(object2)))(character())
+    empty_object_of_class_1 <- get(paste0("as.", class(object1)[1]))(character())
+    empty_object_of_class_2 <- get(paste0("as.", class(object2)[1]))(character())
     unique_couples <- data.table(object1 = empty_object_of_class_1, object2 = empty_object_of_class_2)
 
     # Computation
