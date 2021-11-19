@@ -59,8 +59,8 @@ find_and_transform_numerics <- function(data_set, cols = "auto", n_test = 30, ve
     }
     start_time <- proc.time()
     if (length(numerics$dont_strip) > 0 || length(numerics$strip) > 0) {
-        data_set <- set_col_as_numeric(data_set, cols = numerics$dont_strip, strip_string = FALSE, verbose = verbose)
-        data_set <- set_col_as_numeric(data_set, cols = numerics$strip, strip_string = TRUE, verbose = verbose)
+        data_set <- set_col_as_numeric(data_set, cols = numerics$dont_strip, strip_string = FALSE, verbose = FALSE)
+        data_set <- set_col_as_numeric(data_set, cols = numerics$strip, strip_string = TRUE, verbose = FALSE)
 
         if (verbose) {
             printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2),

@@ -1,3 +1,9 @@
+V 1.0.3
+=======
+
+BUGFIX: Fix bud on *fast_is_bijection* when column has multiple class
+FEAT: Harmonize logging levels between functions
+
 V 1.0.2
 =======
 
