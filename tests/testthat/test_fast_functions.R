@@ -285,6 +285,15 @@ test_that("private function: fast_is_bijection: Tricky non-bijection on the thre
     expect_false(fast_is_bijection(df[["col1"]], df[["col2"]]))
 })
 
+test_that("private function: fast_is_bijection: Work on dates that have multiple classes", {
+    # Given
+    df <- data.frame(col1 = c(as.POSIXct("2021-01-01 09:01:01")),
+                     col2 = c(as.POSIXct("2021-01-01 09:01:01")))
+
+    # When + Then
+    expect_true(fast_is_bijection(df[["col1"]], df[["col2"]]))
+})
+
 ## fast_max_nb_elt
 # -------------
 test_that("private function: fast_max_nb_elt", {
