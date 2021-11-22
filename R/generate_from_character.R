@@ -57,9 +57,13 @@ generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, dro
         new_col <- paste0(col, name_separator, "order")
         new_col <- make_new_col_name(new_col, names(data_set))
         colorder <- names(data_set) # store order to reset it
-        unique_values <- sort(unique(data_set[[col]])) #
+        col_tmp <- paste0(col, '_tmp')
+        data_set[[col_tmp]] <- data_set[[col]]
+        set(data_set, which(is.na(data_set[[col]])), col_tmp, "NA")
+        unique_values <- sort(unique(data_set[[col_tmp]]))
         unique_values <- data.table(col = unique_values, new_col = seq_len(length(unique_values)))
-        data_set <- merge(data_set, unique_values, by.x = col, by.y = "col")
+        data_set <- merge(data_set, unique_values, by.x = col, by.y = "col", all.x = TRUE, sort=FALSE)
+        set(data_set, NULL, col_tmp, NULL)
         setnames(data_set, "new_col", new_col) # set correct name
         setcolorder(data_set, c(colorder, new_col)) # reset col order
 

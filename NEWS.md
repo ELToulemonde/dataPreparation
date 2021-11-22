@@ -1,3 +1,8 @@
+V 1.0.4
+=======
+
+BUGFIX: Fix *generate_from_character*, when there were some NAs in the column it would drop the line. It is not the case anymore.
+
 V 1.0.3
 =======
 
