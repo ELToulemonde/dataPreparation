@@ -47,3 +47,16 @@ test_that("un_factor: level to error", {
     expect_error(un_factor(data_set, n_unfactor = wrong_n_unfactor, verbose = verbose),
     ": n_unfactor should be a numeric, you provided a ")
 })
+
+test_that("get_most_frequent_element: return correct element", {
+  # Given
+  example_list <- c(1, 1, 2, 3, 1, 4, 1)
+  
+  # When
+  most_frequent_element <- get_most_frequent_element(example_list)
+  
+  # Then
+  expect_equal(most_frequent_element, "1")
+})
+
+

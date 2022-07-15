@@ -78,3 +78,24 @@ un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) 
     # Wrap-up
     return(data_set)
 }
+
+
+#' Get most frequent element
+#' 
+#' Provide most frequent element in a list, a \code{data.frame} or \code{data.table} 
+#' column
+#' @param x A list, \code{data.frame} or \code{data.table} column
+#' @result The most frequent element
+#' @examples 
+#' # Build example list
+#' example_list <- c(1, 1, 2, 3, 1, 4, 1)
+#' 
+#' # Compute most frequent element
+#' get_most_frequent_element(example_list)
+#' @export
+get_most_frequent_element <- function(x){
+  frequencies <- table(x)
+  max_frequency <- max(frequencies)
+  highest_freq <- which(frequencies == max_frequency)
+  return(names(highest_freq))
+}

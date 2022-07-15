@@ -168,3 +168,25 @@ test_that("build_target_encoding: build_target_encoding should return a list of 
     expect_equal(length(target_encoded), length(cols_to_encode))
     expect_true(all(sapply(target_encoded, is.data.table)))
 })
+
+test_that("compute_probability_ratio: probability_ratio is correct", {
+    # Given
+    example_list <- c(1, 1, 1, 2, 2, 3)
+            
+    # When
+    probability_ratio <- compute_probability_ratio(example_list)
+    
+    # Then
+    expect_equal(probability_ratio, 6)
+    })
+
+test_that("compute_weight_of_evidence: weigth_of_evidence is correct", {
+  # Given
+  example_list <- c(1, 1, 1, 2, 2, 3)
+  
+  # When
+  weigth_of_evidence <- compute_weight_of_evidence(example_list)
+  
+  # Then
+  expect_equal(weigth_of_evidence, log(6))
+})

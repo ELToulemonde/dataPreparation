@@ -316,7 +316,8 @@ target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRU
 #' @param data_set Matrix, data.frame or data.table
 #' @param cols_to_encode columns to aggregate according to (list)
 #' @param target_col column to aggregate (character)
-#' @param functions functions of aggregation (list or character, default to "mean")
+#' @param functions functions of aggregation (list or character, default to "mean"). Functions \code{compute_probability_ratio}
+#' and \code{compute_weight_of_evidence} are classically used functions
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
 #' each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
@@ -379,3 +380,47 @@ build_target_encoding <- function(data_set, cols_to_encode, target_col, function
     # Wrap-up
     return(result)
 }
+
+#' Compute weight of evidence
+#'
+#'Weight of evidence is an aggregation function that can be used for 
+#' \code{build_target_encoding}. Weight of evidence is the ln(P(most freq element) / (1 - P(most frq element))).
+#' @param x A \code{list} of categorical elements
+#' @details To be more generic, the library compute P(most freq element) inplace of traditional formula ln(P(1)/P(0))
+#' @return Weight of evidence
+#' @examples
+#' # Build example list
+#' example_list <- c(1, 1, 1, 2, 2, 3)
+#' 
+#' # Compute weight of evidence
+#' compute_weight_of_evidence(example_list)
+#' @export
+compute_weight_of_evidence <- function(x){
+  # Compute weight of evidence
+  return(log(compute_probability_ratio(x)))
+}
+
+#' Compute probability ratio
+#'
+#' Probability ratio is an aggregation function that can be used for 
+#' \code{build_target_encoding}. Probability ratio is the P(most freq element) / (1 - P(most frq element)).
+#' @param x A \code{list} of categorical elements
+#' @details To be more generic, the library compute P(most freq element) inplace of traditional formula P(1)/P(0)
+#' @return P(most freq element) / (1 - P(most frq element))
+#' @examples
+#' # Build example list
+#' example_list <- c(1, 1, 1, 2, 2, 3)
+#' 
+#' # Compute probability ratio
+#' compute_probability_ratio(example_list)
+#' @export
+compute_probability_ratio <- function(x){
+  # Get most frequent class
+  most_frequent_class <- get_most_frequent_element(x)
+  # Compute class probability
+  probability_of_most_frequent_class <- sum(x == most_frequent_class) / length(x)
+  # Compute weight of evidence
+  return(sum(x == most_frequent_class) / (1 -probability_of_most_frequent_class))
+}
+
+
