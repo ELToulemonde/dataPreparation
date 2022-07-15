@@ -1,3 +1,10 @@
+V 1.0.5
+=======
+FEAT:
+- New functions *compute_probability_ratio* and *compute_weight_of_evidence* to be used for target encoding
+- New function *get_most_frequent_element* to identify most frequent element in a list
+
+
 V 1.0.4
 =======
 

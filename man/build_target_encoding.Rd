@@ -19,7 +19,8 @@ build_target_encoding(
 
 \item{target_col}{column to aggregate (character)}
 
-\item{functions}{functions of aggregation (list or character, default to "mean")}
+\item{functions}{functions of aggregation (list or character, default to "mean"). Functions \code{compute_probability_ratio}
+and \code{compute_weight_of_evidence} are classically used functions}
 
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
