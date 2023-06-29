@@ -9,6 +9,9 @@ get_most_frequent_element(x)
 \arguments{
 \item{x}{A list, \code{data.frame} or \code{data.table} column}
 }
+\value{
+The most frequent element
+}
 \description{
 Provide most frequent element in a list, a \code{data.frame} or \code{data.table} 
 column

@@ -85,7 +85,7 @@ un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) 
 #' Provide most frequent element in a list, a \code{data.frame} or \code{data.table} 
 #' column
 #' @param x A list, \code{data.frame} or \code{data.table} column
-#' @result The most frequent element
+#' @return The most frequent element
 #' @examples 
 #' # Build example list
 #' example_list <- c(1, 1, 2, 3, 1, 4, 1)
