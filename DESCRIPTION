@@ -5,14 +5,14 @@ Authors@R: person("Emmanuel-Lin", "Toulemonde", email = "el.toulemonde@protonmai
 Description: Do most of the painful data preparation for a data science project with a minimum amount of code; Take advantages of 'data.table' efficiency and use some algorithmic trick in order to perform data preparation in a time and RAM efficient way.
 Depends:
     R (>= 3.3.0),
-	lubridate,
-	stringr,
-	Matrix,
-	progress
 License: GPL-3 | file LICENSE
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Suggests: testthat (>= 2.0.0)
-Imports: data.table
+Imports: data.table,
+         	lubridate,
+        	stringr,
+        	Matrix,
+        	progress
 BugReports: https://github.com/ELToulemonde/dataPreparation/issues
