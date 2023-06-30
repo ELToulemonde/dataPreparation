@@ -32,11 +32,11 @@ So that it avoid copying data_set in RAM.
 require(data.table)
 M <- as.data.table(matrix(runif (3e4), ncol = 10))
 
-M_rouded <- fast_round(M, 2)
+M_rounded <- fast_round(M, 2)
 # Lets add some character
 M[, stringColumn := "a string"]
 
 # And use our function
-M_rouded <- fast_round(M, 2)
+M_rounded <- fast_round(M, 2)
 # It still work :) and you don't have to worry about the string.
 }

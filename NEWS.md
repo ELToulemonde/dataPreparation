@@ -5,7 +5,9 @@ V 1.1.1 (June 2023)
     - Speed up examples by providing and using a `tiny_messy_adult` data set.
 - FIX:
     - Fix typo
-
+- TECH:
+    - Speed up CI for MACOS
+  
 V 1.1.0
 =======
 

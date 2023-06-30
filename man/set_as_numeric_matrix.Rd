@@ -24,7 +24,7 @@ class? (logical, default to FALSE)}
 }
 \description{
 Prepare a numeric matrix from a data.table. This matrix is suitable for
-machine learning purposes, since factors are binarized. It may be sparsed,
+machine learning purposes, since factors are binary. It may be sparse,
 include an intercept, and drop a reference column for each factor if
 required (when using \code{lm()}, for instance)
 }

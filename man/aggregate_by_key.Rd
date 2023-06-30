@@ -49,7 +49,7 @@ data("adult")
 # Aggregate it using aggregate_by_key, in order to extract characteristics for each country
 adult_aggregated <- aggregate_by_key(adult, key = 'country')
 
-# Exmple with other functions
+# Example with other functions
 power <- function(x) {sum(x^2)}
 adult_aggregated <- aggregate_by_key(adult, key = 'country', functions = c("power", "sqrt"))
 

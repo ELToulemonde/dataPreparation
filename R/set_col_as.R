@@ -98,7 +98,7 @@ set_col_as_character <- function(data_set, cols = "auto", verbose = TRUE) {
     is.verbose(verbose)
     cols <- real_cols(data_set = data_set, cols = cols, function_name = function_name)
 
-    # Initalization
+    # Initialization
     if (verbose & length(cols) > 0) {
         printl(function_name, ": I will set some columns as character")
         pb <- init_progress_bar(function_name, cols)

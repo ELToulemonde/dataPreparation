@@ -32,7 +32,7 @@ characters, set it to "auto". (character, default to "auto")}
 Recode character into 3 new columns: \cr
 \itemize{
 \item was the value not NA, "NA", "",
-\item how often this value occures,
+\item how often this value occurs,
 \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 }
 }

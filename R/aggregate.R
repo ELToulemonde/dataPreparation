@@ -32,7 +32,7 @@
 #' # Aggregate it using aggregate_by_key, in order to extract characteristics for each country
 #' adult_aggregated <- aggregate_by_key(adult, key = 'country')
 #'
-#'# Exmple with other functions
+#'# Example with other functions
 #' power <- function(x) {sum(x^2)}
 #' adult_aggregated <- aggregate_by_key(adult, key = 'country', functions = c("power", "sqrt"))
 #'
@@ -43,7 +43,7 @@
 #' @importFrom stats sd
 #' @export
 aggregate_by_key <- function(data_set, key, verbose = TRUE, thresh = 53, ...) {
-    # Environement
+    # Environment
     function_name <- "aggregate_by_key"                                           # For print(s)
     args <- list(...)
 
@@ -109,7 +109,7 @@ aggregate_by_key <- function(data_set, key, verbose = TRUE, thresh = 53, ...) {
 #
 # Given a data_set set of two columns, this column will aggregate col by key.
 # For numeric, a list of functions of aggregation are performed
-# For character they are transformed in either a Locigal or a table of occurence
+# For character they are transformed in either a Logical or a table of occurrence
 # @param data_set Matrix, data.frame or data.table
 # @param col name of the column to aggregate
 # @param key name of the key according to which aggregation should be performed
@@ -122,8 +122,8 @@ aggregate_by_key <- function(data_set, key, verbose = TRUE, thresh = 53, ...) {
 #' @import data.table
 aggregate_a_column <- function(data_set, col, key, unique_keys, name_separator = ".",
 functions, thresh = 53, ...) {
-    # Environement
-    function_name <- "aggregateAcolumn"
+    # Environment
+    function_name <- "aggregate_a_column"
     # Sanity check
     data_set <- check_and_return_datatable(data_set)
     is.col(data_set, cols = c(key, col), function_name = function_name)
@@ -171,7 +171,7 @@ functions, thresh = 53, ...) {
                 setnames(result_tmp, c(key, paste("n_unique", col, sep = name_separator)))
             }
         }
-        # Aggregation of logicals
+        # Aggregation of logical
         if (is.logical(data_set[[col]])) {
             result_tmp <- data_set[, sum(get(col)), by = key]
             setnames(result_tmp, c(key, paste("nbr_true", col, sep = name_separator)))

@@ -151,12 +151,12 @@ is.filtering_level <- function(level, function_name = "is.filtering_level") {
 #' require(data.table)
 #' M <- as.data.table(matrix(runif (3e4), ncol = 10))
 #'
-#'M_rouded <- fast_round(M, 2)
+#'M_rounded <- fast_round(M, 2)
 #' # Lets add some character
 #' M[, stringColumn := "a string"]
 #'
 #'# And use our function
-#' M_rouded <- fast_round(M, 2)
+#' M_rounded <- fast_round(M, 2)
 #' # It still work :) and you don't have to worry about the string.
 #' @import data.table
 #' @export
@@ -265,7 +265,7 @@ set_char = "", verbose = TRUE) {
         if (is.factor(data_set[[col]])) {
             if (sum(is.na(data_set[[col]])) > 0) {
                 set(data_set, NULL, col, addNA(data_set[[col]]))
-                # Set level to string NA, otherwise it cause mistake, especialy for randomForests
+                # Set level to string NA, otherwise it cause mistake, especially for randomForests
                 levels(data_set[[col]])[is.na(levels(data_set[[col]]))] <- "NA"
             }
         }
@@ -311,7 +311,7 @@ fast_is_equal <- function(object1, object2) {
     if (length(object1) != length(object2)) {
         return(FALSE)
     }
-    # List handeling
+    # List handling
     if (is.data.frame(object1) || is.list(object1)) {
         for (i in seq_len(length(object1))) {
             if (! fast_is_equal(object1[[i]], object2[[i]])) {
@@ -349,7 +349,7 @@ fast_is_bijection <- function(object1, object2) {
     nrows <- length(object1)
     exp_factor <- 10
     max_power <- floor(log(nrows) / log(exp_factor)) + 1
-    # Create empty object of the correct class. Genreic way (ex: for POSIXct try it)
+    # Create empty object of the correct class. Generic way (ex: for POSIXct try it)
     empty_object_of_class_1 <- get(paste0("as.", class(object1)[1]))(character())
     empty_object_of_class_2 <- get(paste0("as.", class(object2)[1]))(character())
     unique_couples <- data.table(object1 = empty_object_of_class_1, object2 = empty_object_of_class_2)

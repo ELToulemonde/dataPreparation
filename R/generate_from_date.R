@@ -104,7 +104,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
     }
 
     # Initialization
-    # set formating function
+    # set formatting function
     if (type == "yearmonth") {
         format_func <- function(x)format(x, "%Y %b")
     } else if (type == "yearquarter") {
@@ -131,7 +131,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #'
 #'Perform the differences between all dates of the data_set set and optionally with a static date.
 #' @param data_set Matrix, data.frame or data.table
-#' @param cols List of date column(s) name(s) of data_set to comute difference on. To transform all
+#' @param cols List of date column(s) name(s) of data_set to commute difference on. To transform all
 #' dates, set it to "auto". (character, default to "auto")
 #' @param analysis_date Static date (Date or POSIXct, optional)
 #' @param units Unit of difference between too dates (string, default to 'years')
@@ -140,7 +140,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
 #' @details
-#' \code{units} is the same as \code{\link{difftime}} units, but with one more possiblity: years.
+#' \code{units} is the same as \code{\link{difftime}} units, but with one more possibility: years.
 #' @return data_set (as a \code{\link{data.table}}) with more columns.
 #' A numeric column has been added for every couple of Dates. The result is in years.
 #' @examples

@@ -9,7 +9,7 @@ fast_discretization(data_set, bins = NULL, verbose = TRUE)
 \arguments{
 \item{data_set}{Matrix, data.frame or data.table}
 
-\item{bins}{Result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
+\item{bins}{Result of function \code{\link{build_bins}}, (list, default to NULL). \cr
 To perform the same discretization on train and test, it is recommended to compute \code{\link{build_bins}}
 before. If it is kept to NULL, build_bins will be called.\cr
 \code{bins} could also be carefully hand written.}

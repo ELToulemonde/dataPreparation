@@ -44,17 +44,14 @@
 #' head(tiny_messy_adult)
 #'
 #'# Example with ambiguities
-#' \dontrun{
 #' require(data.table)
 #' data(tiny_messy_adult) # reload data
 #' # Add an ambiguity by sorting date1
-#' tiny_messy_adult$date1 = sort(tiny_tiny_messy_adult$date1, na.last = TRUE)
+#' tiny_messy_adult$date1 = sort(tiny_messy_adult$date1, na.last = TRUE)
 #' # Try all three methods:
 #' result_1 = find_and_transform_dates(copy(tiny_messy_adult))
 #' result_2 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "WARN")
 #' result_3 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "SOLVE")
-#' }
-#' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @export
 
 find_and_transform_dates <- function(data_set, cols = "auto", formats = NULL,
@@ -230,7 +227,7 @@ identify_dates_formats <- function(data_set, formats = NULL, n_test = 30, ambigu
         stop(paste0(function_name, ": data_set should be some characters, numerics or factor of character."))
     }
 
-    # Initalization
+    # Initialization
     date_sep <- get_possible_separators()
     # Get a few lines that aren't NA, NULL nor ""
     if (is.factor(data_set)) { # If it's a factor, we take levels to convert
@@ -306,7 +303,7 @@ identify_time_stamps_formats <- function(data_set) {
     return(NULL)
 }
 
-# Control that date is the same (with more checks like: without 0 or tolower? or boths?)
+# Control that date is the same (with more checks like: without 0 or tolower? or both?)
 # To-do find a cleaner way to test all comparaisons
 control_date_conversion <- function(un_converted, original) {
     without_0 <- gsub("(?<=^|(?![:])[[:punct:]])0", "", un_converted, perl = TRUE)
@@ -423,8 +420,8 @@ get_all_possible_dates_formats <- function(date_sep = c(",", "/", "-", "_", ":")
         }
     }
 
-    # Complete the list with the same formats but with a time format at the and separed by
-    # a ' ' or a "T" and optionaly with a "Z" at the end
+    # Complete the list with the same formats but with a time format at the and separated by
+    # a ' ' or a "T" and optionally with a "Z" at the end
     formats <- c(date_formats, hours_format)
     if (date_hours) {
         for (datesFormat in date_formats) {

@@ -18,8 +18,8 @@ Return \code{data_set} transformed in order to make it have the same shape as
 \code{reference_set}
 }
 \description{
-Transform \code{data_set} into the same shape as \code{reference_set}. Espacially this
-function will be usefull to make your test set have the same shape as your train set.
+Transform \code{data_set} into the same shape as \code{reference_set}. Especially this
+function will be useful to make your test set have the same shape as your train set.
 }
 \details{
 This function will make sure that \code{data_set} and \code{reference_set}
@@ -34,7 +34,6 @@ that everything will go smoothly. But if this function change a lot of stuff you
 look to your preparation process, there might be something wrong.
 }
 \examples{
-\dontrun{
 # Build a train and a test
 data(tiny_messy_adult)
 data("adult")
@@ -49,6 +48,4 @@ test <- prepare_set(test, verbose = FALSE, key = "country")
 test <- same_shape(test, train)
 # As one can see in log, a lot of small change had to be done.
 # This is an extreme case but you get the idea.
-}
-# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

@@ -15,7 +15,7 @@
 #'      (character)
 #'   \item \code{analysis_date} A date at which the data_set should be aggregated
 #'      (differences between every date and analysis_date will be computed) (Date)
-#'   \item \code{n_unfactor} Number of max value in a facotr, set it to -1 to disable
+#'   \item \code{n_unfactor} Number of max value in a factor, set it to -1 to disable
 #'   \code{\link{un_factor}} function.  (numeric, default to 53)
 #'   \item \code{digits} The number of digits after comma (optional, numeric, if set will perform
 #'      \code{\link{fast_round}})

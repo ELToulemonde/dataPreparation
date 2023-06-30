@@ -69,7 +69,6 @@ find_and_transform_numerics <- function(data_set, cols = "auto", n_test = 30, ve
         }
     }
 
-
     # Wrap-up
     return(data_set)
 }
@@ -132,8 +131,8 @@ identify_numerics_formats <- function(data_set) {
         stop("identify_numerics_formats: data_set should be some characters")
     }
 
-    # Check convertions either strip or don't strip
-    options(warn = - 1) # Localy disable warning (we are trying to transform stuff if there is a mistake we skip it)
+    # Check conversions either strip or don't strip
+    options(warn = - 1) # Locally disable warning (we are trying to transform stuff if there is a mistake we skip it)
     data_set_converted <- as.numeric(data_set)
     data_set_converted_stripped <- as.numeric_strip(data_set)
     options(warn = 0)

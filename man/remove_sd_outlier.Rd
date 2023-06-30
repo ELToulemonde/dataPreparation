@@ -12,7 +12,7 @@ remove_sd_outlier(data_set, cols = "auto", n_sigmas = 3, verbose = TRUE)
 \item{cols}{List of numeric column(s) name(s) of data_set to transform. To transform all
 numeric columns, set it to "auto".  (character, default to "auto")}
 
-\item{n_sigmas}{number of times standard deviation is accepted (interger, default to 3)}
+\item{n_sigmas}{number of times standard deviation is accepted (integer, default to 3)}
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 }
@@ -25,10 +25,10 @@ Remove outliers based on standard deviation thresholds. \cr
 Only values within \code{mean - sd * n_sigmas} and \code{mean + sd * n_sigmas} are kept.
 }
 \details{
-Filtering is made column by column, meaning that extrem values from first element
-of \code{cols} are removed, then extrem values from second element of \code{cols} are removed,
+Filtering is made column by column, meaning that extreme values from first element
+of \code{cols} are removed, then extreme values from second element of \code{cols} are removed,
 ... \cr
-So if filtering is perfomed on too many column, there ia high risk that a lot of rows will be dropped.
+So if filtering is performed on too many column, there ia high risk that a lot of rows will be dropped.
 }
 \examples{
 # Given
@@ -36,12 +36,12 @@ library(data.table)
 col_vals <- runif(1000)
 col_mean <- mean(col_vals)
 col_sd <- sd(col_vals)
-extrem_val <- col_mean + 6 * col_sd
-data_set <- data.table(num_col = c(col_vals, extrem_val))
+extreme_val <- col_mean + 6 * col_sd
+data_set <- data.table(num_col = c(col_vals, extreme_val))
 
 # When
 data_set <- remove_sd_outlier(data_set, cols = "auto", n_sigmas = 3, verbose = TRUE)
 
-# Then extrem value is no longer in set
-extrem_val \%in\% data_set[["num_col"]] # Is false
+# Then extreme value is no longer in set
+extreme_val \%in\% data_set[["num_col"]] # Is false
 }

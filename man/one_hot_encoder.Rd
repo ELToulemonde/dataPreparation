@@ -15,7 +15,7 @@ one_hot_encoder(
 \arguments{
 \item{data_set}{Matrix, data.frame or data.table}
 
-\item{encoding}{Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
+\item{encoding}{Result of function \code{\link{build_encoding}}, (list, default to NULL). \cr
 To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
 before. If it is kept to NULL, build_encoding will be called.}
 
@@ -34,7 +34,7 @@ Transform factor column into 0/1 columns with one column per values of the colum
 }
 \details{
 If you don't want to edit your data set consider sending \code{copy(data_set)} as an input.\cr
-Please \strong{be carefull} using this function, it will generate as many columns as there different values
+Please \strong{be careful} using this function, it will generate as many columns as there different values
 in your column and might use a lot of RAM. To be safe, you can use parameter
  \code{min_frequency} in \code{\link{build_encoding}}.
 }

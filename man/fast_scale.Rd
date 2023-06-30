@@ -9,7 +9,7 @@ fast_scale(data_set, scales = NULL, way = "scale", verbose = TRUE)
 \arguments{
 \item{data_set}{Matrix, data.frame or data.table}
 
-\item{scales}{Result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
+\item{scales}{Result of function \code{\link{build_scales}}, (list, default to NULL). \cr
 To perform the same scaling on train and test, it is recommended to compute \code{\link{build_scales}}
 before. If it is kept to NULL, build_scales will be called.}
 
@@ -25,9 +25,9 @@ before. If it is kept to NULL, build_scales will be called.}
 Perform efficient scaling on a data set.
 }
 \details{
-Scaling numeric values is usefull for some machine learning algorithm such as
+Scaling numeric values is useful for some machine learning algorithm such as
  logistic regression or neural networks. \cr
- Unscaling numeric values can be very usefull for most post-model analysis to do so set way to "unscale". \cr
+ Unscaling numeric values can be very useful for most post-model analysis to do so set way to "unscale". \cr
 This implementation of scale will be faster that \code{\link{scale}} for large data sets.
 }
 \examples{

@@ -38,7 +38,7 @@ Additional arguments are available to tune pipeline:
      (character)
   \item \code{analysis_date} A date at which the data_set should be aggregated
      (differences between every date and analysis_date will be computed) (Date)
-  \item \code{n_unfactor} Number of max value in a facotr, set it to -1 to disable
+  \item \code{n_unfactor} Number of max value in a factor, set it to -1 to disable
   \code{\link{un_factor}} function.  (numeric, default to 53)
   \item \code{digits} The number of digits after comma (optional, numeric, if set will perform
      \code{\link{fast_round}})
@@ -57,7 +57,6 @@ Additional arguments are available to tune pipeline:
 }
 \examples{
 # Load ugly set
-\dontrun{
 data(tiny_messy_adult)
 
 # Have a look to set
@@ -76,6 +75,4 @@ adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01")
 power <- function(x) {sum(x^2)}
 adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01"), key = "country",
                         functions = c("min", "max", "mean", "power"))
-}
-# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

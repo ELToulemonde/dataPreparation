@@ -1,7 +1,7 @@
 #' Give same shape
 #'
-#'Transform \code{data_set} into the same shape as \code{reference_set}. Espacially this
-#' function will be usefull to make your test set have the same shape as your train set.
+#'Transform \code{data_set} into the same shape as \code{reference_set}. Especially this
+#' function will be useful to make your test set have the same shape as your train set.
 #' @param data_set Matrix, data.frame or data.table to transform
 #' @param reference_set Matrix, data.frame or data.table
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
@@ -19,7 +19,6 @@
 #' that everything will go smoothly. But if this function change a lot of stuff you should have a
 #' look to your preparation process, there might be something wrong.
 #' @examples
-#' \dontrun{
 #' # Build a train and a test
 #' data(tiny_messy_adult)
 #' data("adult")
@@ -34,8 +33,6 @@
 #' test <- same_shape(test, train)
 #' # As one can see in log, a lot of small change had to be done.
 #' # This is an extreme case but you get the idea.
-#' }
-#' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 #' @import data.table
 #' @export
 same_shape <- function(data_set, reference_set, verbose = TRUE) {
@@ -135,7 +132,7 @@ drop_unwanted_cols <- function(data_set, reference_set, function_name, verbose) 
     drop_list <- names(data_set)[! names(data_set) %in% names(reference_set)]
     if (length(drop_list) > 0) {
         if (verbose) {
-            printl(function_name, ": the folowing columns are in data_set but not in reference_set: I drop them: ")
+            printl(function_name, ": the following columns are in data_set but not in reference_set: I drop them: ")
             print(drop_list)
         }
         set(data_set, NULL, drop_list, NULL)

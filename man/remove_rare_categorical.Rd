@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_filtering.R
 \name{remove_rare_categorical}
 \alias{remove_rare_categorical}
-\title{Filter rare categoricals}
+\title{Filter rare categories}
 \usage{
 remove_rare_categorical(
   data_set,
@@ -17,7 +17,7 @@ remove_rare_categorical(
 \item{cols}{List of column(s) name(s) of data_set to transform. To transform all
 columns, set it to "auto".  (character, default to "auto")}
 
-\item{threshold}{share of occurencies under which row should be removed (numeric, default to 0.01)}
+\item{threshold}{share of occurrences under which row should be removed (numeric, default to 0.01)}
 
 \item{verbose}{Should the algorithm talk? (logical, default to TRUE)}
 }
@@ -26,13 +26,13 @@ Same dataset with less rows, edited by \strong{reference}. \cr
 If you don't want to edit by reference please provide set \code{data_set = copy(data_set)}.
 }
 \description{
-Filter rows that have a rare occurences
+Filter rows that have a rare occurrences
 }
 \details{
-Filtering is made column by column, meaning that extrem values from first element
-of \code{cols} are removed, then extrem values from second element of \code{cols} are removed,
+Filtering is made column by column, meaning that extreme values from first element
+of \code{cols} are removed, then extreme values from second element of \code{cols} are removed,
 ... \cr
-So if filtering is perfomed on too many column, there ia high risk that a lot of rows will be dropped.
+So if filtering is performed on too many column, there ia high risk that a lot of rows will be dropped.
 }
 \examples{
 # Given a set with rare "C"
