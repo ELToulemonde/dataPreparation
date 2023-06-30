@@ -36,7 +36,7 @@
 #' # This is an extreme case but you get the idea.
 #' }
 #' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
-@import data.table
+#' @import data.table
 #' @export
 same_shape <- function(data_set, reference_set, verbose = TRUE) {
     # Working environment
