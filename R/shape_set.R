@@ -20,7 +20,7 @@
 #' All these changes will happen \strong{by reference}.
 #' @export
 shape_set <- function(data_set, final_form = "data.table", thresh = 10, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "shape_set"
 
     # Sanity check

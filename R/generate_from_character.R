@@ -16,19 +16,19 @@
 #' @return \code{data_set} with new columns. \code{data_set} is edited by \strong{reference}.
 #' @examples
 #' # Load data set
-#' data(messy_adult)
-#' messy_adult <- un_factor(messy_adult, verbose = FALSE) # un factor ugly factors
+#' data(tiny_messy_adult)
+#' tiny_messy_adult <- un_factor(tiny_messy_adult, verbose = FALSE) # un factor ugly factors
 #'
 #'# transform column "mail"
-#' messy_adult <- generate_from_character(messy_adult, cols = "mail")
-#' head(messy_adult)
+#' tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "mail")
+#' head(tiny_messy_adult)
 #'
 #'# To transform all characters columns:
-#' messy_adult <- generate_from_character(messy_adult, cols = "auto")
+#' tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "auto")
 #' @import data.table
 #' @export
 generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, drop = FALSE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_from_character"
 
     # Sanity check

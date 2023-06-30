@@ -62,8 +62,8 @@ If it is able to solve it, it will transform the column, if not it will print th
 
 \examples{
 # Load exemple set
-data(messy_adult)
-head(messy_adult)
+data(tiny_messy_adult)
+head(tiny_messy_adult)
 # using the find_and_transform_dates
-identify_dates(messy_adult, n_test = 5)
+identify_dates(tiny_messy_adult, n_test = 5)
 }

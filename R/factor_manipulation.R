@@ -30,7 +30,7 @@
 #'@import data.table
 #' @export
 un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) {
-    # Working environement
+    # tiny_messy_adult$ing environement
     function_name <- "un_factor"
 
     # Sanity check

@@ -378,7 +378,7 @@ function.maker <- function(object, type, function_name = "function.maker", objec
 #### make new col name #########################################################################################
 #################################################################################################################
 make_new_col_name <- function(new_col, col_names) {
-    # Working environement
+    # Working environment
     function_name <- "make_new_col_name"
 
     # Sanit check

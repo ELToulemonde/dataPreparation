@@ -58,23 +58,23 @@ Additional arguments are available to tune pipeline:
 \examples{
 # Load ugly set
 \dontrun{
-data(messy_adult)
+data(tiny_messy_adult)
 
 # Have a look to set
-head(messy_adult)
+head(tiny_messy_adult)
 
 # Compute full pipeline
-clean_adult <- prepare_set(messy_adult)
+clean_adult <- prepare_set(tiny_messy_adult)
 
 # With a reference date
-adult_agg <- prepare_set(messy_adult, analysis_date = as.Date("2017-01-01"))
+adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01"))
 
 # Add aggregation by country
-adult_agg <- prepare_set(messy_adult, analysis_date = as.Date("2017-01-01"), key = "country")
+adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01"), key = "country")
 
 # With some new aggregation functions
 power <- function(x) {sum(x^2)}
-adult_agg <- prepare_set(messy_adult, analysis_date = as.Date("2017-01-01"), key = "country",
+adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01"), key = "country",
                         functions = c("min", "max", "mean", "power"))
 }
 # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!

@@ -13,15 +13,15 @@
 #' Using equal freq first bin will start at -Inf and last bin will end at +Inf.
 #' @examples
 #' # Load data
-#' data(messy_adult)
-#' head(messy_adult)
+#' data(tiny_messy_adult)
+#' head(tiny_messy_adult)
 #'
 #'# Compute bins
-#' bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+#' bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 #' print(bins)
 #' @export
 build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_discretization"
 
     # Sanity check
@@ -87,17 +87,17 @@ build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width
 #' @details NAs will be putted in an NA category.
 #' @examples
 #' # Load data
-#' data(messy_adult)
-#' head(messy_adult)
+#' data(tiny_messy_adult)
+#' head(tiny_messy_adult)
 #'
 #'# Compute bins
-#' bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+#' bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 #'
 #'# Discretize
-#' messy_adult <- fast_discretization(messy_adult, bins = bins)
+#' tiny_messy_adult <- fast_discretization(tiny_messy_adult, bins = bins)
 #'
 #'# Control
-#' head(messy_adult)
+#' head(tiny_messy_adult)
 #'
 #' # Example with hand written bins
 #' data("adult")
@@ -105,7 +105,7 @@ build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width
 #' print(table(adult$age))
 #' @export
 fast_discretization <- function(data_set, bins = NULL, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_discretization"
 
     # Sanity check
@@ -162,7 +162,7 @@ find_splits <- function(x, splits) {
 # @param n_bins interger number of wanted bins
 # @return a vector of limits (lim1, ..., lim(n_bins +1))
 equal_width_splits <- function(data_set, n_bins, col = "data_set", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "equal_width_splits"
 
     # Sanity check
@@ -188,7 +188,7 @@ equal_width_splits <- function(data_set, n_bins, col = "data_set", verbose = TRU
 # @param n_bins interger number of wanted bins
 # @return a vector of limits (-Inf, lim1, ..., +Inf)
 equal_freq_splits <- function(data_set, n_bins, col = "data_set", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "equal_freq_splits"
 
     # Sanity check

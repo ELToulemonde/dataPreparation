@@ -28,17 +28,17 @@ NAs will be putted in an NA category.
 }
 \examples{
 # Load data
-data(messy_adult)
-head(messy_adult)
+data(tiny_messy_adult)
+head(tiny_messy_adult)
 
 # Compute bins
-bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 
 # Discretize
-messy_adult <- fast_discretization(messy_adult, bins = bins)
+tiny_messy_adult <- fast_discretization(tiny_messy_adult, bins = bins)
 
 # Control
-head(messy_adult)
+head(tiny_messy_adult)
 
 # Example with hand written bins
 data("adult")

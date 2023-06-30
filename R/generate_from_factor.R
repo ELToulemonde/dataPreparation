@@ -16,18 +16,18 @@
 #' @return \code{data_set} with new columns. \code{data_set} is edited by \strong{reference}.
 #' @examples
 #' # Load data set
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# transform column "type_employer"
-#' messy_adult <- generate_from_factor(messy_adult, cols = "type_employer")
-#' head(messy_adult)
+#' tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "type_employer")
+#' head(tiny_messy_adult)
 #'
 #'# To transform all factor columns:
-#' messy_adult <- generate_from_factor(messy_adult, cols = "auto")
+#' tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "auto")
 #' @import data.table
 #' @export
 generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop = FALSE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_from_factor"
 
     # Sanity check
@@ -90,13 +90,13 @@ generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop =
 #' in your column and might use a lot of RAM. To be safe, you can use parameter
 #'  \code{min_frequency} in \code{\link{build_encoding}}.
 #' @examples
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# Compute encoding
-#' encoding <- build_encoding(messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
+#' encoding <- build_encoding(tiny_messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
 #'
 #'# Apply it
-#' messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
+#' tiny_messy_adult <- one_hot_encoder(tiny_messy_adult, encoding = encoding, drop = TRUE)
 #'
 #'# Apply same encoding to adult
 #' data(adult)
@@ -108,7 +108,7 @@ generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop =
 #' @export
 #' @import data.table
 one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose = TRUE, drop = FALSE) {
-    # Working environement
+    # Working environment
     function_name <- "one_hot_encoder"
 
     # Sanity check
@@ -196,7 +196,7 @@ one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose
 #' @import data.table
 #' @export
 build_encoding <- function(data_set, cols = "auto", verbose = TRUE, min_frequency = 0, ...) {
-    # Working environement
+    # Working environment
     function_name <- "build_encoding"
 
     # Sanity check
@@ -274,7 +274,7 @@ build_encoding <- function(data_set, cols = "auto", verbose = TRUE, min_frequenc
 #' @import data.table
 #' @export
 target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "target_encode"
 
     # Sanity check
@@ -333,7 +333,7 @@ target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRU
 #' @import data.table
 #' @export
 build_target_encoding <- function(data_set, cols_to_encode, target_col, functions = "mean", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "build_target_encoding"
 
     # Sanity check

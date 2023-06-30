@@ -14,7 +14,7 @@
 #'print(scales)
 #' @export
 build_scales <- function(data_set, cols = "auto", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "build_scales"
 
     # Sanity check
@@ -81,7 +81,7 @@ build_scales <- function(data_set, cols = "auto", verbose = TRUE) {
 #' print(sd(adult$age)) # About 13.6
 #' @export
 fast_scale <- function(data_set, scales = NULL, way = "scale", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_scale"
 
     # Sanity check

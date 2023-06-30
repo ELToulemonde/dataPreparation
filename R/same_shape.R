@@ -21,7 +21,7 @@
 #' @examples
 #' \dontrun{
 #' # Build a train and a test
-#' data("messy_adult")
+#' data(tiny_messy_adult)
 #' data("adult")
 #' train <- messy_adult
 #' test <- adult # So test will have missing columns
@@ -39,7 +39,7 @@
 #' @import data.table
 #' @export
 same_shape <- function(data_set, reference_set, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "same_shape"
 
     # Sanity check

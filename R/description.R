@@ -8,14 +8,14 @@
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @examples
 #' # Load exemple set
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# Describe it
-#' description(messy_adult)
+#' description(tiny_messy_adult)
 #' @import data.table
 #' @export
 description <- function(data_set, level = 1, path_to_write = NULL, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "description"
 
     # Sanity check

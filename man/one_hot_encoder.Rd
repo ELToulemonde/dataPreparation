@@ -39,13 +39,13 @@ in your column and might use a lot of RAM. To be safe, you can use parameter
  \code{min_frequency} in \code{\link{build_encoding}}.
 }
 \examples{
-data(messy_adult)
+data(tiny_messy_adult)
 
 # Compute encoding
-encoding <- build_encoding(messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
+encoding <- build_encoding(tiny_messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
 
 # Apply it
-messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
+tiny_messy_adult <- one_hot_encoder(tiny_messy_adult, encoding = encoding, drop = TRUE)
 
 # Apply same encoding to adult
 data(adult)

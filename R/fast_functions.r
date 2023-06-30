@@ -30,7 +30,7 @@
 #' @import data.table
 #' @export
 fast_filter_variables <- function(data_set, level = 3, keep_cols = NULL, verbose = TRUE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "fast_filter_variables"
     args <- list(...)
     data_set_name <- get_data_set_name_from_args(args)
@@ -161,7 +161,7 @@ is.filtering_level <- function(level, function_name = "is.filtering_level") {
 #' @import data.table
 #' @export
 fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
-  # Working environement
+  # Working environment
   function_name <- "fast_round"
 
   # Sanity check
@@ -234,7 +234,7 @@ fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
 #' @export
 fast_handle_na <- function(data_set, set_num = 0, set_logical = FALSE,
 set_char = "", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_handle_na"
 
     # Sanity check
@@ -299,7 +299,7 @@ set_char = "", verbose = TRUE) {
 #' fast_is_equal(myVector, myVector)
 #'
 #'# Test on a data.table
-#' fast_is_equal(messy_adult, messy_adult)
+#' fast_is_equal(tiny_messy_adult, messy_adult)
 #' @import data.table
 #' @export
 fast_is_equal <- function(object1, object2) {

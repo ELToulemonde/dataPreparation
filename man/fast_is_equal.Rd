@@ -31,5 +31,5 @@ myVector <- rep(x = "a", 10000)
 fast_is_equal(myVector, myVector)
 
 # Test on a data.table
-fast_is_equal(messy_adult, messy_adult)
+fast_is_equal(tiny_messy_adult, messy_adult)
 }
