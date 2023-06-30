@@ -19,9 +19,10 @@
 #' that everything will go smoothly. But if this function change a lot of stuff you should have a
 #' look to your preparation process, there might be something wrong.
 #' @examples
+#' \dontrun{
 #' # Build a train and a test
 #' data(tiny_messy_adult)
-#' data("adult")
+#' data(adult)
 #' train <- messy_adult
 #' test <- adult # So test will have missing columns
 #'
@@ -33,7 +34,9 @@
 #' test <- same_shape(test, train)
 #' # As one can see in log, a lot of small change had to be done.
 #' # This is an extreme case but you get the idea.
-#' @import data.table
+#' }
+#' # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
+@import data.table
 #' @export
 same_shape <- function(data_set, reference_set, verbose = TRUE) {
     # Working environment
