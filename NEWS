@@ -18,8 +18,8 @@ V 1.1.0
 - TECH:
     - Upgrade package install in CI
 
-V 1.0.5
-=======
+V 1.0.5 (July 2022)
+==================
 FEAT:
 
 - New functions *compute_probability_ratio* and *compute_weight_of_evidence* to be used for target encoding

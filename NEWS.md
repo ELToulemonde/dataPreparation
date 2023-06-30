@@ -4,10 +4,10 @@ V 1.1.1 (June 2023)
 - FEAT:
     - Speed up examples by providing and using a `tiny_messy_adult` data set.
 - FIX:
-    - Fix typo
+    - Fix typos
 - TECH:
     - Speed up CI for MACOS
-  
+
 V 1.1.0
 =======
 
@@ -18,8 +18,8 @@ V 1.1.0
 - TECH:
     - Upgrade package install in CI
 
-V 1.0.5
-=======
+V 1.0.5 (July 2022)
+==================
 FEAT:
 
 - New functions *compute_probability_ratio* and *compute_weight_of_evidence* to be used for target encoding
