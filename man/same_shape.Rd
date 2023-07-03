@@ -34,9 +34,10 @@ that everything will go smoothly. But if this function change a lot of stuff you
 look to your preparation process, there might be something wrong.
 }
 \examples{
+\dontrun{
 # Build a train and a test
 data(tiny_messy_adult)
-data("adult")
+data(adult)
 train <- messy_adult
 test <- adult # So test will have missing columns
 
@@ -48,4 +49,6 @@ test <- prepare_set(test, verbose = FALSE, key = "country")
 test <- same_shape(test, train)
 # As one can see in log, a lot of small change had to be done.
 # This is an extreme case but you get the idea.
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

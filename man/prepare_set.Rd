@@ -57,6 +57,7 @@ Additional arguments are available to tune pipeline:
 }
 \examples{
 # Load ugly set
+\dontrun{
 data(tiny_messy_adult)
 
 # Have a look to set
@@ -75,4 +76,6 @@ adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01")
 power <- function(x) {sum(x^2)}
 adult_agg <- prepare_set(tiny_messy_adult, analysis_date = as.Date("2017-01-01"), key = "country",
                         functions = c("min", "max", "mean", "power"))
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

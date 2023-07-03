@@ -69,6 +69,7 @@ find_and_transform_dates(tiny_messy_adult, n_test = 5)
 head(tiny_messy_adult)
 
 # Example with ambiguities
+\dontrun{
 require(data.table)
 data(tiny_messy_adult) # reload data
 # Add an ambiguity by sorting date1
@@ -77,4 +78,6 @@ tiny_messy_adult$date1 = sort(tiny_messy_adult$date1, na.last = TRUE)
 result_1 = find_and_transform_dates(copy(tiny_messy_adult))
 result_2 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "WARN")
 result_3 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "SOLVE")
+}
+# "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }
