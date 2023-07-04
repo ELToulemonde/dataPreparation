@@ -37,6 +37,7 @@ don't log. (\code{verbose = 1} is equivalent to \code{verbose = TRUE}).
 }
 \examples{
 # First let's build a data.frame with 3 columns: a constant column, and a column in double
+\dontrun{
 df <- data.frame(col1 = 1, col2 = rnorm(1e6), col3 = sample(c(1, 2), 1e6, replace = TRUE))
 df$col4 <- df$col2
 df$col5[df$col3 == 1] = "a"
@@ -46,4 +47,6 @@ head(df)
 # Let's filter columns:
 df <- fast_filter_variables(df)
 head(df)
+}
+# Don't run for CRAN, you can run example
 }

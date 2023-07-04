@@ -18,6 +18,7 @@
 #' or bijection of another have been deleted.
 #' @examples
 #' # First let's build a data.frame with 3 columns: a constant column, and a column in double
+#' \dontrun{
 #' df <- data.frame(col1 = 1, col2 = rnorm(1e6), col3 = sample(c(1, 2), 1e6, replace = TRUE))
 #' df$col4 <- df$col2
 #' df$col5[df$col3 == 1] = "a"
@@ -27,6 +28,8 @@
 #' # Let's filter columns:
 #' df <- fast_filter_variables(df)
 #' head(df)
+#' }
+#' # Don't run for CRAN, you can run example
 #' @import data.table
 #' @export
 fast_filter_variables <- function(data_set, level = 3, keep_cols = NULL, verbose = TRUE, ...) {
