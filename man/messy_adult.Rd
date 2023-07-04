@@ -8,7 +8,7 @@
 A data.table with 32561 rows and 24 variables.
 }
 \usage{
-data("messy_adult")
+data(tiny_messy_adult)
 }
 \description{
 For examples and tutorials, messy_adult has been built using UCI \code{adult}.

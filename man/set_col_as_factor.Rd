@@ -29,11 +29,11 @@ that should be handled in another way.
 }
 \examples{
 # Load messy_adult
-data("messy_adult")
+data(tiny_messy_adult)
 
 # we wil change education
-messy_adult <- set_col_as_factor(messy_adult, cols = "education")
+tiny_messy_adult <- set_col_as_factor(tiny_messy_adult, cols = "education")
 
-sapply(messy_adult[, .(education)], class)
+sapply(tiny_messy_adult[, .(education)], class)
 # education is now a factor
 }

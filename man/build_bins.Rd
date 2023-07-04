@@ -36,10 +36,10 @@ Using equal freq first bin will start at -Inf and last bin will end at +Inf.
 }
 \examples{
 # Load data
-data(messy_adult)
-head(messy_adult)
+data(tiny_messy_adult)
+head(tiny_messy_adult)
 
 # Compute bins
-bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 print(bins)
 }

@@ -17,7 +17,7 @@ generate_date_diffs(
 \arguments{
 \item{data_set}{Matrix, data.frame or data.table}
 
-\item{cols}{List of date column(s) name(s) of data_set to comute difference on. To transform all
+\item{cols}{List of date column(s) name(s) of data_set to commute difference on. To transform all
 dates, set it to "auto". (character, default to "auto")}
 
 \item{analysis_date}{Static date (Date or POSIXct, optional)}
@@ -39,7 +39,7 @@ A numeric column has been added for every couple of Dates. The result is in year
 Perform the differences between all dates of the data_set set and optionally with a static date.
 }
 \details{
-\code{units} is the same as \code{\link{difftime}} units, but with one more possiblity: years.
+\code{units} is the same as \code{\link{difftime}} units, but with one more possibility: years.
 }
 \examples{
 # First build a useful data_set set

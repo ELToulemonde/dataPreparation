@@ -1,14 +1,14 @@
 #' Unfactor factor with too many values
 #'
-#'To unfactorize all columns that have more than a given amount of various values. This
-#'  function will be usefull after using some reading functions that put every string as factor.
+#'To un-factorize all columns that have more than a given amount of various values. This
+#'  function will be usefully after using some reading functions that put every string as factor.
 #' @param data_set Matrix, data.frame or data.table
 #' @param cols List of column(s) name(s) of data_set to look into. To check all all columns, set it
 #'  to "auto". (characters, default to "auto")
 #' @param n_unfactor Number of max element in a factor (numeric, default to 53)
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
 #' @details
-#' If a factor has (strictly) more than \code{n_unfactor} values it is unfactored. \cr
+#' If a factor has (strictly) more than \code{n_unfactor} values it is un-factored. \cr
 #' It is recommended to use \code{\link{find_and_transform_numerics}} and
 #'  \code{\link{find_and_transform_dates}} after this function.\cr
 #' If \code{n_unfactor} is set to -1, nothing will be performed. \cr
@@ -30,7 +30,7 @@
 #'@import data.table
 #' @export
 un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) {
-    # Working environement
+    # tiny_messy_adult$ing environment
     function_name <- "un_factor"
 
     # Sanity check
@@ -60,7 +60,7 @@ un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) 
     for (col in cols) {
         if (length(levels(data_set[[col]])) > n_unfactor) {
             if (verbose) {
-                printl(function_name, ": I unfactor ", col, ".")
+                printl(function_name, ": I un-factor ", col, ".")
                 count <- count + 1
             }
             set(data_set, NULL, col, levels(data_set[[col]])[data_set[[col]]])
@@ -72,7 +72,7 @@ un_factor <- function(data_set, cols = "auto", n_unfactor = 53, verbose = TRUE) 
     }
     if (verbose) {
         printl(function_name, ": It took me ", round((proc.time() - start_time)[[3]], 2),
-        "s to unfactor ", count, " column(s).")
+        "s to un-factor ", count, " column(s).")
     }
 
     # Wrap-up

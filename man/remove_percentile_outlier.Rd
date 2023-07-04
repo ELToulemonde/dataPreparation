@@ -30,10 +30,10 @@ Remove outliers based on percentiles. \cr
 Only values within \code{n}th and \code{100 - n}th percentiles are kept.
 }
 \details{
-Filtering is made column by column, meaning that extrem values from first element
-of \code{cols} are removed, then extrem values from second element of \code{cols} are removed,
+Filtering is made column by column, meaning that extreme values from first element
+of \code{cols} are removed, then extreme values from second element of \code{cols} are removed,
 ... \cr
-So if filtering is perfomed on too many column, there ia high risk that a lot of rows will be dropped.
+So if filtering is performed on too many column, there ia high risk that a lot of rows will be dropped.
 }
 \examples{
 # Given
@@ -43,7 +43,7 @@ data_set <- data.table(num_col = seq_len(100))
 # When
 data_set <- remove_percentile_outlier(data_set, cols = "auto", percentile = 1, verbose = TRUE)
 
-# Then extrem value is no longer in set
+# Then extreme value is no longer in set
 1 \%in\% data_set[["num_col"]] # Is false
 2 \%in\% data_set[["num_col"]] # Is true
 }

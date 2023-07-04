@@ -2,7 +2,7 @@
 ############################## findNFirstNonNull #################################################
 ###################################################################################################
 # Description
-# Dichotomic search of non-null elements
+# Binary search of non-null elements
 # Search from 1 to n then n+1 to 2*n then 2*n+1 to 4*n...
 find_n_first_non_null <- function(object, n) {
     # Working environment
@@ -70,7 +70,7 @@ check_and_return_datatable <- function(data_set, data_set_name = "data_set") {
             "I changed them to be unique."))
         setDT(data_set, check.names = TRUE)
     }
-    # Since we are using set in all the package, we make sure that data_set is overallocate,
+    # Since we are using set in all the package, we make sure that data_set is over-allocate,
     # see data.table doc, among it
     # see: https://github.com/Rdatatable/data.table/issues/755
     data_set <- alloc.col(data_set)
@@ -222,7 +222,7 @@ printl <- function(...) {
 #' @importFrom progress progress_bar
 init_progress_bar <- function(function_name, cols_names) {
     if (length(cols_names) == 0) {
-        # No prossessing to do, so no progress bar
+        # No processing to do, so no progress bar
         return(NULL)
     }
     pb <- progress_bar$new(
@@ -242,11 +242,11 @@ add_a_tick_to_progress_bar <- function(pb) {
 # @param data_set matrix, data.frame or data.table
 # @param nb_rows number of rows you want to check (integer)
 # @param function_name to log the name of the function which is calling this one (character)
-# @param variable_name name of the variable you are controling (character)
+# @param variable_name name of the variable you are controlling (character)
 # @return nb_rows might have been changed to be conform
 # @details
 # If nb_rows is greater than the numer of line of data_set, it will be set to nrow(data_set).
-# If nb_rows is loawer than 1, it will be set to min(30, nrow(data_set)).
+# If nb_rows is lower than 1, it will be set to min(30, nrow(data_set)).
 # If nb_rows is a float it will be rounded
 control_nb_rows <- function(data_set, nb_rows, function_name = "", variable_name = "nb_rows") {
     # Sanity check
@@ -313,7 +313,7 @@ is.agg_function <- function(functions, function_name = "is.agg_function") {
 # Make if a function
 #
 # Taking a constant and transforming it into a function. If it's a function don't do anything. \cr
-# Control that tehe function is giving the wanted type of input
+# Control that the function is giving the wanted type of input
 # @param object object to be transformed and control
 # @param function_name for log, from where do you call it (character, default to "function.maker")
 # @param object_name for log, object name when called (character)
@@ -378,10 +378,10 @@ function.maker <- function(object, type, function_name = "function.maker", objec
 #### make new col name #########################################################################################
 #################################################################################################################
 make_new_col_name <- function(new_col, col_names) {
-    # Working environement
+    # Working environment
     function_name <- "make_new_col_name"
 
-    # Sanit check
+    # Sanity check
     if (! is.character(new_col) || ! is.character(col_names)) {
         stop(paste0(function_name, ": new_col and col_names should be character."))
     }

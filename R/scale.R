@@ -14,7 +14,7 @@
 #'print(scales)
 #' @export
 build_scales <- function(data_set, cols = "auto", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "build_scales"
 
     # Sanity check
@@ -48,16 +48,16 @@ build_scales <- function(data_set, cols = "auto", verbose = TRUE) {
 #'
 #'Perform efficient scaling on a data set.
 #' @param data_set Matrix, data.frame or data.table
-#' @param scales Result of funcion \code{\link{build_scales}}, (list, default to NULL). \cr
+#' @param scales Result of function \code{\link{build_scales}}, (list, default to NULL). \cr
 #' To perform the same scaling on train and test, it is recommended to compute \code{\link{build_scales}}
 #' before. If it is kept to NULL, build_scales will be called.
 #' @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @return \code{data_set} with columns scaled (or unscaled) by \strong{reference}. Scaled means that each
 #'  column mean will be 0 and each column standard deviation will be 1.
-#' @details Scaling numeric values is usefull for some machine learning algorithm such as
+#' @details Scaling numeric values is useful for some machine learning algorithm such as
 #'  logistic regression or neural networks. \cr
-#'  Unscaling numeric values can be very usefull for most post-model analysis to do so set way to "unscale". \cr
+#'  Unscaling numeric values can be very useful for most post-model analysis to do so set way to "unscale". \cr
 #' This implementation of scale will be faster that \code{\link{scale}} for large data sets.
 #' @examples
 #' # Load data
@@ -81,7 +81,7 @@ build_scales <- function(data_set, cols = "auto", verbose = TRUE) {
 #' print(sd(adult$age)) # About 13.6
 #' @export
 fast_scale <- function(data_set, scales = NULL, way = "scale", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_scale"
 
     # Sanity check
@@ -128,7 +128,7 @@ fast_scale <- function(data_set, scales = NULL, way = "scale", verbose = TRUE) {
 # -------------------
 # Control that input way is correct
 # @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
-# @param function_name internal param for log consitency
+# @param function_name internal param for log consistency
 .control_scale_way <- function(way, function_name = "control_scale_way") {
     if (! is.character(way)) {
         stop(paste0(function_name, ": way should be a character either 'scale' or 'unscale'"))
@@ -144,7 +144,7 @@ fast_scale <- function(data_set, scales = NULL, way = "scale", verbose = TRUE) {
 # @param scales provided scale
 # @param data_set Matrix, data.frame or data.table
 # @param way should scaling or unscaling be performed? (character either "scale" or "unscale", default to "scale")
-# @param function_name internal param for log consitency
+# @param function_name internal param for log consistency
 # @return scales if everything went well
 .build_and_control_scale <- function(scales, data_set, way, verbose = TRUE,
                                      function_name = ".build_and_control_scale") {

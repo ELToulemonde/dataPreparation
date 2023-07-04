@@ -32,19 +32,19 @@ characters, set it to "auto". (character, default to "auto")}
 Recode character into 3 new columns: \cr
 \itemize{
 \item was the value not NA, "NA", "",
-\item how often this value occures,
+\item how often this value occurs,
 \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 }
 }
 \examples{
 # Load data set
-data(messy_adult)
-messy_adult <- un_factor(messy_adult, verbose = FALSE) # un factor ugly factors
+data(tiny_messy_adult)
+tiny_messy_adult <- un_factor(tiny_messy_adult, verbose = FALSE) # un factor ugly factors
 
 # transform column "mail"
-messy_adult <- generate_from_character(messy_adult, cols = "mail")
-head(messy_adult)
+tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "mail")
+head(tiny_messy_adult)
 
 # To transform all characters columns:
-messy_adult <- generate_from_character(messy_adult, cols = "auto")
+tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "auto")
 }

@@ -3,7 +3,7 @@
 #'Recode character into 3 new columns: \cr
 #' \itemize{
 #' \item was the value not NA, "NA", "",
-#' \item how often this value occures,
+#' \item how often this value occurs,
 #' \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 #' }
 #' @param data_set Matrix, data.frame or data.table
@@ -16,19 +16,19 @@
 #' @return \code{data_set} with new columns. \code{data_set} is edited by \strong{reference}.
 #' @examples
 #' # Load data set
-#' data(messy_adult)
-#' messy_adult <- un_factor(messy_adult, verbose = FALSE) # un factor ugly factors
+#' data(tiny_messy_adult)
+#' tiny_messy_adult <- un_factor(tiny_messy_adult, verbose = FALSE) # un factor ugly factors
 #'
 #'# transform column "mail"
-#' messy_adult <- generate_from_character(messy_adult, cols = "mail")
-#' head(messy_adult)
+#' tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "mail")
+#' head(tiny_messy_adult)
 #'
 #'# To transform all characters columns:
-#' messy_adult <- generate_from_character(messy_adult, cols = "auto")
+#' tiny_messy_adult <- generate_from_character(tiny_messy_adult, cols = "auto")
 #' @import data.table
 #' @export
 generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, drop = FALSE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_from_character"
 
     # Sanity check
@@ -48,7 +48,7 @@ generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, dro
         new_col <- make_new_col_name(new_col, names(data_set))
         set(data_set, NULL, new_col, ! data_set[[col]] %in% c(NA, "NA", ""))
 
-        # recode with nb of occurence of value
+        # recode with nb of occurrence of value
         new_col <- paste0(col, name_separator, "num")
         new_col <- make_new_col_name(new_col, names(data_set))
         data_set[, c(new_col) := .N, by = col]
@@ -56,7 +56,7 @@ generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, dro
         # recode with order of value
         new_col <- paste0(col, name_separator, "order")
         new_col <- make_new_col_name(new_col, names(data_set))
-        colorder <- names(data_set) # store order to reset it
+        col_order <- names(data_set) # store order to reset it
         col_tmp <- paste0(col, '_tmp')
         data_set[[col_tmp]] <- data_set[[col]]
         set(data_set, which(is.na(data_set[[col]])), col_tmp, "NA")
@@ -65,7 +65,7 @@ generate_from_character <- function(data_set, cols = "auto", verbose = TRUE, dro
         data_set <- merge(data_set, unique_values, by.x = col, by.y = "col", all.x = TRUE, sort=FALSE)
         set(data_set, NULL, col_tmp, NULL)
         setnames(data_set, "new_col", new_col) # set correct name
-        setcolorder(data_set, c(colorder, new_col)) # reset col order
+        setcolorder(data_set, c(col_order, new_col)) # reset col order
 
         # if asked drop col
         if (isTRUE(drop)) {

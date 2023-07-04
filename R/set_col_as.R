@@ -30,7 +30,7 @@
 #' @import data.table
 #' @export
 set_col_as_numeric <- function(data_set, cols, strip_string = FALSE, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "set_col_as_numeric"
 
     # Sanity check
@@ -90,7 +90,7 @@ set_col_as_numeric <- function(data_set, cols, strip_string = FALSE, verbose = T
 #' @import data.table
 #' @export
 set_col_as_character <- function(data_set, cols = "auto", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "set_col_as_character"
 
     # Sanity check
@@ -98,7 +98,7 @@ set_col_as_character <- function(data_set, cols = "auto", verbose = TRUE) {
     is.verbose(verbose)
     cols <- real_cols(data_set = data_set, cols = cols, function_name = function_name)
 
-    # Initalization
+    # Initialization
     if (verbose & length(cols) > 0) {
         printl(function_name, ": I will set some columns as character")
         pb <- init_progress_bar(function_name, cols)
@@ -337,12 +337,12 @@ parse_date_cols <- function(cols, format, function_name = "parse_date_cols") {
 #' @return \code{data_set}(as a \code{\link{data.table}}), with specified columns set as factor or logical.
 #' @examples
 #' # Load messy_adult
-#' data("messy_adult")
+#' data(tiny_messy_adult)
 #'
 #'# we wil change education
-#' messy_adult <- set_col_as_factor(messy_adult, cols = "education")
+#' tiny_messy_adult <- set_col_as_factor(tiny_messy_adult, cols = "education")
 #'
-#'sapply(messy_adult[, .(education)], class)
+#'sapply(tiny_messy_adult[, .(education)], class)
 #' # education is now a factor
 #' @export
 set_col_as_factor <- function(data_set, cols = "auto", n_levels = 53, verbose = TRUE) {

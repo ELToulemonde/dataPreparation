@@ -18,8 +18,8 @@ Return \code{data_set} transformed in order to make it have the same shape as
 \code{reference_set}
 }
 \description{
-Transform \code{data_set} into the same shape as \code{reference_set}. Espacially this
-function will be usefull to make your test set have the same shape as your train set.
+Transform \code{data_set} into the same shape as \code{reference_set}. Especially this
+function will be useful to make your test set have the same shape as your train set.
 }
 \details{
 This function will make sure that \code{data_set} and \code{reference_set}
@@ -36,8 +36,8 @@ look to your preparation process, there might be something wrong.
 \examples{
 \dontrun{
 # Build a train and a test
-data("messy_adult")
-data("adult")
+data(tiny_messy_adult)
+data(adult)
 train <- messy_adult
 test <- adult # So test will have missing columns
 

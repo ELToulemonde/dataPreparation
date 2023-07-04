@@ -16,22 +16,23 @@
 #' @return \code{data_set} with new columns. \code{data_set} is edited by \strong{reference}.
 #' @examples
 #' # Load set, and find dates
-#' data(messy_adult)
-#' messy_adult <- find_and_transform_dates(messy_adult, verbose = FALSE)
+#' data(tiny_messy_adult)
+#' tiny_messy_adult <- find_and_transform_dates(tiny_messy_adult, verbose = FALSE)
 #'
 #'# Generate new columns
 #' # Generate year month columns
-#' messy_adult <- generate_factor_from_date(messy_adult, cols = c("date1", "date2", "num1"))
-#' head(messy_adult[, .(date1.yearmonth, date2.yearmonth)])
+#' tiny_messy_adult <- generate_factor_from_date(tiny_messy_adult, cols = c("date1", "date2", "num1"))
+#' head(tiny_messy_adult[, .(date1.yearmonth, date2.yearmonth)])
 #'
 #'
 #' # Generate quarter columns
-#' messy_adult <- generate_factor_from_date(messy_adult, cols = c("date1", "date2"), type = "quarter")
-#' head(messy_adult[, .(date1.quarter, date2.quarter)])
+#' tiny_messy_adult <- generate_factor_from_date(tiny_messy_adult, 
+#'                                               cols = c("date1", "date2"), type = "quarter")
+#' head(tiny_messy_adult[, .(date1.quarter, date2.quarter)])
 #' @export
 #' @import data.table
 generate_factor_from_date <- function(data_set, cols = "auto", type = "yearmonth", drop = FALSE, verbose = TRUE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_factor_from_date"
 
     # Sanity check
@@ -92,7 +93,7 @@ generate_factor_from_date <- function(data_set, cols = "auto", type = "yearmonth
 #' @export
 #' @import data.table
 build_date_factor <- function(data_set, type = "yearmonth") {
-    # Working environement
+    # Working environment
     function_name <- "build_date_factor"
 
     # Sanity check
@@ -103,7 +104,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
     }
 
     # Initialization
-    # set formating function
+    # set formatting function
     if (type == "yearmonth") {
         format_func <- function(x)format(x, "%Y %b")
     } else if (type == "yearquarter") {
@@ -130,7 +131,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #'
 #'Perform the differences between all dates of the data_set set and optionally with a static date.
 #' @param data_set Matrix, data.frame or data.table
-#' @param cols List of date column(s) name(s) of data_set to comute difference on. To transform all
+#' @param cols List of date column(s) name(s) of data_set to commute difference on. To transform all
 #' dates, set it to "auto". (character, default to "auto")
 #' @param analysis_date Static date (Date or POSIXct, optional)
 #' @param units Unit of difference between too dates (string, default to 'years')
@@ -139,7 +140,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #' @param ... Other arguments such as \code{name_separator} to separate words in new columns names
 #' (character, default to ".")
 #' @details
-#' \code{units} is the same as \code{\link{difftime}} units, but with one more possiblity: years.
+#' \code{units} is the same as \code{\link{difftime}} units, but with one more possibility: years.
 #' @return data_set (as a \code{\link{data.table}}) with more columns.
 #' A numeric column has been added for every couple of Dates. The result is in years.
 #' @examples
@@ -161,7 +162,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #' @export
 generate_date_diffs <- function(data_set, cols = "auto", analysis_date = NULL, units = "years",
 drop = FALSE, verbose = TRUE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_date_diffs"
 
     # Sanity check

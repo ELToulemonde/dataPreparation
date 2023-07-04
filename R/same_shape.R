@@ -1,7 +1,7 @@
 #' Give same shape
 #'
-#'Transform \code{data_set} into the same shape as \code{reference_set}. Espacially this
-#' function will be usefull to make your test set have the same shape as your train set.
+#'Transform \code{data_set} into the same shape as \code{reference_set}. Especially this
+#' function will be useful to make your test set have the same shape as your train set.
 #' @param data_set Matrix, data.frame or data.table to transform
 #' @param reference_set Matrix, data.frame or data.table
 #' @param verbose Should the algorithm talk? (logical, default to TRUE)
@@ -21,8 +21,8 @@
 #' @examples
 #' \dontrun{
 #' # Build a train and a test
-#' data("messy_adult")
-#' data("adult")
+#' data(tiny_messy_adult)
+#' data(adult)
 #' train <- messy_adult
 #' test <- adult # So test will have missing columns
 #'
@@ -39,7 +39,7 @@
 #' @import data.table
 #' @export
 same_shape <- function(data_set, reference_set, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "same_shape"
 
     # Sanity check
@@ -135,7 +135,7 @@ drop_unwanted_cols <- function(data_set, reference_set, function_name, verbose) 
     drop_list <- names(data_set)[! names(data_set) %in% names(reference_set)]
     if (length(drop_list) > 0) {
         if (verbose) {
-            printl(function_name, ": the folowing columns are in data_set but not in reference_set: I drop them: ")
+            printl(function_name, ": the following columns are in data_set but not in reference_set: I drop them: ")
             print(drop_list)
         }
         set(data_set, NULL, drop_list, NULL)

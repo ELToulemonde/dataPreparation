@@ -62,22 +62,22 @@ to save some computation time.
 
 \examples{
 # Load exemple set
-data(messy_adult)
-head(messy_adult)
+data(tiny_messy_adult)
+head(tiny_messy_adult)
 # using the find_and_transform_dates
-find_and_transform_dates(messy_adult, n_test = 5)
-head(messy_adult)
+find_and_transform_dates(tiny_messy_adult, n_test = 5)
+head(tiny_messy_adult)
 
 # Example with ambiguities
 \dontrun{
 require(data.table)
-data(messy_adult) # reload data
+data(tiny_messy_adult) # reload data
 # Add an ambiguity by sorting date1
-messy_adult$date1 = sort(messy_adult$date1, na.last = TRUE)
+tiny_messy_adult$date1 = sort(tiny_messy_adult$date1, na.last = TRUE)
 # Try all three methods:
-result_1 = find_and_transform_dates(copy(messy_adult))
-result_2 = find_and_transform_dates(copy(messy_adult), ambiguities = "WARN")
-result_3 = find_and_transform_dates(copy(messy_adult), ambiguities = "SOLVE")
+result_1 = find_and_transform_dates(copy(tiny_messy_adult))
+result_2 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "WARN")
+result_3 = find_and_transform_dates(copy(tiny_messy_adult), ambiguities = "SOLVE")
 }
 # "##NOT RUN:" mean that this example hasn't been run on CRAN since its long. But you can run it!
 }

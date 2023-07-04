@@ -37,22 +37,19 @@ columns even if they don't give more info: the extreme example is the id example
 \examples{
 # Load toy data set
 require(data.table)
-data(messy_adult)
-
-# Reduce set size to save time (you can run it on full set)
-messy_adult = messy_adult[seq_len(100), ]
+data(tiny_messy_adult)
 
 # Check for included columns
-which_are_included(messy_adult)
+which_are_included(tiny_messy_adult)
 
 # Return columns that are also constant, double and bijection
 # Let's add a truly just included column
-messy_adult$are50OrMore <- messy_adult$age > 50
-which_are_included(messy_adult[, .(age, are50OrMore)])
+tiny_messy_adult$are50OrMore <- tiny_messy_adult$age > 50
+which_are_included(tiny_messy_adult[, .(age, are50OrMore)])
 
 # As one can, see this column that doesn't have additional info than age is spotted.
 
 # But you should be careful, if there is a column id, every column will be dropped:
-messy_adult$id = seq_len(nrow(messy_adult)) # build id
-which_are_included(messy_adult)
+tiny_messy_adult$id = seq_len(nrow(tiny_messy_adult)) # build id
+which_are_included(tiny_messy_adult)
 }

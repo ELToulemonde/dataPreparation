@@ -21,8 +21,8 @@ Generate extensive description of a data set.
 }
 \examples{
 # Load exemple set
-data(messy_adult)
+data(tiny_messy_adult)
 
 # Describe it
-description(messy_adult)
+description(tiny_messy_adult)
 }

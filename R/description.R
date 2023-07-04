@@ -8,14 +8,14 @@
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
 #' @examples
 #' # Load exemple set
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# Describe it
-#' description(messy_adult)
+#' description(tiny_messy_adult)
 #' @import data.table
 #' @export
 description <- function(data_set, level = 1, path_to_write = NULL, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "description"
 
     # Sanity check
@@ -40,9 +40,9 @@ description <- function(data_set, level = 1, path_to_write = NULL, verbose = TRU
     printl("Columns are of the following classes:")
     print(table(sapply(data_set, function(x)paste0(class(x), collapse = "-"))))
 
-    # Level 1: Univariate description
+    # Level 1: Uni variate description
     if (level >= 1) {
-        cat("#####################################\n# Level 1: univariate description ##
+        cat("#####################################\n# Level 1: uni-variate description ##
 #####################################\n")
         card <- data_set[, lapply(.SD, uniqueN)]
         for (col in names(data_set)) {
@@ -66,10 +66,10 @@ description <- function(data_set, level = 1, path_to_write = NULL, verbose = TRU
             # Factor cols
             if (is.factor(data_set[[col]]) || is.logical(data_set[[col]])) {
                 if (is.factor(data_set[[col]])) {
-                    printl("Table of occurence for factor variable ", col)
+                    printl("Table of occurrence for factor variable ", col)
                 }
                 if (is.logical(data_set[[col]])) {
-                    printl("Table of occurence for logical variable ", col)
+                    printl("Table of occurrence for logical variable ", col)
                 }
                 print(table(data_set[[col]]))
             }

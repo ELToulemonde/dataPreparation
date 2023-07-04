@@ -27,9 +27,9 @@ If you have a lot of columns than aren't constant, this function is way faster t
 }
 \examples{
 # Let's load our data_set
-data("messy_adult")
+data(tiny_messy_adult)
 
 # Let's try our function
-which_are_constant(messy_adult)
+which_are_constant(tiny_messy_adult)
 # Indeed it return constant the name of the constant column.
 }

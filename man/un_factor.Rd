@@ -20,11 +20,11 @@ to "auto". (characters, default to "auto")}
 Same data_set (as a data.table) with less factor columns.
 }
 \description{
-To unfactorize all columns that have more than a given amount of various values. This
- function will be usefull after using some reading functions that put every string as factor.
+To un-factorize all columns that have more than a given amount of various values. This
+ function will be usefully after using some reading functions that put every string as factor.
 }
 \details{
-If a factor has (strictly) more than \code{n_unfactor} values it is unfactored. \cr
+If a factor has (strictly) more than \code{n_unfactor} values it is un-factored. \cr
 It is recommended to use \code{\link{find_and_transform_numerics}} and
  \code{\link{find_and_transform_dates}} after this function.\cr
 If \code{n_unfactor} is set to -1, nothing will be performed. \cr

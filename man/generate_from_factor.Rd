@@ -32,18 +32,18 @@ factors, set it to "auto". (character, default to "auto")}
 Recode factors into 3 new columns:
 \itemize{
 \item was the value not NA, "NA", "",
-\item how often this value occures,
+\item how often this value occurs,
 \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 }
 }
 \examples{
 # Load data set
-data(messy_adult)
+data(tiny_messy_adult)
 
 # transform column "type_employer"
-messy_adult <- generate_from_factor(messy_adult, cols = "type_employer")
-head(messy_adult)
+tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "type_employer")
+head(tiny_messy_adult)
 
 # To transform all factor columns:
-messy_adult <- generate_from_factor(messy_adult, cols = "auto")
+tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "auto")
 }

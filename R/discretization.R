@@ -13,15 +13,15 @@
 #' Using equal freq first bin will start at -Inf and last bin will end at +Inf.
 #' @examples
 #' # Load data
-#' data(messy_adult)
-#' head(messy_adult)
+#' data(tiny_messy_adult)
+#' head(tiny_messy_adult)
 #'
 #'# Compute bins
-#' bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+#' bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 #' print(bins)
 #' @export
 build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_discretization"
 
     # Sanity check
@@ -77,7 +77,7 @@ build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width
 #'
 #'Discretization of numeric variable (either equal_width or equal_fred).
 #' @param data_set Matrix, data.frame or data.table
-#' @param bins Result of funcion \code{\link{build_bins}}, (list, default to NULL). \cr
+#' @param bins Result of function \code{\link{build_bins}}, (list, default to NULL). \cr
 #' To perform the same discretization on train and test, it is recommended to compute \code{\link{build_bins}}
 #' before. If it is kept to NULL, build_bins will be called.\cr
 #' \code{bins} could also be carefully hand written.
@@ -87,17 +87,17 @@ build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width
 #' @details NAs will be putted in an NA category.
 #' @examples
 #' # Load data
-#' data(messy_adult)
-#' head(messy_adult)
+#' data(tiny_messy_adult)
+#' head(tiny_messy_adult)
 #'
 #'# Compute bins
-#' bins <- build_bins(messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
+#' bins <- build_bins(tiny_messy_adult, cols = "auto", n_bins = 5, type = "equal_freq")
 #'
 #'# Discretize
-#' messy_adult <- fast_discretization(messy_adult, bins = bins)
+#' tiny_messy_adult <- fast_discretization(tiny_messy_adult, bins = bins)
 #'
 #'# Control
-#' head(messy_adult)
+#' head(tiny_messy_adult)
 #'
 #' # Example with hand written bins
 #' data("adult")
@@ -105,7 +105,7 @@ build_bins <- function(data_set, cols = "auto", n_bins = 10, type = "equal_width
 #' print(table(adult$age))
 #' @export
 fast_discretization <- function(data_set, bins = NULL, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_discretization"
 
     # Sanity check
@@ -138,7 +138,7 @@ fast_discretization <- function(data_set, bins = NULL, verbose = TRUE) {
     }
     if (verbose) {
         printl(function_name, ": it took me: ", round((proc.time() - start_time)[[3]], 2),
-        "s to transform ", length(cols), " numeric columns into, binarised columns.")
+        "s to transform ", length(cols), " numeric columns into, binary columns.")
     }
     # Wrap-up
     return(data_set)
@@ -158,11 +158,11 @@ find_splits <- function(x, splits) {
 
 # equal_freq_splits
 # ------------------
-# @param data_set a numeric verctor
-# @param n_bins interger number of wanted bins
+# @param data_set a numeric vector
+# @param n_bins integer number of wanted bins
 # @return a vector of limits (lim1, ..., lim(n_bins +1))
 equal_width_splits <- function(data_set, n_bins, col = "data_set", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "equal_width_splits"
 
     # Sanity check
@@ -184,11 +184,12 @@ equal_width_splits <- function(data_set, n_bins, col = "data_set", verbose = TRU
 
 # equal_freq_splits
 # ------------------
-# @param data_set a numeric verctor
-# @param n_bins interger number of wanted bins
+# @param data_set a numeric vector
+# @param n_bins integer number of wanted bins
+# @param n_bins integer number of wanted bins
 # @return a vector of limits (-Inf, lim1, ..., +Inf)
 equal_freq_splits <- function(data_set, n_bins, col = "data_set", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "equal_freq_splits"
 
     # Sanity check

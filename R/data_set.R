@@ -20,8 +20,21 @@
 #'@name messy_adult
 #' @docType data
 #' @keywords data
-#' @usage data("messy_adult")
+#' @usage data(tiny_messy_adult)
 #' @format A data.table with 32561 rows and 24 variables.
+NULL
+
+
+###################################################################################################
+################################## tiny_messy_adult ###############################################
+###################################################################################################
+#' First 500 rows of \code{\link{messy_adult}}
+#'
+#'@name tiny_messy_adult
+#' @docType data
+#' @keywords data
+#' @usage data(tiny_messy_adult)
+#' @format A data.table with 500 rows and 24 variables.
 NULL
 
 

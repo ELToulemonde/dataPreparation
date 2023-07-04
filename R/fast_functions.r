@@ -18,6 +18,7 @@
 #' or bijection of another have been deleted.
 #' @examples
 #' # First let's build a data.frame with 3 columns: a constant column, and a column in double
+#' \dontrun{
 #' df <- data.frame(col1 = 1, col2 = rnorm(1e6), col3 = sample(c(1, 2), 1e6, replace = TRUE))
 #' df$col4 <- df$col2
 #' df$col5[df$col3 == 1] = "a"
@@ -27,10 +28,12 @@
 #' # Let's filter columns:
 #' df <- fast_filter_variables(df)
 #' head(df)
+#' }
+#' # Don't run for CRAN, you can run example
 #' @import data.table
 #' @export
 fast_filter_variables <- function(data_set, level = 3, keep_cols = NULL, verbose = TRUE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "fast_filter_variables"
     args <- list(...)
     data_set_name <- get_data_set_name_from_args(args)
@@ -151,17 +154,17 @@ is.filtering_level <- function(level, function_name = "is.filtering_level") {
 #' require(data.table)
 #' M <- as.data.table(matrix(runif (3e4), ncol = 10))
 #'
-#'M_rouded <- fast_round(M, 2)
+#'M_rounded <- fast_round(M, 2)
 #' # Lets add some character
 #' M[, stringColumn := "a string"]
 #'
 #'# And use our function
-#' M_rouded <- fast_round(M, 2)
+#' M_rounded <- fast_round(M, 2)
 #' # It still work :) and you don't have to worry about the string.
 #' @import data.table
 #' @export
 fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
-  # Working environement
+  # Working environment
   function_name <- "fast_round"
 
   # Sanity check
@@ -234,7 +237,7 @@ fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
 #' @export
 fast_handle_na <- function(data_set, set_num = 0, set_logical = FALSE,
 set_char = "", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "fast_handle_na"
 
     # Sanity check
@@ -265,7 +268,7 @@ set_char = "", verbose = TRUE) {
         if (is.factor(data_set[[col]])) {
             if (sum(is.na(data_set[[col]])) > 0) {
                 set(data_set, NULL, col, addNA(data_set[[col]]))
-                # Set level to string NA, otherwise it cause mistake, especialy for randomForests
+                # Set level to string NA, otherwise it cause mistake, especially for randomForests
                 levels(data_set[[col]])[is.na(levels(data_set[[col]]))] <- "NA"
             }
         }
@@ -299,7 +302,7 @@ set_char = "", verbose = TRUE) {
 #' fast_is_equal(myVector, myVector)
 #'
 #'# Test on a data.table
-#' fast_is_equal(messy_adult, messy_adult)
+#' fast_is_equal(tiny_messy_adult, messy_adult)
 #' @import data.table
 #' @export
 fast_is_equal <- function(object1, object2) {
@@ -311,7 +314,7 @@ fast_is_equal <- function(object1, object2) {
     if (length(object1) != length(object2)) {
         return(FALSE)
     }
-    # List handeling
+    # List handling
     if (is.data.frame(object1) || is.list(object1)) {
         for (i in seq_len(length(object1))) {
             if (! fast_is_equal(object1[[i]], object2[[i]])) {
@@ -349,7 +352,7 @@ fast_is_bijection <- function(object1, object2) {
     nrows <- length(object1)
     exp_factor <- 10
     max_power <- floor(log(nrows) / log(exp_factor)) + 1
-    # Create empty object of the correct class. Genreic way (ex: for POSIXct try it)
+    # Create empty object of the correct class. Generic way (ex: for POSIXct try it)
     empty_object_of_class_1 <- get(paste0("as.", class(object1)[1]))(character())
     empty_object_of_class_2 <- get(paste0("as.", class(object2)[1]))(character())
     unique_couples <- data.table(object1 = empty_object_of_class_1, object2 = empty_object_of_class_2)

@@ -5,8 +5,8 @@
 #'Show the NEWS file of the dataPreparation package.
 #' @export
 data_preparation_news <- function() {
-    newsfile <- system.file("NEWS", package = "dataPreparation")
-    file.show(newsfile)
+    news_file <- system.file("NEWS", package = "dataPreparation")
+    file.show(news_file)
 }
 
 # .onAttach

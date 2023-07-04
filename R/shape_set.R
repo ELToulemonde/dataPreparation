@@ -20,7 +20,7 @@
 #' All these changes will happen \strong{by reference}.
 #' @export
 shape_set <- function(data_set, final_form = "data.table", thresh = 10, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "shape_set"
 
     # Sanity check
@@ -76,7 +76,7 @@ shape_set <- function(data_set, final_form = "data.table", thresh = 10, verbose 
 #' Numeric matrix preparation for Machine Learning.
 #'
 #' Prepare a numeric matrix from a data.table. This matrix is suitable for
-#' machine learning purposes, since factors are binarized. It may be sparsed,
+#' machine learning purposes, since factors are binary. It may be sparse,
 #' include an intercept, and drop a reference column for each factor if
 #' required (when using \code{lm()}, for instance)
 #'

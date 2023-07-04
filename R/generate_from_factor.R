@@ -3,7 +3,7 @@
 #'Recode factors into 3 new columns:
 #' \itemize{
 #' \item was the value not NA, "NA", "",
-#' \item how often this value occures,
+#' \item how often this value occurs,
 #' \item the order of the value (ex: M/F => 2/1 because F comes before M in alphabet).
 #' }
 #' @param data_set Matrix, data.frame or data.table
@@ -16,18 +16,18 @@
 #' @return \code{data_set} with new columns. \code{data_set} is edited by \strong{reference}.
 #' @examples
 #' # Load data set
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# transform column "type_employer"
-#' messy_adult <- generate_from_factor(messy_adult, cols = "type_employer")
-#' head(messy_adult)
+#' tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "type_employer")
+#' head(tiny_messy_adult)
 #'
 #'# To transform all factor columns:
-#' messy_adult <- generate_from_factor(messy_adult, cols = "auto")
+#' tiny_messy_adult <- generate_from_factor(tiny_messy_adult, cols = "auto")
 #' @import data.table
 #' @export
 generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop = FALSE, ...) {
-    # Working environement
+    # Working environment
     function_name <- "generate_from_factor"
 
     # Sanity check
@@ -77,7 +77,7 @@ generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop =
 #'
 #'Transform factor column into 0/1 columns with one column per values of the column.
 #' @param data_set Matrix, data.frame or data.table
-#' @param encoding Result of funcion \code{\link{build_encoding}}, (list, default to NULL). \cr
+#' @param encoding Result of function \code{\link{build_encoding}}, (list, default to NULL). \cr
 #' To perform the same encoding on train and test, it is recommended to compute \code{\link{build_encoding}}
 #' before. If it is kept to NULL, build_encoding will be called.
 #' @param type What class of columns is expected? "integer" (0L/1L), "numeric" (0/1), or "logical" (TRUE/FALSE),
@@ -86,17 +86,17 @@ generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop =
 #' @param verbose Should the function log (logical, default to TRUE)
 #' @return \code{data_set} edited by \strong{reference} with new columns.
 #' @details If you don't want to edit your data set consider sending \code{copy(data_set)} as an input.\cr
-#' Please \strong{be carefull} using this function, it will generate as many columns as there different values
+#' Please \strong{be careful} using this function, it will generate as many columns as there different values
 #' in your column and might use a lot of RAM. To be safe, you can use parameter
 #'  \code{min_frequency} in \code{\link{build_encoding}}.
 #' @examples
-#' data(messy_adult)
+#' data(tiny_messy_adult)
 #'
 #'# Compute encoding
-#' encoding <- build_encoding(messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
+#' encoding <- build_encoding(tiny_messy_adult, cols = c("marital", "occupation"), verbose = TRUE)
 #'
 #'# Apply it
-#' messy_adult <- one_hot_encoder(messy_adult, encoding = encoding, drop = TRUE)
+#' tiny_messy_adult <- one_hot_encoder(tiny_messy_adult, encoding = encoding, drop = TRUE)
 #'
 #'# Apply same encoding to adult
 #' data(adult)
@@ -108,7 +108,7 @@ generate_from_factor <- function(data_set, cols = "auto", verbose = TRUE, drop =
 #' @export
 #' @import data.table
 one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose = TRUE, drop = FALSE) {
-    # Working environement
+    # Working environment
     function_name <- "one_hot_encoder"
 
     # Sanity check
@@ -122,7 +122,7 @@ one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose
     # Transform char into factor
     if (is.null(encoding)) {
         if (verbose) {
-            printl(function_name, ": Since you didn't profvide encoding, I compute them with build_encoding.")
+            printl(function_name, ": Since you didn't provide encoding, I compute them with build_encoding.")
         }
         encoding <- build_encoding(data_set, cols = "auto", verbose = verbose)
     }
@@ -178,8 +178,8 @@ one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose
 #' @details
 #' To avoid creating really large sparce matrices, one can use  param \code{min_frequency} to be
 #'  sure that only most representative values will be used to create a new column (and not
-#'  outlayers or mistakes in data). \cr
-#'  Setting \code{min_frequency} to something gretter than 0 may cause the function to be slower
+#'  out-layers or mistakes in data). \cr
+#'  Setting \code{min_frequency} to something greater than 0 may cause the function to be slower
 #'  (especially for large data_set).
 #' @return A list where each element name is a column name of data set and each element new_cols
 #' and values the new columns that will be built during encoding.
@@ -196,7 +196,7 @@ one_hot_encoder <- function(data_set, encoding = NULL, type = "integer", verbose
 #' @import data.table
 #' @export
 build_encoding <- function(data_set, cols = "auto", verbose = TRUE, min_frequency = 0, ...) {
-    # Working environement
+    # Working environment
     function_name <- "build_encoding"
 
     # Sanity check
@@ -212,7 +212,7 @@ build_encoding <- function(data_set, cols = "auto", verbose = TRUE, min_frequenc
         start_time <- proc.time()
     }
 
-    # Retrive arg
+    # Retrieve arg
     name_separator <- build_name_separator(list(...))
     encoder <- list()
     # Computation
@@ -274,7 +274,7 @@ build_encoding <- function(data_set, cols = "auto", verbose = TRUE, min_frequenc
 #' @import data.table
 #' @export
 target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "target_encode"
 
     # Sanity check
@@ -333,7 +333,7 @@ target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRU
 #' @import data.table
 #' @export
 build_target_encoding <- function(data_set, cols_to_encode, target_col, functions = "mean", verbose = TRUE) {
-    # Working environement
+    # Working environment
     function_name <- "build_target_encoding"
 
     # Sanity check

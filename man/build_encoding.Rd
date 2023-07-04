@@ -30,8 +30,8 @@ Build a list of one hot encoding for each \code{cols}.
 \details{
 To avoid creating really large sparce matrices, one can use  param \code{min_frequency} to be
  sure that only most representative values will be used to create a new column (and not
- outlayers or mistakes in data). \cr
- Setting \code{min_frequency} to something gretter than 0 may cause the function to be slower
+ out-layers or mistakes in data). \cr
+ Setting \code{min_frequency} to something greater than 0 may cause the function to be slower
  (especially for large data_set).
 }
 \examples{
