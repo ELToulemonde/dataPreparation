@@ -319,7 +319,7 @@ target_encode <- function(data_set, target_encoding, drop = FALSE, verbose = TRU
 #' @param functions functions of aggregation (list or character, default to "mean"). Functions \code{compute_probability_ratio}
 #' and \code{compute_weight_of_evidence} are classically used functions
 #' @param verbose Should the algorithm talk? (Logical, default to TRUE)
-#' @return A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
+#' @return A \code{list} of \code{\link[data.table]{data.table}} a data.table for each \code{cols_to_encode}
 #' each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
 #' @examples
 #' # Build a data set

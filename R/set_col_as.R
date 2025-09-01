@@ -9,7 +9,7 @@
 #' @param strip_string should I change "," to "." in the string? (logical, default to FALSE)
 #' If set to TRUE, computation will be a bit longer
 #' @param verbose Should the function log (logical, default to TRUE)
-#' @return  data_set (as a \code{\link{data.table}}), with specified columns set as numeric.
+#' @return  data_set (as a \code{\link[data.table]{data.table}}), with specified columns set as numeric.
 #' @examples
 #' # Build a fake data.table
 #' data_set <- data.frame(charCol1 = c("1", "2", "3"),
@@ -80,7 +80,7 @@ set_col_as_numeric <- function(data_set, cols, strip_string = FALSE, verbose = T
 #' @param cols List of column(s) name(s) of data_set to transform into characters. To transform
 #' all columns, set it to "auto". (characters, default to "auto")
 #' @param verbose Should the function log (logical, default to TRUE)
-#' @return  data_set (as a \code{\link{data.table}}), with specified columns set as character.
+#' @return  data_set (as a \code{\link[data.table]{data.table}}), with specified columns set as character.
 #' @examples
 #' # Build a fake data.frame
 #' data_set <- data.frame(numCol = c(1, 2, 3), factorCol = as.factor(c("a", "b", "c")))
@@ -139,7 +139,7 @@ set_col_as_character <- function(data_set, cols = "auto", verbose = TRUE) {
 #' automatically, have a look to \code{\link{identify_dates}}. \cr
 #' If input column is a factor, it will be returned as a POSIXct column. \cr
 #' If \code{cols} is kept to default (NULL) set_col_as_date won't do anything.
-#' @return \code{data_set} (as a \code{\link{data.table}}), with specified columns set as Date.
+#' @return \code{data_set} (as a \code{\link[data.table]{data.table}}), with specified columns set as Date.
 #' If the transformation generated only NA, the column is set back to its original value.
 #' @examples
 #' # Lets build a data_set set
@@ -334,7 +334,7 @@ parse_date_cols <- function(cols, format, function_name = "parse_date_cols") {
 #' @details
 #' Control number of levels will help you to distinguish true categorical columns from just characters
 #' that should be handled in another way.
-#' @return \code{data_set}(as a \code{\link{data.table}}), with specified columns set as factor or logical.
+#' @return \code{data_set}(as a \code{\link[data.table]{data.table}}), with specified columns set as factor or logical.
 #' @examples
 #' # Load messy_adult
 #' data(tiny_messy_adult)

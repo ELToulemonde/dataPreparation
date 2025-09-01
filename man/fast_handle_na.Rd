@@ -24,7 +24,7 @@ fast_handle_na(
 \item{verbose}{Should the algorithm talk (logical, default to TRUE)}
 }
 \value{
-data_set as a \code{\link{data.table}} with NAs replaced.
+data_set as a \code{\link[data.table]{data.table}} with NAs replaced.
 }
 \description{
 Handle NAs values depending on the class of the column.

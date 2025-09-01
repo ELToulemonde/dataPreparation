@@ -23,7 +23,7 @@
 #'
 #'Be careful using functions argument, given functions should be an aggregation function,
 #' meaning that for multiple values it should only return one value.
-#' @return A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
+#' @return A \code{\link[data.table]{data.table}} with one line per \code{key} elements and multiple  new columns.
 #' @examples
 #' \dontrun{
 #' # Get generic dataset from R

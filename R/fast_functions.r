@@ -209,7 +209,7 @@ fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
 #' please use \code{\link{copy}}. \cr
 #' If you provide a function, it will be applied to the full column. So this function should handle NAs. \cr
 #' For factor columns, it will add NA to list of values.
-#' @return data_set as a \code{\link{data.table}} with NAs replaced.
+#' @return data_set as a \code{\link[data.table]{data.table}} with NAs replaced.
 #' @examples
 #' # Build a useful data_set set for example
 #' require(data.table)

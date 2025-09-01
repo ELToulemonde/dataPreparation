@@ -1,3 +1,9 @@
+V 1.1.2 (September 2025)
+==================
+
+- DOC : 
+  - Update documentation according to new \link standards.
+
 V 1.1.1 (June 2023)
 ==================
 

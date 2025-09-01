@@ -141,7 +141,7 @@ build_date_factor <- function(data_set, type = "yearmonth") {
 #' (character, default to ".")
 #' @details
 #' \code{units} is the same as \code{\link{difftime}} units, but with one more possibility: years.
-#' @return data_set (as a \code{\link{data.table}}) with more columns.
+#' @return data_set (as a \code{\link[data.table]{data.table}}) with more columns.
 #' A numeric column has been added for every couple of Dates. The result is in years.
 #' @examples
 #' # First build a useful data_set set

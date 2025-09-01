@@ -19,7 +19,7 @@ aggregate_by_key(data_set, key, verbose = TRUE, thresh = 53, ...)
 (vector of function names (character), optional, if not set we use: c("mean", "min", "max", "sd"))}
 }
 \value{
-A \code{\link{data.table}} with one line per \code{key} elements and multiple  new columns.
+A \code{\link[data.table]{data.table}} with one line per \code{key} elements and multiple  new columns.
 }
 \description{
 Automatic aggregation of a data_set set according to a \code{key}.

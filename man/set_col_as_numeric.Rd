@@ -17,7 +17,7 @@ If set to TRUE, computation will be a bit longer}
 \item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-data_set (as a \code{\link{data.table}}), with specified columns set as numeric.
+data_set (as a \code{\link[data.table]{data.table}}), with specified columns set as numeric.
 }
 \description{
 Set as numeric a character column (or a list of columns) from a data.table.

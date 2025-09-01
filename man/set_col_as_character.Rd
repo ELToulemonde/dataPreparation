@@ -15,7 +15,7 @@ all columns, set it to "auto". (characters, default to "auto")}
 \item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-data_set (as a \code{\link{data.table}}), with specified columns set as character.
+data_set (as a \code{\link[data.table]{data.table}}), with specified columns set as character.
 }
 \description{
 Set as character a column (or a list of columns) from a data.table.

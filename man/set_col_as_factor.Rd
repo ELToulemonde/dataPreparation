@@ -18,7 +18,7 @@ set it to -1 to disable control.}
 \item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-\code{data_set}(as a \code{\link{data.table}}), with specified columns set as factor or logical.
+\code{data_set}(as a \code{\link[data.table]{data.table}}), with specified columns set as factor or logical.
 }
 \description{
 Set columns as factor and control number of unique element, to avoid having too large factors.

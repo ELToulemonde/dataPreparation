@@ -25,7 +25,7 @@ and \code{compute_weight_of_evidence} are classically used functions}
 \item{verbose}{Should the algorithm talk? (Logical, default to TRUE)}
 }
 \value{
-A \code{list} of \code{\link{data.table}} a data.table for each \code{cols_to_encode}
+A \code{list} of \code{\link[data.table]{data.table}} a data.table for each \code{cols_to_encode}
 each data.table containing a line by unique value of column and \code{len(functions) + 1} columns.
 }
 \description{

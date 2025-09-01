@@ -32,7 +32,7 @@ dates, set it to "auto". (character, default to "auto")}
 (character, default to ".")}
 }
 \value{
-data_set (as a \code{\link{data.table}}) with more columns.
+data_set (as a \code{\link[data.table]{data.table}}) with more columns.
 A numeric column has been added for every couple of Dates. The result is in years.
 }
 \description{

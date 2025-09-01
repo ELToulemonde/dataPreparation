@@ -18,7 +18,7 @@ For timestamps, format need to be provided ("s" or "ms" or second or millisecond
 \item{verbose}{Should the function log (logical, default to TRUE)}
 }
 \value{
-\code{data_set} (as a \code{\link{data.table}}), with specified columns set as Date.
+\code{data_set} (as a \code{\link[data.table]{data.table}}), with specified columns set as Date.
 If the transformation generated only NA, the column is set back to its original value.
 }
 \description{
