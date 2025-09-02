@@ -1,8 +1,10 @@
 V 1.1.2 (September 2025)
 ==================
 
-- DOC : 
-  - Update documentation according to new \link standards.
+- DOC :
+    - Update documentation according to new \link standards.
+- TECH :
+    - Update CI tested R versions : removing 4.0 & 4.1, adding 4.4 and 4.5
 
 V 1.1.1 (June 2023)
 ==================
