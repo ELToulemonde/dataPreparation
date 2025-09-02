@@ -9,10 +9,10 @@ build_date_factor(data_set, type = "yearmonth")
 \arguments{
 \item{data_set}{A vector of date values}
 
-\item{type}{One of {"year", "yearquarter", "yearmonth", "quarter", "month"}}
+\item{type}{One of "year", "yearquarter", "yearmonth", "quarter", "month"}
 }
 \description{
-Map a vector of dates to a factor at one of these levels {"yearmonth", "yearquarter", "quarter", "month"}
+Map a vector of dates to a factor at one of these levels: "yearmonth", "yearquarter", "quarter", "month"
 }
 \details{
 The resulting vector is an ordered factor of the specified \code{type} (e.g. yearmonth)

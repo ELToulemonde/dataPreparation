@@ -206,7 +206,7 @@ fast_round <- function(data_set, cols = "auto", digits = 2, verbose = TRUE) {
 #' @param verbose Should the algorithm talk (logical, default to TRUE)
 #' @details
 #' To preserve RAM this function edits data_set by \strong{reference}. To keep object unchanged,
-#' please use \code{\link{copy}}. \cr
+#' please use \code{\link[data.table]{copy}}. \cr
 #' If you provide a function, it will be applied to the full column. So this function should handle NAs. \cr
 #' For factor columns, it will add NA to list of values.
 #' @return data_set as a \code{\link[data.table]{data.table}} with NAs replaced.

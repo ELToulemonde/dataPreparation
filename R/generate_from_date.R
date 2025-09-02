@@ -77,12 +77,12 @@ generate_factor_from_date <- function(data_set, cols = "auto", type = "yearmonth
 # Code inspired by Ben Gorman in mltools package https://github.com/ben519/mltools
 #' Date Factor
 #'
-#' Map a vector of dates to a factor at one of these levels {"yearmonth", "yearquarter", "quarter", "month"}
+#' Map a vector of dates to a factor at one of these levels: "yearmonth", "yearquarter", "quarter", "month"
 #' @details
 #' The resulting vector is an ordered factor of the specified \code{type} (e.g. yearmonth)
 #'
 #' @param data_set A vector of date values
-#' @param type One of {"year", "yearquarter", "yearmonth", "quarter", "month"}
+#' @param type One of "year", "yearquarter", "yearmonth", "quarter", "month"
 #' @examples
 #' library(data.table)
 #' data_set <- as.Date(c("2014-01-01", "2015-01-01", "2015-06-01"))
